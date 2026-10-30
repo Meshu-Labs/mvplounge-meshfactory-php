@@ -42,10 +42,9 @@
         "exclude": [
             "/*",
             "!/README.md",
-            "!/src/",
             "/src/*",
             "!/src/Labs/",
-            "/src/Labs/*",
+            "!/src/Labs/**",
             "!/src/Labs/MeshFactory/",
             "!/src/Labs/MeshFactory/**"
         ]
