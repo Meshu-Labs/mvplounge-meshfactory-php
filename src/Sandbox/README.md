@@ -1,6 +1,6 @@
 ﻿# Sandbox Test Realms
 
-The `src/MvpLounge/Sandbox/` directory is the container for library-specific sandbox suites.
+The `src/Sandbox/` directory is the container for library-specific sandbox suites.
 
 Current library suites:
 
@@ -21,11 +21,11 @@ MeshFactory domain suites are organized by test type inside each domain:
 Run the MeshFactory sandbox suite directly:
 
 ```powershell
-& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/MeshFactory/run-all.php"
+& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/Sandbox/MeshFactory/run-all.php"
 ```
 
-Run every library sandbox suite discovered under `src/MvpLounge/Sandbox/`:
+Run every library sandbox suite discovered under `src/Sandbox/`:
 
 ```powershell
-& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/run-all.php"
+& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/Sandbox/run-all.php"
 ```

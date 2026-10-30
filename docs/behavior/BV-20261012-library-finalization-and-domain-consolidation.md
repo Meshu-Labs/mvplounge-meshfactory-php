@@ -8,10 +8,10 @@ This report captures finalization work to consolidate derivative classes into ma
 
 Reviewed and consolidated these areas:
 
-- `src/MvpLounge/MeshFactory/Element/Html/*`
-- `src/MvpLounge/MeshFactory/Element/Html5/*`
-- `src/MvpLounge/MeshFactory/Element/Links/*`
-- `src/MvpLounge/Sandbox/MeshFactory/*`
+- `src/Labs/MeshFactory/Element/Html/*`
+- `src/Labs/MeshFactory/Element/Html5/*`
+- `src/Labs/MeshFactory/Element/Links/*`
+- `src/Sandbox/MeshFactory/*`
 - `/docs` governance, architecture, behavior, and task guidance
 
 ## Consolidation Decisions
@@ -60,9 +60,9 @@ Canonical coverage remains focused on direct canonical class instantiation and r
 ### Existing Coverage Preserved
 
 - Recursive Html class coverage remains in:
-  - `src/MvpLounge/Sandbox/MeshFactory/Html/Params/html-elements-sandbox.php`
+  - `src/Sandbox/MeshFactory/Html/Params/html-elements-sandbox.php`
 - Full sandbox runner remains:
-  - `src/MvpLounge/Sandbox/MeshFactory/run-all.php`
+  - `src/Sandbox/MeshFactory/run-all.php`
 
 ## APP-EELC Agent Handoff
 

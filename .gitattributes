@@ -1,14 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Exclude repository-only assets from archive artifacts.
-.github export-ignore
-docs export-ignore
-sandbox export-ignore
-AGENTS.md export-ignore
-.instructions.md export-ignore
-.vscode export-ignore
-.tmp export-ignore
-vendor export-ignore
-composer.lock export-ignore
-.gitignore export-ignore
+# Export whitelist for archive artifacts.
+* export-ignore
+README.md -export-ignore
+src/MvpLounge/MeshFactory/** -export-ignore

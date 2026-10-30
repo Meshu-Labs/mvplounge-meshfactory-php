@@ -4,7 +4,7 @@ This document is a handoff reference for agents working in APP-EELC that consume
 
 ## Canonical Entry Points
 
-- Canonical HTML element source-of-truth classes live under `src/MvpLounge/MeshFactory/Element/{Domain}/`.
+- Canonical HTML element source-of-truth classes live under `src/Labs/MeshFactory/Element/{Domain}/`.
 - APP-EELC should use canonical domain classes for all integrations.
 
 ## Consumption Rules for APP-EELC
@@ -14,14 +14,14 @@ This document is a handoff reference for agents working in APP-EELC that consume
 
 ## Output API Contract
 
-- Use `compleAsHtmlString(): ?string` for HTML output.
+- Use `compileAsHtmlString(): ?string` for HTML output.
 - Use `compileAsArray(): ?array` for structured payload output.
 - Use `compileAsJson(): ?string` when JSON transport is required.
 
 ## Verification Expectations
 
 - Before APP-EELC release integration, run MeshFactory sandbox coverage:
-  - `src/MvpLounge/Sandbox/MeshFactory/run-all.php`
+  - `src/Sandbox/MeshFactory/run-all.php`
 
 ## Migration Checklist for APP-EELC Agent
 

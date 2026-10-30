@@ -165,4 +165,4 @@ This document maps source-of-truth HTML element domains to MeshFactory class nam
 
 ## Base Class
 
-- Shared HTML behavior base class: `MvpLounge\\MeshFactory\\Abstract\\FactoryElementHtmlAbstract` in `src/MvpLounge/MeshFactory/Abstract/FactoryElementHtmlAbstract.php`.
+- Shared HTML behavior base class: `MvpLounge\\MeshFactory\\Abstract\\FactoryElementHtmlAbstract` in `src/Labs/MeshFactory/Abstract/FactoryElementHtmlAbstract.php`.

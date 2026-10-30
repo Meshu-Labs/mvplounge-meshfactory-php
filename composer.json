@@ -5,10 +5,8 @@
     "time": "2026-05-27",
     "license": "GPL-3.0-or-later",
     "keywords": [
-        "php",
         "meshu",
-        "meshu labs",
-        "factory UI"
+        "meshu labs"
     ],
     "homepage": "https://start.meshu.us",
     "authors": [
@@ -23,36 +21,33 @@
         "email": "info@meshu.us"
     },
     "require": {
-        "php": ">=8.1"
+        "php": ">=8.2"
     },
     "autoload": {
         "psr-4": {
-            "MvpLounge\\MeshFactory\\": "src/MvpLounge/MeshFactory/"
+            "MvpLounge\\MeshFactory\\": "src/Labs/MeshFactory/"
         },
         "classmap": [
-            "src/MvpLounge/MeshFactory/"
+            "src/Labs/MeshFactory/"
         ],
         "exclude-from-classmap": [
             ".instructions.md",
             "/AGENTS.md",
             "/docs/",
             "/sandbox/",
-            "/src/MvpLounge/Sandbox/"
+            "/src/Sandbox/"
         ]
     },
     "archive": {
         "exclude": [
-            "/.github",
-            "/docs",
-            "/sandbox",
-            "/src/MvpLounge/Sandbox",
-            "/AGENTS.md",
-            "/.instructions.md",
-            "/.vscode",
-            "/.tmp",
-            "/vendor",
-            "/composer.lock",
-            "/.gitignore"
+            "/*",
+            "!/README.md",
+            "!/src/",
+            "/src/*",
+            "!/src/Labs/",
+            "/src/Labs/*",
+            "!/src/Labs/MeshFactory/",
+            "!/src/Labs/MeshFactory/**"
         ]
     },
     "config": {

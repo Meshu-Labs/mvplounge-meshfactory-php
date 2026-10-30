@@ -34,7 +34,7 @@ Use these filenames unless a task explicitly requires a timestamped variant.
 ### Capture Full Sandbox Run Output
 
 ```powershell
-& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/MeshFactory/run-all.php" |
+& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/Sandbox/MeshFactory/run-all.php" |
 Out-File -FilePath "c:/_src/app-mvplounge-meshfactory/.tmp/txt/sandbox-run-latest.txt" -Encoding utf8
 ```
 

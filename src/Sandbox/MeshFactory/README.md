@@ -1,6 +1,6 @@
 # Sandbox Factory Tests
 
-Sandbox scripts for MeshFactory are organized by Element domain under `src/MvpLounge/Sandbox/MeshFactory/`.
+Sandbox scripts for MeshFactory are organized by Element domain under `src/Sandbox/MeshFactory/`.
 
 Each Element domain has three strategy folders:
 
@@ -14,9 +14,9 @@ Inside each strategy folder, scripts are class-based and use this naming pattern
 
 Examples:
 
-- `src/MvpLounge/Sandbox/MeshFactory/InlineTextSemantics/Factory/Anchor-sandbox.php`
-- `src/MvpLounge/Sandbox/MeshFactory/TextContent/Params/Div-sandbox.php`
-- `src/MvpLounge/Sandbox/MeshFactory/Root/Generic/Html-sandbox.php`
+- `src/Sandbox/MeshFactory/InlineTextSemantics/Factory/Anchor-sandbox.php`
+- `src/Sandbox/MeshFactory/TextContent/Params/Div-sandbox.php`
+- `src/Sandbox/MeshFactory/Root/Generic/Html-sandbox.php`
 
 Strategy contract:
 
@@ -32,7 +32,7 @@ Attribute injection rule:
 
 Shared helpers:
 
-- Reusable helper functions live in `src/MvpLounge/Sandbox/MeshFactory/_shared/factory-element-sandbox-shared.php`.
+- Reusable helper functions live in `src/Sandbox/MeshFactory/_shared/factory-element-sandbox-shared.php`.
 - Per-class scripts keep local assertions and explicit try/catch output while using shared builders for repeatable attribute setup.
 
 Current phased migration note:
@@ -42,5 +42,5 @@ Current phased migration note:
 Run all MeshFactory sandbox scripts:
 
 ```powershell
-& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/MeshFactory/run-all.php"
+& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/Sandbox/MeshFactory/run-all.php"
 ```

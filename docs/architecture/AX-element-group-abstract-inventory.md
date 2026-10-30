@@ -6,8 +6,8 @@ This inventory maps concrete Element domains to their abstract parent layer usin
 
 - MDN Elements reference: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements
 - MeshFactory enum contracts:
-  - `src/MvpLounge/MeshFactory/Enum/FactoryElement.php`
-  - `src/MvpLounge/MeshFactory/Enum/FactoryElementAttribute.php`
+  - `src/Labs/MeshFactory/Enum/FactoryElement.php`
+  - `src/Labs/MeshFactory/Enum/FactoryElementAttribute.php`
 
 ## Inventory (Post-Prune)
 
@@ -44,14 +44,14 @@ Non-attribute-introducing domain abstracts were intentionally removed, and their
 ## Validation Method
 
 1. Build inventory from code declarations:
-   - Parse `class ... extends ...` across `src/MvpLounge/MeshFactory/Element/`.
+   - Parse `class ... extends ...` across `src/Labs/MeshFactory/Element/`.
 2. Compare groups against MDN category intent:
    - Validate each concrete class sits under a matching domain abstract.
 3. Validate library integrity:
-   - `php -l` for all `src/MvpLounge/MeshFactory/Abstract/*.php`
-   - `php -l` for all `src/MvpLounge/MeshFactory/Element/**/*.php`
+   - `php -l` for all `src/Labs/MeshFactory/Abstract/*.php`
+   - `php -l` for all `src/Labs/MeshFactory/Element/**/*.php`
 4. Validate runtime behavior:
-   - Run `src/MvpLounge/Sandbox/MeshFactory/run-all.php`
+   - Run `src/Sandbox/MeshFactory/run-all.php`
    - Required terminal marker: `All sandbox scripts executed.`
 
 ## Follow-Up Refinement Track

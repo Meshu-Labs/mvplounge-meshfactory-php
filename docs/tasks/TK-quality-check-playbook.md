@@ -2,15 +2,6 @@
 
 This playbook provides operational procedures for running MeshFactory quality checks.
 
-Generated report storage policy and scripting references are defined in:
-
-- `docs/tasks/TK-generated-artifacts-storage-and-reporting.md`
-
-Artifact storage enforcement:
-
-- Store generated files in `/.tmp/{filetype}/` folders (`json/`, `txt/`, `php/`, `tmp/`).
-- Do not write generated artifacts directly into `/.tmp/` root.
-
 ## Single File Checks
 
 Syntax:
@@ -54,7 +45,7 @@ Current approved field chain:
 Static inheritance scan:
 
 ```powershell
-Get-ChildItem "src/MvpLounge/MeshFactory/Abstract" -Filter "*.php" |
+Get-ChildItem "src/Labs/MeshFactory/Abstract" -Filter "*.php" |
 ForEach-Object {
 	$matches = Select-String -Path $_.FullName -Pattern "class\s+\w+\s+extends\s+\w+" -AllMatches
 	foreach ($m in $matches.Matches) {
@@ -69,7 +60,7 @@ ForEach-Object {
 Field concrete verification:
 
 ```powershell
-Get-ChildItem "src/MvpLounge/MeshFactory/Element/Field" -Filter "*.php" |
+Get-ChildItem "src/Labs/MeshFactory/Element/Form" -Filter "*.php" |
 ForEach-Object {
 	Select-String -Path $_.FullName -Pattern "extends\s+FactoryElementField(Input)?Abstract" |
 	ForEach-Object {
@@ -116,7 +107,7 @@ Rules:
 Quick check for inline violations in abstract classes:
 
 ```powershell
-Get-ChildItem "src/MvpLounge/MeshFactory/Abstract" -Filter "*.php" |
+Get-ChildItem "src/Labs/MeshFactory/Abstract" -Filter "*.php" |
 ForEach-Object {
 	$hits = Select-String -Path $_.FullName -Pattern "in_array\(FactoryElementAttribute::.+\?\s*\$this->.+:\s*NULL" -AllMatches
 	if ($hits) {
@@ -131,7 +122,7 @@ ForEach-Object {
 Quick check for compliant getter signatures:
 
 ```powershell
-Get-ChildItem "src/MvpLounge/MeshFactory/Abstract" -Filter "*.php" |
+Get-ChildItem "src/Labs/MeshFactory/Abstract" -Filter "*.php" |
 ForEach-Object {
 	Select-String -Path $_.FullName -Pattern "public function getFactoryElement\w+\(array \$allowed\): \?\w+" |
 	ForEach-Object {
@@ -166,9 +157,9 @@ Maintenance rule for approved exceptions:
 
 ## Sandbox Test-Type Standard
 
-Library sandbox suites are organized under `src/MvpLounge/Sandbox/{Library}/`.
+Library sandbox suites are organized under `src/Sandbox/{Library}/`.
 
-For MeshFactory, sandbox tests are split by test type under each domain folder in `src/MvpLounge/Sandbox/MeshFactory/`:
+For MeshFactory, sandbox tests are split by test type under each domain folder in `src/Sandbox/MeshFactory/`:
 
 - `Generic/`
 - `Factory/`
@@ -202,7 +193,7 @@ Factory strategy scaffold ownership and editable boundaries are defined in:
 Run the MeshFactory sandbox suite through the library runner:
 
 ```powershell
-& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/MeshFactory/run-all.php"
+& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/Sandbox/MeshFactory/run-all.php"
 ```
 
 ## Params Sandbox Template
@@ -213,11 +204,11 @@ Params strategy scaffold ownership and editable boundaries are defined in:
 
 ## Comprehensive Element Coverage Suites
 
-All concrete classes under `src/MvpLounge/MeshFactory/Element/` must be covered using domain-first sandbox organization.
+All concrete classes under `src/Labs/MeshFactory/Element/` must be covered using domain-first sandbox organization.
 
 Required structure:
 
-- One sandbox folder per Element domain under `src/MvpLounge/Sandbox/MeshFactory/{Domain}/`
+- One sandbox folder per Element domain under `src/Sandbox/MeshFactory/{Domain}/`
 - Three strategy folders in each domain folder:
 	- `Generic/`
 	- `Params/`
@@ -237,7 +228,7 @@ The suites must remain warning-free and include compile pathway checks for:
 - `compileAsArray()`
 - `compile()`
 - `compileAsJson()` when implemented
-- `compleAsHtmlString()` when implemented
+- `compileAsHtmlString()` when implemented
 - `string()` when implemented
 
 Parameter restriction rule:
@@ -263,7 +254,7 @@ Refactor trigger rule:
 Quick run:
 
 ```powershell
-& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/MeshFactory/run-all.php"
+& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/Sandbox/MeshFactory/run-all.php"
 ```
 
 Expected terminal tail:
@@ -279,18 +270,18 @@ Use this method when updating abstract inheritance and element grouping.
 	  - `https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements`
 	- Confirm any element-specific behavior in the target MDN element pages.
 2. Inventory extraction from code:
-	- Parse all concrete declarations under `src/MvpLounge/MeshFactory/Element/`.
+	- Parse all concrete declarations under `src/Labs/MeshFactory/Element/`.
 	- Record domain folder, class name, and `extends` parent.
 3. Abstract alignment:
 	- Ensure each Element domain inherits from the matching `FactoryElement{ElementGroup}Abstract`.
 	- Keep special-purpose families (`Field`, `Form`, `Table`, `Link`) on their dedicated abstract chains.
 4. Validation sequence:
 	- Lint all abstract files:
-	  - `Get-ChildItem "src/MvpLounge/MeshFactory/Abstract" -Filter "*.php" | ForEach-Object { & "C:/xampp_devops_test/php/php.exe" -l $_.FullName }`
+	  - `Get-ChildItem "src/Labs/MeshFactory/Abstract" -Filter "*.php" | ForEach-Object { & "C:/xampp_devops_test/php/php.exe" -l $_.FullName }`
 	- Lint all element files:
-	  - `Get-ChildItem "src/MvpLounge/MeshFactory/Element" -Recurse -Filter "*.php" | ForEach-Object { & "C:/xampp_devops_test/php/php.exe" -l $_.FullName }`
+	  - `Get-ChildItem "src/Labs/MeshFactory/Element" -Recurse -Filter "*.php" | ForEach-Object { & "C:/xampp_devops_test/php/php.exe" -l $_.FullName }`
 	- Run full sandbox suite:
-	  - `& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/MeshFactory/run-all.php"`
+	  - `& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/Sandbox/MeshFactory/run-all.php"`
 5. Documentation update:
 	- Update `docs/architecture/AX-element-group-abstract-inventory.md` with the current mapping and counts.
 	- Update architecture family responsibilities when new abstract groups are introduced.

@@ -4,7 +4,7 @@
 
 This document inventories non-global opening-tag attribute overlap across all concrete Element classes.
 
-- Scope: concrete classes under `src/MvpLounge/MeshFactory/Element/`
+- Scope: concrete classes under `src/Labs/MeshFactory/Element/`
 - Baseline excluded from overlap math: global attributes from `FactoryAbstract::$FactoryElementAttributes`
 - Overlap source: effective `AllowedFactoryElementAttributes` on each concrete class, including inherited abstract-chain attributes
 
@@ -168,7 +168,7 @@ Interpretation:
 
 `/.tmp/json/element-class-clusters.json` is the reverse-audit source for abstraction ownership and includes:
 
-- All concrete classes under `src/MvpLounge/MeshFactory/Element/`
+- All concrete classes under `src/Labs/MeshFactory/Element/`
 - Full enum universe from `FactoryElementAttribute`
 - Effective attribute sets per cluster using:
     - `FactoryAbstract::$FactoryElementAttributes` (global baseline)

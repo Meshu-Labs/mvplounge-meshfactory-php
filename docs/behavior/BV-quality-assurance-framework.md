@@ -11,8 +11,6 @@ Apply this framework to:
 - All concrete implementations when parent abstracts change.
 - Path, namespace, or autoload-affecting edits.
 
-Operational command procedures live in `docs/tasks/TK-quality-check-playbook.md`.
-
 ## When Quality Checks Are Mandatory
 
 Run quality checks:
@@ -27,13 +25,17 @@ Run quality checks:
 
 ### Phase 1: Syntax Verification
 
-- Execute syntax checks using the single-file and domain procedures in `docs/tasks/TK-quality-check-playbook.md`.
+```powershell
+& "C:/xampp_devops_test/php/php.exe" -l <file>
+```
 
 ### Phase 2: UTF-8 No-BOM Verification
 
-- Execute encoding verification using the procedures in `docs/tasks/TK-quality-check-playbook.md`.
-- Expected first bytes: `3C 3F 70` (`<?php`).
-- Invalid BOM bytes: `EF BB BF`.
+```powershell
+$bytes = [System.IO.File]::ReadAllBytes($filePath) | Select-Object -First 3
+# Expected bytes: 3C 3F 70 (<?php)
+# Invalid BOM bytes: EF BB BF
+```
 
 ### Phase 3: Namespace and Path Verification
 
@@ -49,7 +51,7 @@ Run quality checks:
 
 ### Phase 3.5: Output API Contract Verification
 
-- `compleAsHtmlString()` returns `?string`.
+- `compileAsHtmlString()` returns `?string`.
 - `compileAsArray()` returns `?array`.
 - `compileAsJson()` returns JSON payload string or `NULL` when encoding fails.
 - Sandbox and usage examples call canonical output methods.
@@ -67,7 +69,7 @@ Run quality checks:
 
 - Form classes must use `MvpLounge\MeshFactory\Element\Form\*`.
 - No runtime references may remain to `MvpLounge\MeshFactory\Element\Forms\*`.
-- Remove deprecated `src/MvpLounge/MeshFactory/Element/Forms/*` files after migration.
+- Remove deprecated `src/Labs/MeshFactory/Element/Forms/*` files after migration.
 
 ### Phase 3.8: Abstract Depth Verification
 
@@ -111,13 +113,13 @@ Run quality checks:
 
 ### Phase 5: Full Element Coverage Verification
 
-- Execute all sandbox suites via `src/MvpLounge/Sandbox/MeshFactory/run-all.php`.
+- Execute all sandbox suites via `src/Sandbox/MeshFactory/run-all.php`.
 - Confirm Generic, Params, and Factory strategies execute for full Element coverage.
 - Confirm all compile pathways are exercised by coverage suites:
 	- `compileAsArray()`
 	- `compile()`
 	- `compileAsJson()` where implemented
-	- `compleAsHtmlString()` where implemented
+	- `compileAsHtmlString()` where implemented
 	- `string()` where implemented
 - Confirm runtime output has no PHP warnings or sandbox error markers.
 - Required completion marker: `All sandbox scripts executed.`

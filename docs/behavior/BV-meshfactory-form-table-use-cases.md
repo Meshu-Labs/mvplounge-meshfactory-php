@@ -4,7 +4,7 @@ This note captures the sandbox examples added for common form and table scenario
 
 ## Form Use Cases
 
-The form sandbox now demonstrates these scenarios under `src/MvpLounge/Sandbox/MeshFactory/Form/`:
+The form sandbox now demonstrates these scenarios under `src/Sandbox/MeshFactory/Form/`:
 
 - Login form for an existing account sign-in flow.
 - Registration form for a basic user account signup flow.
@@ -23,7 +23,7 @@ Each example exercises the supported form attributes:
 
 ## Table Use Cases
 
-The table sandbox now demonstrates these scenarios under `src/MvpLounge/Sandbox/MeshFactory/Table/`:
+The table sandbox now demonstrates these scenarios under `src/Sandbox/MeshFactory/Table/`:
 
 - A 4-column summary table for dashboard-style reporting.
 - A merged cell example with `colspan` and `rowspan`.
@@ -47,5 +47,5 @@ Each example exercises the supported table attributes:
 Run the full MeshFactory sandbox suite with:
 
 ```powershell
-& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/MeshFactory/run-all.php"
+& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/Sandbox/MeshFactory/run-all.php"
 ```
