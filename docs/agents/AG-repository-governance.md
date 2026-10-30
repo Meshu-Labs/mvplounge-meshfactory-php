@@ -7,6 +7,7 @@ This document routes instruction ownership by functional domain.
 - Root entrypoint: `AGENTS.md`
 - Docs entrypoint: `docs/.instructions.md`
 - Namespace guidance: `docs/agents/AG-meshfactory-namespace-guide.md`
+- APP-EELC handoff guidance: `docs/agents/AG-app-eelc-referential-instructions.md`
 
 ## Domain Ownership
 

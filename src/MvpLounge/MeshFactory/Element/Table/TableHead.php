@@ -3,8 +3,14 @@
 namespace MvpLounge\MeshFactory\Element\Table;
 
 
+
+require_once __DIR__ . '/../../Constants.php';
+
+if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
+	throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+}
+
 use MvpLounge\MeshFactory\Element\Table\TableRow;
-use MvpLounge\MeshFactory\Abstract\FactoryElementAbstract;
 use MvpLounge\MeshFactory\Abstract\FactoryElementTableAbstract;
 
 require_once __DIR__ . '/TableRow.php';
@@ -55,10 +61,11 @@ class TableHead extends FactoryElementTableAbstract
 		return array_merge(
 			parent::getFactoryModel(),
 			[
-				'headers' => $this->getHeaderRow()->compile()
+				'headers' => $this->getHeaderRow()->compileAsArray()
 
 			]
 		);
 	}
 
 }
+

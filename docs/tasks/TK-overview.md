@@ -6,6 +6,9 @@ This folder contains task-oriented markdown workflows.
 
 - [Architecture Clarification Task](TK-architecture-clarification-task.md)
 - [Quality Check Playbook](TK-quality-check-playbook.md)
+- [Generated Artifacts Storage and Reporting](TK-generated-artifacts-storage-and-reporting.md)
+- [Params Sandbox Template](TK-params-sandbox-template.md)
+- [Factory Sandbox Template](TK-factory-sandbox-template.md)
 
 ## Policy
 

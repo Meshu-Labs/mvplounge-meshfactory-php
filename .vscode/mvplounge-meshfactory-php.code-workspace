@@ -11,17 +11,13 @@
         "window.zoomLevel": 0.35,
         "files.autoSave": "afterDelay",
         "files.exclude": {
-            "/xamppires/plaforms": true,
-            "/xamppires/utilities": true,
             "**/.git": true,
             "**/.svn": true,
             "**/.hg": true,
-            "**/CVS": true,
-            "**/node_modules": true,
-            "**/bower_components": true,
+            "**/CVS": true,                      
             "**/tmp": true
         },
-        "[javascript][json][css][html]": {
+        "[javascript][json][css][html][php]": {
             "editor.formatOnSave": true,
             "editor.formatOnPaste": true
         },

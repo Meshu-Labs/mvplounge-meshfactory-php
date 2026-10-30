@@ -2,8 +2,12 @@
 
 namespace MvpLounge\MeshFactory\Element\Table;
 
-use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 
+require_once __DIR__ . '/../../Constants.php';
+
+if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
+	throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+}
 
 require_once __DIR__ . '/TableCell.php';
 
@@ -19,4 +23,5 @@ class TableHeader extends TableCell
 	}
 
 }
+
 

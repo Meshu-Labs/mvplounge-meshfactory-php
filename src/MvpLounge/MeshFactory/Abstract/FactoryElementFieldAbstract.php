@@ -3,16 +3,32 @@
 namespace MvpLounge\MeshFactory\Abstract;
 
 
+
+require_once __DIR__ . '/../Constants.php';
+
+if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
+	throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+}
+
 use MvpLounge\MeshFactory\Enum\FactoryElement;
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
+use MvpLounge\MeshFactory\Enum\FactoryElementFieldType;
 use MvpLounge\MeshFactory\Enum\FactoryElementPrimativeType;
 
 
 require_once __DIR__ . '/FactoryElementAbstract.php';
 require_once __DIR__ . '/../Enum/FactoryElementAttribute.php';
+require_once __DIR__ . '/../Enum/FactoryElementFieldType.php';
 require_once __DIR__ . '/../Enum/FactoryElementPrimativeType.php';
 require_once __DIR__ . '/../Enum/FactoryElement.php';
 
+/**
+ * Form control support spanning input, select, option, textarea, and fieldset families.
+ *
+ * MDN element references:
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea
+ */
 abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 {
 
@@ -28,15 +44,15 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		FactoryElementAttribute::PLACEHOLDER,
 		FactoryElementAttribute::TYPE,
 		FactoryElementAttribute::VALUE,
-		FactoryElementAttribute::ROWS,
-		FactoryElementAttribute::COLS,
 		FactoryElementAttribute::SELECTED,
 		FactoryElementAttribute::CHECKED,
 		FactoryElementAttribute::ACCESS
 	];
 
 	protected ?FactoryElement $FactoryElement = NULL;
+	protected ?FactoryElementFieldType $FactoryElementFieldType = NULL;
 	protected ?FactoryElementPrimativeType $FactoryElementFieldValueType = FactoryElementPrimativeType::STRING;
+	/** Internal enabled or disabled state rendered from the legacy access flag. */
 	protected ?bool $FactoryElementFieldAccess = NULL;
 	protected ?string $FactoryElementFieldAct = NULL;
 	protected ?bool $FactoryElementFieldBooleanValue = NULL;
@@ -61,7 +77,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		}
 	}
 
-	public function addAccess($access): FactoryElementFieldAbstract
+	public function addAccess($access): static
 	{
 		$this->FactoryElementFieldAccess = $access;
 		return $this;
@@ -75,7 +91,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		}
 	}
 
-	public function addAct($act): FactoryElementFieldAbstract
+	public function addAct($act): static
 	{
 		$this->FactoryElementFieldAct = $act;
 		return $this;
@@ -89,12 +105,12 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		}
 	}
 
-	public function addFieldset($params): FactoryElementFieldAbstract
+	public function addFieldset($params): static
 	{
 		if (!class_exists(FactoryElementFieldsetAbstract::class, FALSE)) {
 			require_once __DIR__ . '/FactoryElementFieldsetAbstract.php';
 		}
-		$this->FactoryElementFieldFieldset = new FactoryElementFieldsetAbstract($params);
+		$this->FactoryElementFieldFieldset = (new FactoryElementFieldsetAbstract())->configureFactory($params);
 		return $this;
 	}
 
@@ -106,7 +122,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		}
 	}
 
-	public function addLabel($label): FactoryElementFieldAbstract
+	public function addLabel($label): static
 	{
 		$this->FactoryElementFieldLabel = $label;
 		return $this;
@@ -120,9 +136,33 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		}
 	}
 
-	public function addLength($length): FactoryElementFieldAbstract
+	public function addLength($length): static
 	{
 		$this->FactoryElementFieldLength = $length;
+		return $this;
+	}
+
+	protected function __process_type($params): void
+	{
+		if (!empty($params['type'])) {
+			$this->addType($params['type']);
+		}
+	}
+
+	public function addType($type): static
+	{
+		if ($type instanceof FactoryElementFieldType) {
+			$this->FactoryElementFieldType = $type;
+			return $this;
+		}
+
+		if (is_string($type)) {
+			$_type = FactoryElementFieldType::tryFrom(strtolower($type));
+			if ($_type instanceof FactoryElementFieldType) {
+				$this->FactoryElementFieldType = $_type;
+			}
+		}
+
 		return $this;
 	}
 
@@ -138,7 +178,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		}
 	}
 
-	public function addValueType($valueType): FactoryElementFieldAbstract
+	public function addValueType($valueType): static
 	{
 		if ($valueType instanceof FactoryElementPrimativeType) {
 			$this->FactoryElementFieldValueType = $valueType;
@@ -155,7 +195,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		return $this;
 	}
 
-	public function addValue($value): FactoryElementFieldAbstract
+	public function addValue($value): static
 	{
 		$_value_type = $this->FactoryElementFieldValueType?->value ?? FactoryElementPrimativeType::STRING->value;
 		$_field_prop = sprintf('FactoryElementField%sValue', ucfirst($_value_type));
@@ -214,8 +254,8 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		$_model = $this->getElementFactoryDefaultPropertiesFromParams($params);
 
 		foreach ($this->FactoryElementAttributeMap as $_attribute => $_attribute_value) {
-			if (array_key_exists($_attribute, $params)) {
-				$_model[$_attribute_value] = $this->getElementFactoryProperty($_attribute, $params[$_attribute_value]);
+			if (array_key_exists($_attribute_value, $params)) {
+				$_model[$_attribute_value] = $this->getElementFactoryProperty($_attribute_value, $params[$_attribute_value]);
 			}
 		}
 
@@ -249,6 +289,9 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 				'access' => $this->getFactoryElementFieldAccess($_allowed),
 				'value' => $this->getFactoryElementFieldValue($_allowed),
 				'selected' => $this->getFactoryElementFieldSelected($_allowed),
+				'type' => $this->getFactoryElementFieldType($_allowed),
+				'placeholder' => $this->getFactoryElementFieldPlaceholder($_allowed),
+				'checked' => $this->getFactoryElementFieldChecked($_allowed)
 			]
 		);
 	}
@@ -268,6 +311,21 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		return in_array(FactoryElementAttribute::SELECTED->value, $allowed, TRUE) && method_exists($this, 'getElementFieldSelected') ? $this->getElementFieldSelected() : NULL;
 	}
 
+	public function getFactoryElementFieldType(array $allowed): ?string
+	{
+		return in_array(FactoryElementAttribute::TYPE->value, $allowed, TRUE) ? $this->getElementFieldType() : NULL;
+	}
+
+	public function getFactoryElementFieldPlaceholder(array $allowed): ?string
+	{
+		return in_array(FactoryElementAttribute::PLACEHOLDER->value, $allowed, TRUE) && method_exists($this, 'getPlaceholderText') ? $this->getPlaceholderText() : NULL;
+	}
+
+	public function getFactoryElementFieldChecked(array $allowed)
+	{
+		return in_array(FactoryElementAttribute::CHECKED->value, $allowed, TRUE) && method_exists($this, 'getElementFieldChecked') ? $this->getElementFieldChecked() : NULL;
+	}
+
 	public function getElementFieldValue()
 	{
 		$_value_type = $this->FactoryElementFieldValueType?->value ?? FactoryElementPrimativeType::STRING->value;
@@ -285,9 +343,19 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		return $this->FactoryElementFieldValueType?->value;
 	}
 
-	public function getElementFieldLabel(): ?string
+	public function getElementFieldType(): ?string
 	{
-		return $this->FactoryElementFieldLabel ? sprintf('<label>%s</label>', $this->FactoryElementFieldLabel) : NULL;
+		return $this->FactoryElementFieldType?->value;
+	}
+
+	public function getElementFieldLabelOpen(): ?string
+	{
+		return $this->FactoryElementFieldLabel ? sprintf('<label>%s', $this->FactoryElementFieldLabel) : NULL;
+	}
+
+	public function getElementFieldLabelClose(): ?string
+	{
+		return $this->FactoryElementFieldLabel ? '</label>' : NULL;
 	}
 
 	public function getElementFieldLength(): ?string
@@ -318,17 +386,29 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		return $this->FactoryElementFieldFieldset;
 	}
 
-	public function string(): ?string
+	public function compileAsHtmlString(): ?string
 	{
 		return $this->getElementFieldset()->getElementOpen()
-			. $this->getElementFieldLabel()
+			. $this->getElementFieldLabelOpen()
 			. $this->getElementOpen()
+			. $this->getElementFieldLabelClose()
 			. $this->getElementFieldset()->getElementClose();
 	}
 
-	public function buildElementLabel()
+	public function string(): ?string
 	{
-		echo $this->getElementFieldLabel() . "\n\t";
+		return $this->compileAsHtmlString();
+	}
+
+	public function buildElementLabelOpen()
+	{
+		echo $this->getElementFieldLabelOpen() . "\n\t";
+	}
+
+	public function buildElementLabelClose()
+	{
+		echo $this->getElementFieldLabelClose() . "\n\t";
 	}
 
 }
+

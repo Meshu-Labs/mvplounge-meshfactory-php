@@ -2,6 +2,15 @@
 
 This playbook provides operational procedures for running MeshFactory quality checks.
 
+Generated report storage policy and scripting references are defined in:
+
+- `docs/tasks/TK-generated-artifacts-storage-and-reporting.md`
+
+Artifact storage enforcement:
+
+- Store generated files in `/.tmp/{filetype}/` folders (`json/`, `txt/`, `php/`, `tmp/`).
+- Do not write generated artifacts directly into `/.tmp/` root.
+
 ## Single File Checks
 
 Syntax:
@@ -29,6 +38,262 @@ Use VS Code tasks from `.vscode/tasks.json`:
 - `Quality Check: Table Domain`
 - `Quality Check: Links Domain`
 - `Quality Check: All Domains`
+- `Quality Check: Concrete Override Audit`
+
+## Abstraction Depth Audit (Static)
+
+Rule set:
+
+- Default domains: maximum two abstract levels from `FactoryAbstract`.
+- Field domain exception: up to four abstract levels from `FactoryAbstract`.
+
+Current approved field chain:
+
+- `FactoryAbstract -> FactoryElementAbstract -> FactoryElementFieldAbstract -> FactoryElementFieldInputAbstract`
+
+Static inheritance scan:
+
+```powershell
+Get-ChildItem "src/MvpLounge/MeshFactory/Abstract" -Filter "*.php" |
+ForEach-Object {
+	$matches = Select-String -Path $_.FullName -Pattern "class\s+\w+\s+extends\s+\w+" -AllMatches
+	foreach ($m in $matches.Matches) {
+		[pscustomobject]@{
+			File = $_.Name
+			Declaration = $m.Value
+		}
+	}
+} | Format-Table -AutoSize
+```
+
+Field concrete verification:
+
+```powershell
+Get-ChildItem "src/MvpLounge/MeshFactory/Element/Field" -Filter "*.php" |
+ForEach-Object {
+	Select-String -Path $_.FullName -Pattern "extends\s+FactoryElementField(Input)?Abstract" |
+	ForEach-Object {
+		[pscustomobject]@{
+			File = $_.Filename
+			Match = $_.Line.Trim()
+		}
+	}
+} | Format-Table -AutoSize
+```
+
+Expected outcomes:
+
+- No non-field abstract chain exceeds two levels from `FactoryAbstract`.
+- Input-style field classes extend `FactoryElementFieldInputAbstract`.
+- Other field classes extend `FactoryElementFieldAbstract` unless there is a documented contract exception.
+
+## Array Style Check (Global)
+
+Rule: the last item in a PHP array must not end with a trailing comma.
+
+Quick check:
+
+```powershell
+$files = Get-ChildItem "src" -Recurse -Filter "*.php"
+$violations = @()
+foreach ($f in $files) {
+	$content = Get-Content -Raw $f.FullName
+	if ([regex]::IsMatch($content, ',\s*\r?\n\s*\];')) {
+		$violations += $f.FullName
+	}
+}
+$violations
+"Total violations: $($violations.Count)"
+```
+
+## Abstract Getter Contract Check
+
+Rules:
+
+- Do not use inline allowlist ternary expressions inside `getFactoryAttributePropertyCollection()`.
+- Required pattern is dedicated `get*` methods that accept `array $allowed` and return nullable typed values.
+
+Quick check for inline violations in abstract classes:
+
+```powershell
+Get-ChildItem "src/MvpLounge/MeshFactory/Abstract" -Filter "*.php" |
+ForEach-Object {
+	$hits = Select-String -Path $_.FullName -Pattern "in_array\(FactoryElementAttribute::.+\?\s*\$this->.+:\s*NULL" -AllMatches
+	if ($hits) {
+		[pscustomobject]@{
+			File = $_.Name
+			Count = $hits.Count
+		}
+	}
+} | Format-Table -AutoSize
+```
+
+Quick check for compliant getter signatures:
+
+```powershell
+Get-ChildItem "src/MvpLounge/MeshFactory/Abstract" -Filter "*.php" |
+ForEach-Object {
+	Select-String -Path $_.FullName -Pattern "public function getFactoryElement\w+\(array \$allowed\): \?\w+" |
+	ForEach-Object {
+		[pscustomobject]@{
+			File = $_.Filename
+			Line = $_.Line.Trim()
+		}
+	}
+} | Format-Table -AutoSize
+```
+
+## Concrete Override Audit
+
+Rules:
+
+- Concrete Element classes must not define local `__process_*` or `getFactoryElement*` methods when inherited abstract behavior is sufficient.
+- Exception cases are allowed only for class-specific behavior and must be explicitly listed in the approved exceptions registry inside the `Quality Check: Concrete Override Audit` task in `.vscode/tasks.json`.
+- Non-derivative concrete classes with unapproved local overrides are a quality failure.
+
+Run the enforcement task:
+
+```powershell
+Write-Host "Run task: Quality Check: Concrete Override Audit"
+```
+
+Maintenance rule for approved exceptions:
+
+- Keep each approved class mapped to explicit method names.
+- When adding a new exception, update both:
+	- `.vscode/tasks.json` approved exceptions registry
+	- `docs/architecture/AX-implementation-contracts.md` rationale for the exception
+
+## Sandbox Test-Type Standard
+
+Library sandbox suites are organized under `src/MvpLounge/Sandbox/{Library}/`.
+
+For MeshFactory, sandbox tests are split by test type under each domain folder in `src/MvpLounge/Sandbox/MeshFactory/`:
+
+- `Generic/`
+- `Factory/`
+- `Params/`
+
+Each domain should provide scripts per type using structured try/catch output.
+
+Within each strategy folder, scripts should be class-based:
+
+- `{FactoryElementClassName}-sandbox.php`
+
+The test-type scripts must follow the established sandbox style:
+
+- Standalone file per FactoryElement class and strategy.
+- Local assertion checks in each script.
+- Shared helper support is allowed for repeatable parameter and compile-path setup.
+- Params strategy flow and boundary details are canonical in `docs/tasks/TK-params-sandbox-template.md`.
+- Factory strategy invocation and boundary details are canonical in `docs/tasks/TK-factory-sandbox-template.md`.
+- Params strategy scripts must not pass scoped params through constructor arguments.
+- Dynamic attribute-to-method mapping (for example generated `add*` method names from attribute strings) is not allowed in Factory strategy sandbox examples.
+- Structured `ERROR_CLASS`, `ERROR_MESSAGE`, `ERROR_FILE`, and `ERROR_TRACE` output on failure.
+
+The scripts are written as explicit examples with per-class readability, while shared helper functions keep repeated setup small and consistent.
+
+## Factory Sandbox Template
+
+Factory strategy scaffold ownership and editable boundaries are defined in:
+
+- `docs/tasks/TK-factory-sandbox-template.md`
+
+Run the MeshFactory sandbox suite through the library runner:
+
+```powershell
+& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/MeshFactory/run-all.php"
+```
+
+## Params Sandbox Template
+
+Params strategy scaffold ownership and editable boundaries are defined in:
+
+- `docs/tasks/TK-params-sandbox-template.md`
+
+## Comprehensive Element Coverage Suites
+
+All concrete classes under `src/MvpLounge/MeshFactory/Element/` must be covered using domain-first sandbox organization.
+
+Required structure:
+
+- One sandbox folder per Element domain under `src/MvpLounge/Sandbox/MeshFactory/{Domain}/`
+- Three strategy folders in each domain folder:
+	- `Generic/`
+	- `Params/`
+	- `Factory/`
+
+- One class-based sandbox script per concrete element class in each strategy:
+	- `{FactoryElementClassName}-sandbox.php`
+
+Domain suites should auto-discover concrete classes in their matching Element domain and validate:
+
+- Generic strategy: default construction and core compile/render methods.
+- Params strategy: constructor-driven attribute injection plus compile/render methods.
+- Factory strategy: fluent/configure usage plus compile/render methods.
+
+The suites must remain warning-free and include compile pathway checks for:
+
+- `compileAsArray()`
+- `compile()`
+- `compileAsJson()` when implemented
+- `compleAsHtmlString()` when implemented
+- `string()` when implemented
+
+Parameter restriction rule:
+
+- Sandbox params must only use attributes from:
+	- `FactoryAbstract::$FactoryElementAttributes`
+	- the active class-chain `AllowedFactoryElementAttributes`
+
+Attribute ownership rule:
+
+- `FactoryElementAbstract::$AllowedFactoryElementAttributes` must remain empty.
+- Non-global attribute ownership must be declared downstream in the most specific abstract or concrete class that supports the rendered property.
+
+Canonical fluent setter rule:
+
+- For each allowed attribute, expose a canonical `add*` method using normalized attribute naming.
+- Legacy specialized methods are allowed only when a canonical alias exists (for example `addType()` delegating to a specialized implementation).
+
+Refactor trigger rule:
+
+- If more than five derived FactoryElement classes inherit `AllowedFactoryElementAttributes` they do not use, create or refine an intermediate `FactoryElement*Abstract` so opening-tag attribute exposure matches real usage.
+
+Quick run:
+
+```powershell
+& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/MeshFactory/run-all.php"
+```
+
+Expected terminal tail:
+
+- `All sandbox scripts executed.`
+
+## Source-of-Truth Research and Validation Method
+
+Use this method when updating abstract inheritance and element grouping.
+
+1. Source-of-truth research:
+	- Review MDN Elements reference:
+	  - `https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements`
+	- Confirm any element-specific behavior in the target MDN element pages.
+2. Inventory extraction from code:
+	- Parse all concrete declarations under `src/MvpLounge/MeshFactory/Element/`.
+	- Record domain folder, class name, and `extends` parent.
+3. Abstract alignment:
+	- Ensure each Element domain inherits from the matching `FactoryElement{ElementGroup}Abstract`.
+	- Keep special-purpose families (`Field`, `Form`, `Table`, `Link`) on their dedicated abstract chains.
+4. Validation sequence:
+	- Lint all abstract files:
+	  - `Get-ChildItem "src/MvpLounge/MeshFactory/Abstract" -Filter "*.php" | ForEach-Object { & "C:/xampp_devops_test/php/php.exe" -l $_.FullName }`
+	- Lint all element files:
+	  - `Get-ChildItem "src/MvpLounge/MeshFactory/Element" -Recurse -Filter "*.php" | ForEach-Object { & "C:/xampp_devops_test/php/php.exe" -l $_.FullName }`
+	- Run full sandbox suite:
+	  - `& "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/MvpLounge/Sandbox/MeshFactory/run-all.php"`
+5. Documentation update:
+	- Update `docs/architecture/AX-element-group-abstract-inventory.md` with the current mapping and counts.
+	- Update architecture family responsibilities when new abstract groups are introduced.
 
 ## Bulk No-BOM Rewrite Procedure
 

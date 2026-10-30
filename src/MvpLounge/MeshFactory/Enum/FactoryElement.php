@@ -2,6 +2,13 @@
 
 namespace MvpLounge\MeshFactory\Enum;
 
+
+require_once __DIR__ . '/../Constants.php';
+
+if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
+    throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+}
+
 enum FactoryElement: string
 {
 	case P = 'p';
@@ -12,6 +19,7 @@ enum FactoryElement: string
 	case H5 = 'h5';
 	case H6 = 'h6';
 	case HL = 'hl';
+	case HGROUP = 'hgroup';
 	case IMG = 'img';
 	case FIELDSET = 'fieldset';
 	case INPUT = 'input';
@@ -25,6 +33,7 @@ enum FactoryElement: string
 	case LABEL = 'label';
 	case ASIDE = 'aside';
 	case CONTENT = 'content';
+	case SLOT = 'slot';
 	case HEADER = 'header';
 	case FIGURE = 'figure';
 	case MAIN = 'main';
@@ -39,4 +48,107 @@ enum FactoryElement: string
 	case TABLE_HEAD = 'thead';
 	case TABLE_FOOT = 'tfoot';
 	case TABLE_BODY = 'tbody';
+	case ABBR = 'abbr';
+	case ACRONYM = 'acronym';
+	case ADDRESS = 'address';
+	case AREA = 'area';
+	case AUDIO = 'audio';
+	case B = 'b';
+	case BASE = 'base';
+	case BDI = 'bdi';
+	case BDO = 'bdo';
+	case BIG = 'big';
+	case BLOCKQUOTE = 'blockquote';
+	case BODY = 'body';
+	case BR = 'br';
+	case BUTTON = 'button';
+	case CANVAS = 'canvas';
+	case CAPTION = 'caption';
+	case CENTER = 'center';
+	case CITE = 'cite';
+	case CODE = 'code';
+	case COL = 'col';
+	case COLGROUP = 'colgroup';
+	case DATA = 'data';
+	case DATALIST = 'datalist';
+	case DD = 'dd';
+	case DEL = 'del';
+	case DETAILS = 'details';
+	case DFN = 'dfn';
+	case DIALOG = 'dialog';
+	case DIR = 'dir';
+	case DL = 'dl';
+	case DT = 'dt';
+	case EM = 'em';
+	case EMBED = 'embed';
+	case FENCEDFRAME = 'fencedframe';
+	case FIGCAPTION = 'figcaption';
+	case FONT = 'font';
+	case FRAME = 'frame';
+	case FRAMESET = 'frameset';
+	case GEOLOCATION = 'geolocation';
+	case HEAD = 'head';
+	case HR = 'hr';
+	case HTML = 'html';
+	case I = 'i';
+	case IFRAME = 'iframe';
+	case IMAGE = 'image';
+	case INS = 'ins';
+	case KBD = 'kbd';
+	case LEGEND = 'legend';
+	case LI = 'li';
+	case LINK = 'link';
+	case MAP = 'map';
+	case MARK = 'mark';
+	case MARQUEE = 'marquee';
+	case MATH = 'math';
+	case MENU = 'menu';
+	case MENUITEM = 'menuitem';
+	case META = 'meta';
+	case METER = 'meter';
+	case NOBR = 'nobr';
+	case NOEMBED = 'noembed';
+	case NOFRAMES = 'noframes';
+	case NOSCRIPT = 'noscript';
+	case OBJECT = 'object';
+	case OL = 'ol';
+	case OPTGROUP = 'optgroup';
+	case OUTPUT = 'output';
+	case PARAM = 'param';
+	case PICTURE = 'picture';
+	case PLAINTEXT = 'plaintext';
+	case PRE = 'pre';
+	case PROGRESS = 'progress';
+	case Q = 'q';
+	case RB = 'rb';
+	case RP = 'rp';
+	case RT = 'rt';
+	case RTC = 'rtc';
+	case RUBY = 'ruby';
+	case S = 's';
+	case SAMP = 'samp';
+	case SCRIPT = 'script';
+	case SEARCH = 'search';
+	case SELECTEDCONTENT = 'selectedcontent';
+	case SHADOW = 'shadow';
+	case SMALL = 'small';
+	case SOURCE = 'source';
+	case STRIKE = 'strike';
+	case STRONG = 'strong';
+	case STYLE = 'style';
+	case SUB = 'sub';
+	case SUMMARY = 'summary';
+	case SUP = 'sup';
+	case SVG = 'svg';
+	case TEMPLATE = 'template';
+	case TIME = 'time';
+	case TITLE = 'title';
+	case TRACK = 'track';
+	case TT = 'tt';
+	case U = 'u';
+	case UL = 'ul';
+	case VAR = 'var';
+	case VIDEO = 'video';
+	case WBR = 'wbr';
+	case XMP = 'xmp';
 }

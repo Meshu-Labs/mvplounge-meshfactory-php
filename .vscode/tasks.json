@@ -86,6 +86,20 @@
       }
     },
     {
+      "label": "Quality Check: Concrete Override Audit",
+      "type": "shell",
+      "command": "Write-Host '=== CONCRETE OVERRIDE AUDIT ===' -ForegroundColor Cyan; $root = 'c:\\_src\\app-mvplounge-meshfactory\\src\\MvpLounge\\MeshFactory\\Element'; $approved = @{ 'RadioInput' = @('__process_checked'); 'SelectOptions' = @('__process_selected','getFactoryElementSelectValue','getFactoryElementSelectSelected'); 'TableBody' = @('getFactoryElementTableCellspacing','getFactoryElementTableCellpadding','getFactoryElementTableBorder') }; $phpFiles = Get-ChildItem $root -Recurse -Filter '*.php' | Where-Object { $_.Name -ne 'index.php' }; $classExtends = @(); foreach ($f in $phpFiles) { $content = Get-Content -Raw $f.FullName; if ($content -match 'class\\s+(\\w+)\\s+extends\\s+(\\w+)') { $classExtends += [pscustomobject]@{ File = $f.FullName; Class = $matches[1]; Parent = $matches[2] } } }; $derivedParents = $classExtends.Parent | Sort-Object -Unique; $violations = @(); foreach ($f in $phpFiles) { $content = Get-Content -Raw $f.FullName; if ($content -match 'class\\s+(\\w+)\\s+extends\\s+(\\w+)') { $className = $matches[1]; $processMethods = [regex]::Matches($content, 'function\\s+(__process_\\w+)\\s*\\(') | ForEach-Object { $_.Groups[1].Value }; $getterMethods = [regex]::Matches($content, 'function\\s+(getFactoryElement\\w+)\\s*\\(') | ForEach-Object { $_.Groups[1].Value }; $localMethods = @((@($processMethods) + @($getterMethods)) | Sort-Object -Unique); if ($localMethods.Count -eq 0) { continue }; if ($derivedParents -contains $className) { continue }; $approvedMethods = @(); if ($approved.ContainsKey($className)) { $approvedMethods = $approved[$className] }; $unapproved = @($localMethods | Where-Object { $_ -notin $approvedMethods }); if ($unapproved.Count -gt 0) { $violations += [pscustomobject]@{ Class = $className; File = $f.FullName; Methods = ($unapproved -join ', ') } } } }; if ($violations.Count -gt 0) { Write-Host 'FAIL Unapproved concrete overrides detected:' -ForegroundColor Red; $violations | Format-Table -AutoSize; Write-Host ('Result: ' + $violations.Count + ' class violations') -ForegroundColor Red; exit 1 }; Write-Host 'PASS No unapproved concrete overrides detected.' -ForegroundColor Green; Write-Host ('Approved exceptions tracked: ' + $approved.Count) -ForegroundColor Yellow",
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
       "label": "Fix BOM Encoding: Current File",
       "type": "shell",
       "command": "$content = Get-Content -Path '${file}' -Raw; [System.IO.File]::WriteAllText('${file}', $content, [System.Text.UTF8Encoding]::new($false)); Write-Host 'PASS Encoding fixed: ${file}' -ForegroundColor Green",

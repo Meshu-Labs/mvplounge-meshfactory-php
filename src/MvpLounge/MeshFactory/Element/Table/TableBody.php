@@ -3,6 +3,13 @@
 namespace MvpLounge\MeshFactory\Element\Table;
 
 
+
+require_once __DIR__ . '/../../Constants.php';
+
+if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
+    throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+}
+
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 use MvpLounge\MeshFactory\Element\Table\TableRowBody;
 use MvpLounge\MeshFactory\Abstract\FactoryElementTableAbstract;
@@ -98,11 +105,12 @@ class TableBody extends FactoryElementTableAbstract
 		return
 			[
 				'open' => $this->getElementOpen(),
-				'thead' => $this->getHeader()->compile(),
-				'tbody' => $this->getRowBody()->compile(),
-				'tfoot' => $this->getFooter()->compile(),
+				'thead' => $this->getHeader()->compileAsArray(),
+				'tbody' => $this->getRowBody()->compileAsArray(),
+				'tfoot' => $this->getFooter()->compileAsArray(),
 				'close' => $this->getElementClose()
 			];
 	}
 }
+
 

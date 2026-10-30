@@ -36,19 +36,23 @@
             ".instructions.md",
             "/AGENTS.md",
             "/docs/",
-            "/sandbox/"
+            "/sandbox/",
+            "/src/MvpLounge/Sandbox/"
         ]
     },
     "archive": {
         "exclude": [
-            "/*",
-            "!/README.md",
-            "!/src/",
-            "/src/*",
-            "!/src/MvpLounge/",
-            "/src/MvpLounge/*",
-            "!/src/MvpLounge/MeshFactory/",
-            "!/src/MvpLounge/MeshFactory/**"
+            "/.github",
+            "/docs",
+            "/sandbox",
+            "/src/MvpLounge/Sandbox",
+            "/AGENTS.md",
+            "/.instructions.md",
+            "/.vscode",
+            "/.tmp",
+            "/vendor",
+            "/composer.lock",
+            "/.gitignore"
         ]
     },
     "config": {

@@ -2,6 +2,13 @@
 
 namespace MvpLounge\MeshFactory\Enum;
 
+
+require_once __DIR__ . '/../Constants.php';
+
+if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
+	throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+}
+
 enum FactoryElementAttribute: string
 {
 	case ID = 'id';
@@ -52,4 +59,31 @@ enum FactoryElementAttribute: string
 	case MEDIA = 'media';
 	case PING = 'ping';
 	case REFERRERPOLICY = 'referrerpolicy';
+	case AS = 'as';
+	case DATA = 'data';
+	case CONTENT = 'content';
+	case INTEGRITY = 'integrity';
+	case CROSSORIGIN = 'crossorigin';
+	case SRCSET = 'srcset';
+	case SIZES = 'sizes';
+	case LOADING = 'loading';
+	case DECODING = 'decoding';
+	case FETCHPRIORITY = 'fetchpriority';
+	case PRELOAD = 'preload';
+	case POSTER = 'poster';
+	case AUTOPLAY = 'autoplay';
+	case CONTROLS = 'controls';
+	case LOOP = 'loop';
+	case MUTED = 'muted';
+	case DISABLED = 'disabled';
+	case DEFAULT_STATE = 'default';
+	case FORM = 'form';
+	case MIN = 'min';
+	case MAX = 'max';
+	case STEP = 'step';
+	case HIGH = 'high';
+	case LOW = 'low';
+	case OPTIMUM = 'optimum';
+	case KIND = 'kind';
+	case SRCLANG = 'srclang';
 }

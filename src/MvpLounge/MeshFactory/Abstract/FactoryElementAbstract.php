@@ -2,45 +2,29 @@
 
 namespace MvpLounge\MeshFactory\Abstract;
 
+
+require_once __DIR__ . '/../Constants.php';
+
+if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
+	throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+}
+
 use MvpLounge\MeshFactory\Abstract\FactoryAbstract;
 use MvpLounge\MeshFactory\Enum\FactoryElement;
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
+use MvpLounge\MeshFactory\Enum\FactoryElementWindowTarget;
 
 
 require_once __DIR__ . '/FactoryAbstract.php';
 require_once __DIR__ . '/../Enum/FactoryElement.php';
 require_once __DIR__ . '/../Enum/FactoryElementAttribute.php';
+require_once __DIR__ . '/../Enum/FactoryElementWindowTarget.php';
 
 abstract class FactoryElementAbstract extends FactoryAbstract
 {
 
 	protected array $AllowedFactoryElements = [];
-	protected array $AllowedFactoryElementAttributes = [
-		FactoryElementAttribute::NAME,
-		FactoryElementAttribute::HREF,
-		FactoryElementAttribute::TARGET,
-		FactoryElementAttribute::REL,
-		FactoryElementAttribute::ACTION,
-		FactoryElementAttribute::METHOD,
-		FactoryElementAttribute::ENCTYPE,
-		FactoryElementAttribute::NOVALIDATE,
-		FactoryElementAttribute::PLACEHOLDER,
-		FactoryElementAttribute::TYPE,
-		FactoryElementAttribute::VALUE,
-		FactoryElementAttribute::ROWS,
-		FactoryElementAttribute::COLS,
-		FactoryElementAttribute::COLSPAN,
-		FactoryElementAttribute::ROWSPAN,
-		FactoryElementAttribute::SCOPE,
-		FactoryElementAttribute::HEADERS,
-		FactoryElementAttribute::ABBR,
-		FactoryElementAttribute::SELECTED,
-		FactoryElementAttribute::CHECKED,
-		FactoryElementAttribute::CELLSPACING,
-		FactoryElementAttribute::CELLPADDING,
-		FactoryElementAttribute::BORDER,
-		FactoryElementAttribute::ACCESS
-	];
+	protected array $AllowedFactoryElementAttributes = [];
 	protected ?FactoryElement $FactoryElement = NULL;
 	protected ?string $FactoryElementClose = NULL;
 	protected ?string $FactoryElementContent = '';
@@ -50,6 +34,10 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 	public function __construct($params = [])
 	{
 		parent::__construct($params);
+
+		if (is_countable($params) && array_key_exists('content', $params)) {
+			$this->__process_content($params);
+		}
 	}
 
 	protected function registerAllowedFactoryElementAttributeMap(): void
@@ -77,7 +65,7 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 		}
 	}
 
-	public function addContent($content, $overwrite = FALSE): FactoryElementAbstract
+	public function addContent($content, $overwrite = FALSE): static
 	{
 		if ($overwrite) {
 			$this->FactoryElementContent = $content;
@@ -89,7 +77,6 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 				return is_string($value) && trim($value) !== '';
 			})));
 		}
-
 		return $this;
 	}
 
@@ -110,7 +97,7 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 
 	}
 
-	public function addElement($element): FactoryElementAbstract
+	public function addElement($element): static
 	{
 		if ($element instanceof FactoryElement) {
 			$this->FactoryElement = $element;
@@ -137,7 +124,7 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 		}
 	}
 
-	public function addId($id): FactoryElementAbstract
+	public function addId($id): static
 	{
 		$this->FactoryId = $id;
 		return $this;
@@ -150,7 +137,7 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 		}
 	}
 
-	public function addName($name): FactoryElementAbstract
+	public function addName($name): static
 	{
 		$this->FactoryName = $name;
 		$this->FactoryElementName = $name;
@@ -173,9 +160,8 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 		}
 	}
 
-	public function addClass($class): FactoryElementAbstract
+	public function addClass($class): static
 	{
-
 		if (is_array($class)) {
 			foreach ($class as $_class) {
 				if (!$this->hasClass($_class)) {
@@ -205,9 +191,8 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 		}
 	}
 
-	public function addData($data = []): FactoryElementAbstract
+	public function addData($data = []): static
 	{
-
 		foreach ($data as $_data => $_data_var) {
 
 			if (!is_string($_data)) {
@@ -281,6 +266,7 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 
 		return [
 			'open' => $this->getElementOpen(),
+			'content' => $this->getElementContent(),
 			'close' => $this->getElementClose()
 		];
 	}
@@ -380,7 +366,7 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 
 		$_model = $this->getElementFactoryDefaultPropertiesFromParams($params);
 
-		foreach ($this->getAllowedFactoryElementAttributes() as $_attribute) {
+		foreach ($this->getFactoryElementAttributeValues() as $_attribute) {
 			if (array_key_exists($_attribute, $params)) {
 				$_model[$_attribute] = $this->getElementFactoryProperty($_attribute, $params[$_attribute]);
 			}
@@ -480,14 +466,14 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 			case 'target':
 				$_target = strtolower((string) $_value);
 				switch ($_target) {
-					case '_self':
-					case '_blank':
-					case '_parent':
-					case '_top':
+					case strtolower((string) FactoryElementWindowTarget::SELF->value):
+					case strtolower((string) FactoryElementWindowTarget::BLANK->value):
+					case strtolower((string) FactoryElementWindowTarget::PARENT->value):
+					case strtolower((string) FactoryElementWindowTarget::TOP->value):
 						$_value = $_target;
 						break;
 					default:
-						$_value = '_self';
+						$_value = strtolower((string) FactoryElementWindowTarget::SELF->value);
 						break;
 				}
 				return sprintf('target="%s"', $_value);
@@ -521,3 +507,4 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 	}
 
 }
+

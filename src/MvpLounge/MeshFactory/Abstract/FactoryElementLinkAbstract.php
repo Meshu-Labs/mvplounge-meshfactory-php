@@ -3,16 +3,31 @@
 namespace MvpLounge\MeshFactory\Abstract;
 
 
+
+require_once __DIR__ . '/../Constants.php';
+
+if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
+	throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+}
+
 use MvpLounge\MeshFactory\Enum\FactoryElement;
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
+use MvpLounge\MeshFactory\Enum\FactoryElementWindowTarget;
 
 require_once __DIR__ . '/FactoryElementAbstract.php';
 require_once __DIR__ . '/../Enum/FactoryElement.php';
 require_once __DIR__ . '/../Enum/FactoryElementAttribute.php';
+require_once __DIR__ . '/../Enum/FactoryElementWindowTarget.php';
 
 
 
 
+/**
+ * Anchor element support for hyperlink-specific attributes.
+ *
+ * MDN element reference:
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a
+ */
 class FactoryElementLinkAbstract extends FactoryElementAbstract
 {
 
@@ -31,12 +46,19 @@ class FactoryElementLinkAbstract extends FactoryElementAbstract
 	];
 
 	protected ?FactoryElement $FactoryElement = FactoryElement::ANCHOR;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#hreflang */
 	protected ?string $FactoryElementLinkHreflang = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#media */
 	protected ?string $FactoryElementLinkMedia = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#ping */
 	protected ?string $FactoryElementLinkPing = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#referrerpolicy */
 	protected ?string $FactoryElementLinkReferrerPolicy = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#type */
 	protected ?string $FactoryElementLinkType = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#href */
 	protected ?string $FactoryElementPath = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#rel */
 	protected ?string $FactoryElementRel = NULL;
 	protected ?string $FactoryElementSystemClass = 'generic-a';
 	protected ?string $FactoryElementTarget = NULL;
@@ -104,11 +126,10 @@ class FactoryElementLinkAbstract extends FactoryElementAbstract
 		}
 	}
 
-	public function addHref($href): FactoryElementLinkAbstract
+	public function addHref($href): static
 	{
 		$this->FactoryElementPath = $href;
 		return $this;
-
 	}
 
 	protected function __process_rel($params): void
@@ -119,9 +140,8 @@ class FactoryElementLinkAbstract extends FactoryElementAbstract
 		}
 	}
 
-	public function addRel($rel): FactoryElementLinkAbstract
+	public function addRel($rel): static
 	{
-
 		$this->FactoryElementRel = $rel;
 		return $this;
 	}
@@ -134,9 +154,8 @@ class FactoryElementLinkAbstract extends FactoryElementAbstract
 		}
 	}
 
-	public function addTitle($title): FactoryElementLinkAbstract
+	public function addTitle($title): static
 	{
-
 		$this->FactoryElementTitle = $title;
 		return $this;
 	}
@@ -148,51 +167,125 @@ class FactoryElementLinkAbstract extends FactoryElementAbstract
 
 			switch (strtolower($params['target'])) {
 				case 'self':
-				case '_self':
-					$this->addTarget('_SELF');
+				case FactoryElementWindowTarget::SELF->value:
+					$this->addTarget(FactoryElementWindowTarget::SELF->value);
 					break;
 				case 'blank':
-				case '_blank':
-					$this->addTarget('_BLANK');
+				case FactoryElementWindowTarget::BLANK->value:
+					$this->addTarget(FactoryElementWindowTarget::BLANK->value);
+					break;
+				case 'parent':
+				case FactoryElementWindowTarget::PARENT->value:
+					$this->addTarget(FactoryElementWindowTarget::PARENT->value);
+					break;
+				case 'top':
+				case FactoryElementWindowTarget::TOP->value:
+					$this->addTarget(FactoryElementWindowTarget::TOP->value);
 					break;
 			}
 		}
 	}
 
-	public function addTarget($target): FactoryElementLinkAbstract
+	public function addTarget($target): static
 	{
-
 		$this->FactoryElementTarget = $target;
 		return $this;
 	}
 
-	public function addHrefLang($hreflang): FactoryElementLinkAbstract
+	public function addHrefLang($hreflang): static
 	{
 		$this->FactoryElementLinkHreflang = is_null($hreflang) ? NULL : (string) $hreflang;
 		return $this;
 	}
 
-	public function addMedia($media): FactoryElementLinkAbstract
+	public function addMedia($media): static
 	{
 		$this->FactoryElementLinkMedia = is_null($media) ? NULL : (string) $media;
 		return $this;
 	}
 
-	public function addPing($ping): FactoryElementLinkAbstract
+	public function addPing($ping): static
 	{
 		$this->FactoryElementLinkPing = is_null($ping) ? NULL : (string) $ping;
 		return $this;
 	}
 
-	public function addReferrerPolicy($referrerPolicy): FactoryElementLinkAbstract
+	public function addReferrerPolicy($referrerPolicy): static
 	{
 		$this->FactoryElementLinkReferrerPolicy = is_null($referrerPolicy) ? NULL : (string) $referrerPolicy;
 		return $this;
 	}
 
-	public function addLinkType($type): FactoryElementLinkAbstract
+	public function addLinkType($type): static
 	{
 		$this->FactoryElementLinkType = is_null($type) ? NULL : (string) $type;
 		return $this;
 	}
+
+	public function addType($type): static
+	{
+		return $this->addLinkType($type);
+	}
+
+	public function getFactoryElementLinkHref(array $allowed): ?string
+	{
+		return in_array(FactoryElementAttribute::HREF->value, $allowed, TRUE) ? $this->FactoryElementPath : NULL;
+	}
+
+	public function getFactoryElementLinkTarget(array $allowed): ?string
+	{
+		return in_array(FactoryElementAttribute::TARGET->value, $allowed, TRUE) ? $this->FactoryElementTarget : NULL;
+	}
+
+	public function getFactoryElementLinkRel(array $allowed): ?string
+	{
+		return in_array(FactoryElementAttribute::REL->value, $allowed, TRUE) ? $this->FactoryElementRel : NULL;
+	}
+
+	public function getFactoryElementLinkHreflang(array $allowed): ?string
+	{
+		return in_array(FactoryElementAttribute::HREFLANG->value, $allowed, TRUE) ? $this->FactoryElementLinkHreflang : NULL;
+	}
+
+	public function getFactoryElementLinkMedia(array $allowed): ?string
+	{
+		return in_array(FactoryElementAttribute::MEDIA->value, $allowed, TRUE) ? $this->FactoryElementLinkMedia : NULL;
+	}
+
+	public function getFactoryElementLinkPing(array $allowed): ?string
+	{
+		return in_array(FactoryElementAttribute::PING->value, $allowed, TRUE) ? $this->FactoryElementLinkPing : NULL;
+	}
+
+	public function getFactoryElementLinkReferrerPolicy(array $allowed): ?string
+	{
+		return in_array(FactoryElementAttribute::REFERRERPOLICY->value, $allowed, TRUE) ? $this->FactoryElementLinkReferrerPolicy : NULL;
+	}
+
+	public function getFactoryElementLinkType(array $allowed): ?string
+	{
+		return in_array(FactoryElementAttribute::TYPE->value, $allowed, TRUE) ? $this->FactoryElementLinkType : NULL;
+	}
+
+	public function getFactoryAttributePropertyCollection(): array
+	{
+		$_allowed = $this->getAllowedFactoryElementAttributes();
+
+		return array_merge(
+			$this->getDefaultFactoryAttributePropertyCollection(),
+			[
+				'title' => $this->FactoryElementTitle ?? $this->FactoryTitle,
+				'href' => $this->getFactoryElementLinkHref($_allowed),
+				'target' => $this->getFactoryElementLinkTarget($_allowed),
+				'rel' => $this->getFactoryElementLinkRel($_allowed),
+				'hreflang' => $this->getFactoryElementLinkHreflang($_allowed),
+				'media' => $this->getFactoryElementLinkMedia($_allowed),
+				'ping' => $this->getFactoryElementLinkPing($_allowed),
+				'referrerpolicy' => $this->getFactoryElementLinkReferrerPolicy($_allowed),
+				'type' => $this->getFactoryElementLinkType($_allowed)
+			]
+		);
+	}
+
 }
+

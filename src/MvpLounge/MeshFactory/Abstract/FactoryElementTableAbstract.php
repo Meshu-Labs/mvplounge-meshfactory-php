@@ -3,6 +3,13 @@
 namespace MvpLounge\MeshFactory\Abstract;
 
 
+
+require_once __DIR__ . '/../Constants.php';
+
+if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
+    throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+}
+
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 use MvpLounge\MeshFactory\Enum\FactoryElement;
 
@@ -12,6 +19,12 @@ require_once __DIR__ . '/../Enum/FactoryElement.php';
 require_once __DIR__ . '/../Enum/FactoryElementAttribute.php';
 
 
+/**
+ * Table element support for tabular semantics and spanning attributes.
+ *
+ * MDN element reference:
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/table
+ */
 class FactoryElementTableAbstract extends FactoryElementAbstract
 {
 	protected array $AllowedFactoryElements = [
@@ -34,13 +47,21 @@ class FactoryElementTableAbstract extends FactoryElementAbstract
 		FactoryElementAttribute::HEADERS,
 		FactoryElementAttribute::ABBR
 	];
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/td#colspan */
 	protected $FactoryElementTableColspan = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/td#rowspan */
 	protected $FactoryElementTableRowspan = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#scope */
 	protected ?string $FactoryElementTableScope = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/td#headers */
 	protected ?string $FactoryElementTableHeaders = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#abbr */
 	protected ?string $FactoryElementTableAbbr = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/table#cellspacing */
 	protected $FactoryElementTableCellspacing = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/table#cellpadding */
 	protected $FactoryElementTableCellpadding = NULL;
+	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/table#border */
 	protected $FactoryElementTableBorder = NULL;
 
 	public function __construct($params = [])
@@ -104,64 +125,61 @@ class FactoryElementTableAbstract extends FactoryElementAbstract
 		}
 	}
 
-	public function addColspan($colspan): FactoryElementTableAbstract
+	public function addColspan($colspan): static
 	{
 		$this->FactoryElementTableColspan = $colspan;
 		return $this;
 	}
 
-	public function addRowspan($rowspan): FactoryElementTableAbstract
+	public function addRowspan($rowspan): static
 	{
 		$this->FactoryElementTableRowspan = $rowspan;
 		return $this;
 	}
 
-	public function addScope($scope): FactoryElementTableAbstract
+	public function addScope($scope): static
 	{
 		if (is_null($scope)) {
 			$this->FactoryElementTableScope = NULL;
 			return $this;
 		}
-
 		$this->FactoryElementTableScope = (string) $scope;
 		return $this;
 	}
 
-	public function addHeaders($headers): FactoryElementTableAbstract
+	public function addHeaders($headers): static
 	{
 		if (is_null($headers)) {
 			$this->FactoryElementTableHeaders = NULL;
 			return $this;
 		}
-
 		$this->FactoryElementTableHeaders = (string) $headers;
 		return $this;
 	}
 
-	public function addAbbr($abbr): FactoryElementTableAbstract
+	public function addAbbr($abbr): static
 	{
 		if (is_null($abbr)) {
 			$this->FactoryElementTableAbbr = NULL;
 			return $this;
 		}
-
 		$this->FactoryElementTableAbbr = (string) $abbr;
 		return $this;
 	}
 
-	public function addCellspacing($cellspacing): FactoryElementTableAbstract
+	public function addCellspacing($cellspacing): static
 	{
 		$this->FactoryElementTableCellspacing = $cellspacing;
 		return $this;
 	}
 
-	public function addCellpadding($cellpadding): FactoryElementTableAbstract
+	public function addCellpadding($cellpadding): static
 	{
 		$this->FactoryElementTableCellpadding = $cellpadding;
 		return $this;
 	}
 
-	public function addBorder($border): FactoryElementTableAbstract
+	public function addBorder($border): static
 	{
 		$this->FactoryElementTableBorder = $border;
 		return $this;
@@ -205,8 +223,8 @@ class FactoryElementTableAbstract extends FactoryElementAbstract
 
 		switch ($_e) {
 			case 'table':
-				$_model['cellspacing'] = $this->getElementFactoryProperty('cellspacing', $params['spacing'] ?? NULL);
-				$_model['cellpadding'] = $this->getElementFactoryProperty('cellpadding', $params['padding'] ?? NULL);
+				$_model['cellspacing'] = $this->getElementFactoryProperty('cellspacing', $params['cellspacing'] ?? NULL);
+				$_model['cellpadding'] = $this->getElementFactoryProperty('cellpadding', $params['cellpadding'] ?? NULL);
 				$_model['border'] = $this->getElementFactoryProperty('border', $params['border'] ?? NULL);
 				break;
 			case 'td':
@@ -285,3 +303,4 @@ class FactoryElementTableAbstract extends FactoryElementAbstract
 		return in_array(FactoryElementAttribute::BORDER->value, $allowed, TRUE) ? $this->FactoryElementTableBorder : NULL;
 	}
 }
+

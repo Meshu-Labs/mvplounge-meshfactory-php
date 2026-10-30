@@ -12,8 +12,16 @@ Examples:
 - FactoryElementTableAbstract
 - FactoryElementFormAbstract
 - FactoryElementFieldAbstract
-- FactoryElementHtml5Abstract
+- FactoryElementFieldInputAbstract
+- FactoryElementHtmlAbstract
 - FactoryElementLinkAbstract
+- FactoryElementMetaDataAbstract
+- FactoryElementTextContentAbstract
+- FactoryElementEmbeddedContentAbstract
+
+Domain-level abstract assignment is tracked in:
+
+- `docs/architecture/AX-element-group-abstract-inventory.md`
 
 ## Namespace Organization
 
@@ -26,6 +34,11 @@ All abstract factory base classes belong in:
 - Shared logic belongs in the nearest valid base class.
 - Concrete classes should remain small and direct.
 - Prefer inheritance over repeated conditional logic.
+
+## Abstraction Depth Rule
+
+- Default: maximum of two abstract levels from FactoryAbstract.
+- Field exception: up to four abstract levels from FactoryAbstract.
 
 ## Structural Preservation Rules
 
