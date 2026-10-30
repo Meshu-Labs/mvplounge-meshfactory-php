@@ -22,11 +22,11 @@ try {
         if ($factory->addClass('generic-' . strtolower($label)) !== $factory) {
             throw new RuntimeException($label . ' addClass() must remain fluent.');
         }
-        $html = $factory->compleAsHtmlString();
-        echo '-- ' . $label . ' compleAsHtmlString() --' . PHP_EOL;
+        $html = $factory->compileAsHtmlString();
+        echo '-- ' . $label . ' compileAsHtmlString() --' . PHP_EOL;
         var_dump($html);
         if (!is_string($html)) {
-            throw new RuntimeException($label . ' compleAsHtmlString() must return a string.');
+            throw new RuntimeException($label . ' compileAsHtmlString() must return a string.');
         }
     }
 

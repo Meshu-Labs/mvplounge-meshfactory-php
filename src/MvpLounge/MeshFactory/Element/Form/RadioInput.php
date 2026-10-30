@@ -82,7 +82,7 @@ class RadioInput extends FactoryElementFieldInputAbstract
 
 				echo sprintf(
 					'<div class="radio-wrarrer">%s%s</div>',
-					$_radio->getElementFieldLabel(),
+					$_radio->getElementFieldLabelOpen(),
 					$_radio->addClass($this->FactoryElementUserClass)->addName($this->FactoryElementName)->getElementOpen()
 				);
 			}
@@ -106,7 +106,7 @@ class RadioInput extends FactoryElementFieldInputAbstract
 		if (count($this->FactoryElementFieldCollection) > 0) {
 			foreach ($this->FactoryElementFieldCollection as $_radio_index => $_radio) {
 				$_radios[$_radio_index] = [
-					'label' => $_radio->getElementFieldLabel(),
+					'label' => $_radio->getElementFieldLabelOpen(),
 					'field' => $_radio->addClass($this->FactoryElementUserClass)->addName($this->FactoryElementName)->getElementOpen()
 				];
 			}

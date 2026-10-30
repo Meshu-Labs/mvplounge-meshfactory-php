@@ -40,9 +40,10 @@ class PasswordInput extends FactoryElementFieldInputAbstract
 	public function build()
 	{
 		$this->getElementFieldset()->buildElementOpen();
-		$this->buildElementLabel();
+		$this->buildElementLabelOpen();
 		$this->buildElementOpen();
 		$this->buildElementClose();
+		$this->buildElementLabelClose();
 		$this->getElementFieldset()->buildElementClose();
 
 	}

@@ -28,11 +28,25 @@ try {
 
     foreach ($factories as $label => $factory) {
         $assert($factory->addClass('generic-' . strtolower($label)) === $factory, $label . ' addClass() must remain fluent.');
-        $html = $factory->compleAsHtmlString();
-        echo '-- ' . $label . ' compleAsHtmlString() --' . PHP_EOL;
+        $html = $factory->compileAsHtmlString();
+        echo '-- ' . $label . ' compileAsHtmlString() --' . PHP_EOL;
         var_dump($html);
-        $assert(is_string($html), $label . ' compleAsHtmlString() must return a string.');
+        $assert(is_string($html), $label . ' compileAsHtmlString() must return a string.');
     }
+
+    foreach (['_SELF' => '_self', '_BLANK' => '_blank', '_PARENT' => '_parent', '_TOP' => '_top'] as $target => $expected) {
+        $form = (new \MvpLounge\MeshFactory\Element\Form\PostForm())->addTarget($target);
+        $assert(str_contains($form->getElementOpen(), 'target="' . $expected . '"'), 'Form targets must render in lowercase: ' . $target);
+    }
+
+    $form = new \MvpLounge\MeshFactory\Element\Form\PostForm();
+    $form->addHiddenPostField(['name' => 'token', 'value' => 'sample']);
+    $form->addFormSectionFields('main', 'email', (new \MvpLounge\MeshFactory\Element\Field\TextInput())->addName('email')->addLabel('Email'));
+    $form->addFormSubmitButton('Submit');
+    $prepared = $form->prepare();
+    $assert(str_contains(implode('', $prepared['hidden']), 'name="token"'), 'The form must render its hidden field.');
+    $assert(str_contains($prepared['fields']['main']['email'], '<label>Email<input'), 'The form must render the field inside its label.');
+    $assert(str_contains($prepared['buttons'], 'Submit'), 'The form must render its submit button.');
 
     echo 'PASS assertions' . PHP_EOL;
 } catch (Throwable $e) {

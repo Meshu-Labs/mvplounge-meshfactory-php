@@ -59,9 +59,10 @@ class TextInput extends FactoryElementFieldInputAbstract
 	public function build()
 	{
 		$this->getElementFieldset()->buildElementOpen();
-		$this->buildElementLabel();
+		$this->buildElementLabelOpen();
 		$this->buildElementOpen();
 		$this->buildElementClose();
+		$this->buildElementLabelClose();
 		$this->getElementFieldset()->buildElementClose();
 
 	}
@@ -71,7 +72,8 @@ class TextInput extends FactoryElementFieldInputAbstract
 
 		return [
 			'field' => $this->getElementOpen(),
-			'label' => $this->getElementFieldLabel(),
+			'labelOpen' => $this->getElementFieldLabelOpen(),
+			'labelClose' => $this->getElementFieldLabelClose(),
 			'fieldset' => $this->getElementFieldset()->compileAsArray()
 		];
 	}

@@ -466,14 +466,14 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 			case 'target':
 				$_target = strtolower((string) $_value);
 				switch ($_target) {
-					case FactoryElementWindowTarget::SELF->value:
-					case FactoryElementWindowTarget::BLANK->value:
-					case FactoryElementWindowTarget::PARENT->value:
-					case FactoryElementWindowTarget::TOP->value:
+					case strtolower((string) FactoryElementWindowTarget::SELF->value):
+					case strtolower((string) FactoryElementWindowTarget::BLANK->value):
+					case strtolower((string) FactoryElementWindowTarget::PARENT->value):
+					case strtolower((string) FactoryElementWindowTarget::TOP->value):
 						$_value = $_target;
 						break;
 					default:
-						$_value = FactoryElementWindowTarget::SELF->value;
+						$_value = strtolower((string) FactoryElementWindowTarget::SELF->value);
 						break;
 				}
 				return sprintf('target="%s"', $_value);

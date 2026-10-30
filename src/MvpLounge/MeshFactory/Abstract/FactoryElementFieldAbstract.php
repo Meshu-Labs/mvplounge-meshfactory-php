@@ -348,9 +348,14 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		return $this->FactoryElementFieldType?->value;
 	}
 
-	public function getElementFieldLabel(): ?string
+	public function getElementFieldLabelOpen(): ?string
 	{
-		return $this->FactoryElementFieldLabel ? sprintf('<label>%s</label>', $this->FactoryElementFieldLabel) : NULL;
+		return $this->FactoryElementFieldLabel ? sprintf('<label>%s', $this->FactoryElementFieldLabel) : NULL;
+	}
+
+	public function getElementFieldLabelClose(): ?string
+	{
+		return $this->FactoryElementFieldLabel ? '</label>' : NULL;
 	}
 
 	public function getElementFieldLength(): ?string
@@ -384,8 +389,9 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 	public function compileAsHtmlString(): ?string
 	{
 		return $this->getElementFieldset()->getElementOpen()
-			. $this->getElementFieldLabel()
+			. $this->getElementFieldLabelOpen()
 			. $this->getElementOpen()
+			. $this->getElementFieldLabelClose()
 			. $this->getElementFieldset()->getElementClose();
 	}
 
@@ -394,9 +400,14 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		return $this->compileAsHtmlString();
 	}
 
-	public function buildElementLabel()
+	public function buildElementLabelOpen()
 	{
-		echo $this->getElementFieldLabel() . "\n\t";
+		echo $this->getElementFieldLabelOpen() . "\n\t";
+	}
+
+	public function buildElementLabelClose()
+	{
+		echo $this->getElementFieldLabelClose() . "\n\t";
 	}
 
 }

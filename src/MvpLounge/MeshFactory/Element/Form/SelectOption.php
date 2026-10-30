@@ -15,7 +15,7 @@ use MvpLounge\MeshFactory\Enum\FactoryElementPrimativeType;
 use MvpLounge\MeshFactory\Abstract\FactoryElementFieldAbstract;
 
 
-require_once __DIR__ . '/../Field/SelectOptions.php';
+require_once __DIR__ . '/SelectOptions.php';
 require_once __DIR__ . '/../../Abstract/FactoryElementFieldAbstract.php';
 require_once __DIR__ . '/../../Enum/FactoryElementAttribute.php';
 require_once __DIR__ . '/../../Enum/FactoryElementPrimativeType.php';
@@ -54,10 +54,11 @@ class SelectOption extends FactoryElementFieldAbstract
 	public function build()
 	{
 		$this->getElementFieldset()->buildElementOpen();
-		$this->buildElementLabel();
+		$this->buildElementLabelOpen();
 		$this->buildElementOpen();
 		$this->buildElementOptions();
 		$this->buildElementClose();
+		$this->buildElementLabelClose();
 		$this->getElementFieldset()->buildElementClose();
 
 	}
@@ -118,10 +119,11 @@ class SelectOption extends FactoryElementFieldAbstract
 	public function compileAsHtmlString(): ?string
 	{
 		return $this->getElementFieldset()->getElementOpen()
-			. $this->getElementFieldLabel()
+			. $this->getElementFieldLabelOpen()
 			. $this->getElementOpen()
 			. $this->getElementFieldOptions(TRUE)
 			. $this->getElementClose()
+			. $this->getElementFieldLabelClose()
 			. $this->getElementFieldset()->getElementClose();
 	}
 

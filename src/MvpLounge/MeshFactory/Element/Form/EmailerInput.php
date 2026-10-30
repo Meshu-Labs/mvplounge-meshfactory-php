@@ -6,7 +6,7 @@ namespace MvpLounge\MeshFactory\Element\Field;
 require_once __DIR__ . '/../../Constants.php';
 
 if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
-    throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+	throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
 }
 
 use MvpLounge\MeshFactory\Enum\FactoryElement;
@@ -15,7 +15,7 @@ use MvpLounge\MeshFactory\Enum\FactoryElementFieldType;
 
 
 
-require_once __DIR__ . '/../Field/TextInput.php';
+require_once __DIR__ . '/TextInput.php';
 require_once __DIR__ . '/../../Enum/FactoryElementAttribute.php';
 require_once __DIR__ . '/../../Enum/FactoryElementFieldType.php';
 

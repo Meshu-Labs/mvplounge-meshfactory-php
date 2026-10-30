@@ -274,7 +274,7 @@ if (!function_exists('mfCollectOutputs')) {
         $arrayData = method_exists($factory, 'compileAsArray') ? $factory->compileAsArray() : null;
         $compileData = method_exists($factory, 'compile') ? $factory->compile() : null;
         $jsonData = method_exists($factory, 'compileAsJson') ? $factory->compileAsJson() : null;
-        $htmlData = method_exists($factory, 'compleAsHtmlString') ? $factory->compleAsHtmlString() : null;
+        $htmlData = method_exists($factory, 'compileAsHtmlString') ? $factory->compileAsHtmlString() : null;
         $stringData = method_exists($factory, 'string') ? $factory->string() : null;
 
         return [
@@ -360,7 +360,7 @@ if (!function_exists('mfPrintRenderableOutputs')) {
             'arrayData' => 'compileAsArray()',
             'compileData' => 'compile()',
             'jsonData' => 'compileAsJson()',
-            'htmlData' => 'compleAsHtmlString()',
+            'htmlData' => 'compileAsHtmlString()',
             'stringData' => 'string()'
         ];
 

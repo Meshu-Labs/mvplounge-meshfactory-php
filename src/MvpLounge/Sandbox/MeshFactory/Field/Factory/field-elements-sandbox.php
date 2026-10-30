@@ -56,7 +56,7 @@ try {
         },
         'SelectOption' => static function () {
             $factory = new \MvpLounge\MeshFactory\Element\Field\SelectOption();
-            $factory->addName('select_name')->addValue(2)->addAccess(true)->addOrtions([1 => 'One', 2 => 'Two']);
+            $factory->addName('select_name')->addValue(2)->addAccess(true)->addOptions([1 => 'One', 2 => 'Two']);
             return $factory;
         },
         'SelectOptions' => static function () {
@@ -68,10 +68,10 @@ try {
 
     foreach ($cases as $label => $builder) {
         $factory = $builder();
-        echo '-- ' . $label . ' compleAsHtmlString() --' . PHP_EOL;
-        $html = $factory->compleAsHtmlString();
+        echo '-- ' . $label . ' compileAsHtmlString() --' . PHP_EOL;
+        $html = $factory->compileAsHtmlString();
         var_dump($html);
-        $assert(is_string($html) && $html !== '', $label . ' compleAsHtmlString() must return rendered markup.');
+        $assert(is_string($html) && $html !== '', $label . ' compileAsHtmlString() must return rendered markup.');
     }
 
     echo 'PASS assertions' . PHP_EOL;

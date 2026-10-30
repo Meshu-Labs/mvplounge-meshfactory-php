@@ -149,7 +149,7 @@ try {
             //
     
             $factory = new \MvpLounge\MeshFactory\Element\Field\SelectOption($params);
-            $factory->addOrtions([1 => 'One', 2 => 'Two']);
+            $factory->addOptions([1 => 'One', 2 => 'Two']);
             return [$factory, array_merge($globalExpected($suffix), ['name="select_name"', 'value="2"', 'enabled', 'selected', '>Two<'])];
         },
         'SelectOptions' => static function () use ($globalParams, $globalExpected): array {
@@ -165,10 +165,10 @@ try {
 
     foreach ($cases as $label => $builder) {
         [$factory, $expected] = $builder();
-        $html = $factory->compleAsHtmlString();
-        echo '-- ' . $label . ' compleAsHtmlString() --' . PHP_EOL;
+        $html = $factory->compileAsHtmlString();
+        echo '-- ' . $label . ' compileAsHtmlString() --' . PHP_EOL;
         var_dump($html);
-        $assert(is_string($html) && $html !== '', $label . ' compleAsHtmlString() must return rendered markup.');
+        $assert(is_string($html) && $html !== '', $label . ' compileAsHtmlString() must return rendered markup.');
         $assertContainsAll($label, $html, $expected);
     }
 
