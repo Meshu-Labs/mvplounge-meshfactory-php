@@ -40,7 +40,7 @@
     },
     "archive": {
         "exclude": [
-            "/*",
+            "/**",
             "!/README.md",
             "/src/*",
             "!/src/Labs/",
