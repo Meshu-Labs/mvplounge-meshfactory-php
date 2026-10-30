@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../src\MvpLounge\MeshFactory\Element\Field\SelectOption.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 echo '=== SelectOption Sandbox ===' . PHP_EOL;
 

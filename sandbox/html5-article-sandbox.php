@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../src\MvpLounge\MeshFactory\Element\Html5\Article.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 echo '=== Article Sandbox ===' . PHP_EOL;
 
 try {
-    $factory = new \MvpLounge\MeshFactory\Element\Html5\Article([]);
+    $factory = new \MvpLounge\MeshFactory\Element\SectioningContent\Article([]);
 
     if (method_exists($factory, 'getFactoryModel')) {
         echo '-- getFactoryModel() --' . PHP_EOL;

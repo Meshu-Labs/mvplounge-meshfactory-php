@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../src\MvpLounge\MeshFactory\Element\Table\DataTableBody.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 echo '=== DataTableBody Sandbox ===' . PHP_EOL;
 

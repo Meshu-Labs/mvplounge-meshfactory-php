@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../src\MvpLounge\MeshFactory\Element\Table\TableRow.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 echo '=== TableRow Sandbox ===' . PHP_EOL;
 

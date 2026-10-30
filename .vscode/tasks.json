@@ -18,7 +18,7 @@
     {
       "label": "Quality Check: Form Domain",
       "type": "shell",
-      "command": "Write-Host '=== FORM DOMAIN QUALITY CHECK ===' -ForegroundColor Cyan; $failed = 0; Get-ChildItem 'c:\\_src\\app-mvplounge-meshfactory\\src\\MvpLounge\\MeshFactory\\Element\\Form' -Filter '*.php' | ForEach-Object { $lintResult = & 'C:/xampp_devops_test/php/php.exe' -l $_.FullName 2>&1; $status = if ($lintResult -match 'No syntax errors') { 'PASS' } else { 'FAIL'; $failed++ }; Write-Host \"$status $($_.Name)\" }; Write-Host \"`nResult: $($failed) files failed\" -ForegroundColor $(if ($failed -gt 0) { 'Red' } else { 'Green' })",
+      "command": "Write-Host '=== FORM DOMAIN QUALITY CHECK ===' -ForegroundColor Cyan; $failed = 0; Get-ChildItem 'c:\\_src\\app-mvplounge-meshfactory\\src\\Labs\\MeshFactory\\Element\\Form' -Filter '*.php' | ForEach-Object { $lintResult = & 'C:/xampp_devops_test/php/php.exe' -l $_.FullName 2>&1; $status = if ($lintResult -match 'No syntax errors') { 'PASS' } else { 'FAIL'; $failed++ }; Write-Host \"$status $($_.Name)\" }; Write-Host \"`nResult: $($failed) files failed\" -ForegroundColor $(if ($failed -gt 0) { 'Red' } else { 'Green' })",
       "group": {
         "kind": "test",
         "isDefault": false
@@ -32,7 +32,7 @@
     {
       "label": "Quality Check: Field Domain",
       "type": "shell",
-      "command": "Write-Host '=== FIELD DOMAIN QUALITY CHECK ===' -ForegroundColor Cyan; $failed = 0; Get-ChildItem 'c:\\_src\\app-mvplounge-meshfactory\\src\\MvpLounge\\MeshFactory\\Element\\Field' -Filter '*.php' | ForEach-Object { $lintResult = & 'C:/xampp_devops_test/php/php.exe' -l $_.FullName 2>&1; $status = if ($lintResult -match 'No syntax errors') { 'PASS' } else { 'FAIL'; $failed++ }; Write-Host \"$status $($_.Name)\" }; Write-Host \"`nResult: $($failed) files failed\" -ForegroundColor $(if ($failed -gt 0) { 'Red' } else { 'Green' })",
+      "command": "Write-Host '=== FIELD DOMAIN QUALITY CHECK ===' -ForegroundColor Cyan; $failed = 0; Get-ChildItem 'c:\\_src\\app-mvplounge-meshfactory\\src\\Labs\\MeshFactory\\Element\\Form' -Filter '*.php' | ForEach-Object { $lintResult = & 'C:/xampp_devops_test/php/php.exe' -l $_.FullName 2>&1; $status = if ($lintResult -match 'No syntax errors') { 'PASS' } else { 'FAIL'; $failed++ }; Write-Host \"$status $($_.Name)\" }; Write-Host \"`nResult: $($failed) files failed\" -ForegroundColor $(if ($failed -gt 0) { 'Red' } else { 'Green' })",
       "group": {
         "kind": "test",
         "isDefault": false
@@ -46,7 +46,7 @@
     {
       "label": "Quality Check: Table Domain",
       "type": "shell",
-      "command": "Write-Host '=== TABLE DOMAIN QUALITY CHECK ===' -ForegroundColor Cyan; $failed = 0; Get-ChildItem 'c:\\_src\\app-mvplounge-meshfactory\\src\\MvpLounge\\MeshFactory\\Element\\Table' -Filter '*.php' | ForEach-Object { $lintResult = & 'C:/xampp_devops_test/php/php.exe' -l $_.FullName 2>&1; $status = if ($lintResult -match 'No syntax errors') { 'PASS' } else { 'FAIL'; $failed++ }; Write-Host \"$status $($_.Name)\" }; Write-Host \"`nResult: $($failed) files failed\" -ForegroundColor $(if ($failed -gt 0) { 'Red' } else { 'Green' })",
+      "command": "Write-Host '=== TABLE DOMAIN QUALITY CHECK ===' -ForegroundColor Cyan; $failed = 0; Get-ChildItem 'c:\\_src\\app-mvplounge-meshfactory\\src\\Labs\\MeshFactory\\Element\\Table' -Filter '*.php' | ForEach-Object { $lintResult = & 'C:/xampp_devops_test/php/php.exe' -l $_.FullName 2>&1; $status = if ($lintResult -match 'No syntax errors') { 'PASS' } else { 'FAIL'; $failed++ }; Write-Host \"$status $($_.Name)\" }; Write-Host \"`nResult: $($failed) files failed\" -ForegroundColor $(if ($failed -gt 0) { 'Red' } else { 'Green' })",
       "group": {
         "kind": "test",
         "isDefault": false
@@ -60,7 +60,7 @@
     {
       "label": "Quality Check: Links Domain",
       "type": "shell",
-      "command": "Write-Host '=== LINKS DOMAIN QUALITY CHECK ===' -ForegroundColor Cyan; $failed = 0; Get-ChildItem 'c:\\_src\\app-mvplounge-meshfactory\\src\\MvpLounge\\MeshFactory\\Element\\Links' -Filter '*.php' | ForEach-Object { $lintResult = & 'C:/xampp_devops_test/php/php.exe' -l $_.FullName 2>&1; $status = if ($lintResult -match 'No syntax errors') { 'PASS' } else { 'FAIL'; $failed++ }; Write-Host \"$status $($_.Name)\" }; Write-Host \"`nResult: $($failed) files failed\" -ForegroundColor $(if ($failed -gt 0) { 'Red' } else { 'Green' })",
+      "command": "Write-Host '=== LINKS DOMAIN QUALITY CHECK ===' -ForegroundColor Cyan; $failed = 0; Get-ChildItem 'c:\\_src\\app-mvplounge-meshfactory\\src\\Labs\\MeshFactory\\Element\\Links' -Filter '*.php' | ForEach-Object { $lintResult = & 'C:/xampp_devops_test/php/php.exe' -l $_.FullName 2>&1; $status = if ($lintResult -match 'No syntax errors') { 'PASS' } else { 'FAIL'; $failed++ }; Write-Host \"$status $($_.Name)\" }; Write-Host \"`nResult: $($failed) files failed\" -ForegroundColor $(if ($failed -gt 0) { 'Red' } else { 'Green' })",
       "group": {
         "kind": "test",
         "isDefault": false
@@ -74,7 +74,21 @@
     {
       "label": "Quality Check: All Domains",
       "type": "shell",
-      "command": "Write-Host '=== COMPLETE QUALITY CHECK ===' -ForegroundColor Cyan; $domains = @('Abstract','Field','Form','Links','Table'); $totalFailed = 0; foreach ($domain in $domains) { Write-Host ''; Write-Host ($domain + ' Domain:') -ForegroundColor Yellow; if ($domain -eq 'Abstract') { $path = 'c:\\_src\\app-mvplounge-meshfactory\\src\\MvpLounge\\MeshFactory\\Abstract' } else { $path = Join-Path 'c:\\_src\\app-mvplounge-meshfactory\\src\\MvpLounge\\MeshFactory\\Element' $domain }; if (Test-Path $path) { $failed = 0; Get-ChildItem $path -Filter '*.php' | ForEach-Object { $lintResult = & 'C:/xampp_devops_test/php/php.exe' -l $_.FullName 2>&1; if ($lintResult -notmatch 'No syntax errors') { Write-Host ('  FAIL ' + $_.Name); $failed++; $totalFailed++ } else { Write-Host ('  PASS ' + $_.Name) } }; $count = (Get-ChildItem $path -Filter '*.php').Count; Write-Host ('  Result: ' + $count + ' files, ' + $failed + ' failed') } }; Write-Host ''; Write-Host '=== FINAL RESULT ===' -ForegroundColor $(if ($totalFailed -gt 0) { 'Red' } else { 'Green' }); Write-Host ('Total Failed: ' + $totalFailed) -ForegroundColor $(if ($totalFailed -gt 0) { 'Red' } else { 'Green' })",
+      "command": "Write-Host '=== COMPLETE QUALITY CHECK ===' -ForegroundColor Cyan; $domains = @('Abstract','Field','Form','Links','Table'); $totalFailed = 0; foreach ($domain in $domains) { Write-Host ''; Write-Host ($domain + ' Domain:') -ForegroundColor Yellow; if ($domain -eq 'Abstract') { $path = 'c:\\_src\\app-mvplounge-meshfactory\\src\\Labs\\MeshFactory\\Abstract' } else { if ($domain -eq 'Field') { $domain = 'Form' }; $path = Join-Path 'c:\\_src\\app-mvplounge-meshfactory\\src\\Labs\\MeshFactory\\Element' $domain }; if (Test-Path $path) { $failed = 0; Get-ChildItem $path -Filter '*.php' | ForEach-Object { $lintResult = & 'C:/xampp_devops_test/php/php.exe' -l $_.FullName 2>&1; if ($lintResult -notmatch 'No syntax errors') { Write-Host ('  FAIL ' + $_.Name); $failed++; $totalFailed++ } else { Write-Host ('  PASS ' + $_.Name) } }; $count = (Get-ChildItem $path -Filter '*.php').Count; Write-Host ('  Result: ' + $count + ' files, ' + $failed + ' failed') } }; Write-Host ''; Write-Host '=== FINAL RESULT ===' -ForegroundColor $(if ($totalFailed -gt 0) { 'Red' } else { 'Green' }); Write-Host ('Total Failed: ' + $totalFailed) -ForegroundColor $(if ($totalFailed -gt 0) { 'Red' } else { 'Green' })",
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Quality Check: Concrete Override Audit",
+      "type": "shell",
+      "command": "Write-Host '=== CONCRETE OVERRIDE AUDIT ===' -ForegroundColor Cyan; $root = 'c:\\_src\\app-mvplounge-meshfactory\\src\\Labs\\MeshFactory\\Element'; $approved = @{ 'RadioInput' = @('__process_checked'); 'SelectOptions' = @('__process_selected','getFactoryElementSelectValue','getFactoryElementSelectSelected'); 'TableBody' = @('getFactoryElementTableCellspacing','getFactoryElementTableCellpadding','getFactoryElementTableBorder') }; $phpFiles = Get-ChildItem $root -Recurse -Filter '*.php' | Where-Object { $_.Name -ne 'index.php' }; $classExtends = @(); foreach ($f in $phpFiles) { $content = Get-Content -Raw $f.FullName; if ($content -match 'class\\s+(\\w+)\\s+extends\\s+(\\w+)') { $classExtends += [pscustomobject]@{ File = $f.FullName; Class = $matches[1]; Parent = $matches[2] } } }; $derivedParents = $classExtends.Parent | Sort-Object -Unique; $violations = @(); foreach ($f in $phpFiles) { $content = Get-Content -Raw $f.FullName; if ($content -match 'class\\s+(\\w+)\\s+extends\\s+(\\w+)') { $className = $matches[1]; $processMethods = [regex]::Matches($content, 'function\\s+(__process_\\w+)\\s*\\(') | ForEach-Object { $_.Groups[1].Value }; $getterMethods = [regex]::Matches($content, 'function\\s+(getFactoryElement\\w+)\\s*\\(') | ForEach-Object { $_.Groups[1].Value }; $localMethods = @((@($processMethods) + @($getterMethods)) | Sort-Object -Unique); if ($localMethods.Count -eq 0) { continue }; if ($derivedParents -contains $className) { continue }; $approvedMethods = @(); if ($approved.ContainsKey($className)) { $approvedMethods = $approved[$className] }; $unapproved = @($localMethods | Where-Object { $_ -notin $approvedMethods }); if ($unapproved.Count -gt 0) { $violations += [pscustomobject]@{ Class = $className; File = $f.FullName; Methods = ($unapproved -join ', ') } } } }; if ($violations.Count -gt 0) { Write-Host 'FAIL Unapproved concrete overrides detected:' -ForegroundColor Red; $violations | Format-Table -AutoSize; Write-Host ('Result: ' + $violations.Count + ' class violations') -ForegroundColor Red; exit 1 }; Write-Host 'PASS No unapproved concrete overrides detected.' -ForegroundColor Green; Write-Host ('Approved exceptions tracked: ' + $approved.Count) -ForegroundColor Yellow",
       "group": {
         "kind": "test",
         "isDefault": false

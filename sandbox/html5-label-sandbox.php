@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../src\MvpLounge\MeshFactory\Element\Html5\Label.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 echo '=== Label Sandbox ===' . PHP_EOL;
 
 try {
-    $factory = new \MvpLounge\MeshFactory\Element\Html5\Label([]);
+    $factory = new \MvpLounge\MeshFactory\Element\Form\Label([]);
 
     if (method_exists($factory, 'getFactoryModel')) {
         echo '-- getFactoryModel() --' . PHP_EOL;

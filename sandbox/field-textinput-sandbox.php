@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../src\MvpLounge\MeshFactory\Element\Field\TextInput.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 echo '=== TextInput Sandbox ===' . PHP_EOL;
 

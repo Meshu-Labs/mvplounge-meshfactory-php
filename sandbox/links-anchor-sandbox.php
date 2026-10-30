@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../src\MvpLounge\MeshFactory\Element\Links\Anchor.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 echo '=== Anchor Sandbox ===' . PHP_EOL;
 
 try {
-    $factory = new \MvpLounge\MeshFactory\Element\Links\Anchor([]);
+    $factory = new \MvpLounge\MeshFactory\Element\InlineTextSemantics\Anchor([]);
 
     if (method_exists($factory, 'getFactoryModel')) {
         echo '-- getFactoryModel() --' . PHP_EOL;
