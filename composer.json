@@ -41,20 +41,21 @@
     "archive": {
         "exclude": [
             "/*",
+            "!/composer.json",
             "/.gitignore",
             "/.gitattributes",
             "/.github",
             "/.github/**",
             "/.vscode",
             "/.vscode/**",
-            "/LICENSE",
             "/README.md",
             "/CHANGELOG.md",
             "/AGENTS.md",
+            "/.instructions.md",
             "/instructions.md",
             "/src/*",
             "!/src/Labs/",
-            "!/src/Labs/**",
+            "/src/Labs/*",
             "!/src/Labs/MeshFactory/",
             "!/src/Labs/MeshFactory/**"
         ]
