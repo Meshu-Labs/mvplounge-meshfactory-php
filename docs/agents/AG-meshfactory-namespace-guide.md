@@ -1,6 +1,6 @@
 ﻿# MvpLounge MeshFactory
 
-This namespace builds HTML elements from PHP classes. Keep the structure simple and predictable.
+This file is a routing guide for work inside `src/Labs/MeshFactory` using the `MvpLounge\MeshFactory` namespace. Keep it concise; the detailed rules live in the domain-owned docs.
 
 ## Documentation Architecture
 
@@ -181,8 +181,8 @@ This section defines mandatory quality checks to prevent partial migrations and 
 - All abstract base factory classes MUST reside in the `MvpLounge\MeshFactory\Abstract` namespace.
 - Violation: Abstract base classes may NOT reside at the root of `MvpLounge\MeshFactory` or scattered across Element/ subdirectories with old names.
 - Example correct paths:
-	- `src/MvpLounge/MeshFactory/Abstract/FactoryAbstract.php`
-	- `src/MvpLounge/MeshFactory/Abstract/FactoryElementAbstract.php`
+	- `src/Labs/MeshFactory/Abstract/FactoryAbstract.php`
+	- `src/Labs/MeshFactory/Abstract/FactoryElementAbstract.php`
 	- (Domain-specific abstracts live in `Element/` subdirectories with correct naming)
 
 **Rule 3: Concrete Class Inheritance**
@@ -228,13 +228,13 @@ Run this check annually or before major releases to catch drift:
 
 1. **Search for old naming patterns:**
 	```powershell
-	grep -r "FactoryBase" src/MvpLounge/MeshFactory --include="*.php"
+	grep -r "FactoryBase" src/Labs/MeshFactory --include="*.php"
 	```
 	Expected result: Zero matches. Any matches indicate incomplete migrations or accidental regressions.
 
 2. **Verify abstract class locations:**
 	```powershell
-	ls src/MvpLounge/MeshFactory/*.php
+	ls src/Labs/MeshFactory/*.php
 	```
 	Expected result: No `FactoryBase.php`, `FactoryElementBase.php`, or `*FactoryBase.php` files at root.
 
@@ -250,7 +250,7 @@ Run this check annually or before major releases to catch drift:
 	- FactoryElementCopyAbstract.php: Methods should return `FactoryElementCopyAbstract` (not `CopyFactoryBase`)
 
 5. **Check for orphaned root files:**
-	Files at `src/MvpLounge/MeshFactory/` root should NOT include:
+	Files at `src/Labs/MeshFactory/` root should NOT include:
 	- `FactoryBase.php`
 	- `FactoryElementBase.php`
 	- Any file ending in `FactoryBase.php`
@@ -297,8 +297,8 @@ Before creating a new abstract base class:
 
 1. Name it following the pattern: `FactoryElement{DomainName}Abstract`
 2. Place it in the appropriate location:
-	- Root abstracts: `src/MvpLounge/MeshFactory/Abstract/FactoryElement{Name}Abstract.php`
-	- Family-specific abstracts: `src/MvpLounge/MeshFactory/Element/{Family}/FactoryElement{Name}Abstract.php`
+	- Root abstracts: `src/Labs/MeshFactory/Abstract/FactoryElement{Name}Abstract.php`
+	- Family-specific abstracts: `src/Labs/MeshFactory/Element/{Family}/FactoryElement{Name}Abstract.php`
 3. Extend the correct parent: `FactoryAbstract` (for root) or domain-specific parent
 4. Document it in the "Factory Base Class Naming" section above
 5. Do NOT create legacy-named backups or alternate file paths

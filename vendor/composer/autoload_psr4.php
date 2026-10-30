@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'MvpLounge\\MeshFactory\\' => array($baseDir . '/src/MvpLounge/MeshFactory'),
+    'MvpLounge\\MeshFactory\\' => array($baseDir . '/src/Labs/MeshFactory'),
 );

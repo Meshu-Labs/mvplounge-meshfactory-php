@@ -4,4 +4,22 @@
 # Export whitelist for archive artifacts.
 * export-ignore
 README.md -export-ignore
-src/MvpLounge/MeshFactory/** -export-ignore
+CHANGELOG.md -export-ignore
+AGENTS.md -export-ignore
+LICENSE -export-ignore
+instructions.md -export-ignore
+composer.json -export-ignore
+.gitignore -export-ignore
+.gitattributes -export-ignore
+.github -export-ignore
+.github/** -export-ignore
+.tmp -export-ignore
+.tmp/** -export-ignore
+docs -export-ignore
+docs/** -export-ignore
+.vscode -export-ignore
+.vscode/** -export-ignore
+src -export-ignore
+src/Labs -export-ignore
+src/Labs/MeshFactory -export-ignore
+src/Labs/MeshFactory/** -export-ignore
