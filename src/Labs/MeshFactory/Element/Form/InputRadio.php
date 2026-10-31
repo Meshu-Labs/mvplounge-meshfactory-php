@@ -127,6 +127,8 @@ class InputRadio extends FactoryElementFieldInputAbstract
 		return [
 			'name' => $this->getFactoryName(),
 			'field' => $this->getElementRadios(),
+			'labelOpen' => $this->getElementFieldLabelOpen(),
+			'labelClose' => $this->getElementFieldLabelClose(),
 			'fieldset' => $this->getElementFieldset()->compileAsArray()
 		];
 	}

@@ -55,17 +55,12 @@ class InputText extends FactoryElementFieldInputAbstract
 
 	public function addElementClose(): void
 	{
+		return;
 	}
 
-	public function build()
+	public function addElementContent(): void
 	{
-		$this->getElementFieldset()->buildElementOpen();
-		$this->buildElementLabelOpen();
-		$this->buildElementOpen();
-		$this->buildElementClose();
-		$this->buildElementLabelClose();
-		$this->getElementFieldset()->buildElementClose();
-
+		return;
 	}
 
 	public function getFactoryModel(): array
