@@ -61,8 +61,8 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 	protected ?string $FactoryElementFieldLabel = NULL;
 	protected ?int $FactoryElementFieldLength = NULL;
 	protected ?string $FactoryElementFieldStringValue = NULL;
-	protected ?object $FactoryElementFieldFieldset = NULL;
 	protected ?string $FactoryElementSystemClass = 'field_ui';
+	protected ?FactoryElementFieldsetAbstract $FactoryElementFieldFieldset = NULL;
 
 	public function __construct($params = [])
 	{
@@ -230,6 +230,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 
 	public function addElementClose(): void
 	{
+		return;
 	}
 
 	public function addElementOpen($params = []): void
@@ -294,6 +295,15 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 				'checked' => $this->getFactoryElementFieldChecked($_allowed)
 			]
 		);
+	}
+
+	public function getFactoryModel(): array
+	{
+		return [
+			'name' => $this->getFactoryName(),
+			'field' => $this->compileAsArray(),
+			'fieldset' => $this->getElementFieldset()->compileAsArray()
+		];
 	}
 
 	public function getFactoryElementFieldAccess(array $allowed): ?bool
@@ -386,18 +396,49 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		return $this->FactoryElementFieldFieldset;
 	}
 
-	public function compileAsHtmlString(): ?string
+	public function compileAsHtmlStringWithFieldset(): ?string
 	{
 		return $this->getElementFieldset()->getElementOpen()
 			. $this->getElementFieldLabelOpen()
 			. $this->getElementOpen()
+			. $this->buildElementContent()
+			. $this->getElementClose()
 			. $this->getElementFieldLabelClose()
 			. $this->getElementFieldset()->getElementClose();
+	}
+
+	public function compileAsHtmlString(): ?string
+	{
+		return $this->getElementFieldLabelOpen()
+			. $this->getElementOpen()
+			. $this->getElementContent()
+			. $this->getElementClose()
+			. $this->getElementFieldLabelClose();
 	}
 
 	public function string(): ?string
 	{
 		return $this->compileAsHtmlString();
+	}
+
+	public function build()
+	{
+		$this->buildElementLabelOpen();
+		$this->buildElementOpen();
+		$this->buildElementContent();
+		$this->buildElementClose();
+		$this->buildElementLabelClose();
+	}
+
+	public function buildWithFieldset()
+	{
+		$this->getElementFieldset()->buildElementOpen();
+		$this->buildElementLabelOpen();
+		$this->buildElementOpen();
+		$this->buildElementContent();
+		$this->buildElementClose();
+		$this->buildElementLabelClose();
+		$this->getElementFieldset()->buildElementClose();
 	}
 
 	public function buildElementLabelOpen()

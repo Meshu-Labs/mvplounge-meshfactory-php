@@ -20,8 +20,9 @@ The platform is designed for predictable structure with dynamic attribute handli
 
 ## Platform Integration Targets
 
-- APP-MESH-UI
+- APP-MESH-UI (see [TypeScript alignment](AX-element-factory-typescript-alignment.md))
 - TypeScript component construction
+- APP-EELC through its `lab_center` UI facades (see [ElementFactory pattern](AX-element-factory-pattern.md))
 - Templating use in ExpressionEngine, WordPress, osTicket, and Drupal
 
 ## Stability Model

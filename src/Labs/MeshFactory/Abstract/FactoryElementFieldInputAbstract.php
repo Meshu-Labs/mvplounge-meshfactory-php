@@ -39,12 +39,9 @@ abstract class FactoryElementFieldInputAbstract extends FactoryElementFieldAbstr
     {
         return [
             'name' => $this->getFactoryName(),
-            'field' => $this->getElementOpen()
+            'field' => $this->getElementOpen(),
+            'fieldset' => $this->getElementFieldset()->compileAsArray()
         ];
     }
 
-    public function build()
-    {
-        $this->buildElementOpen();
-    }
 }

@@ -18,6 +18,8 @@ require_once __DIR__ . '/../../Abstract/FactoryElementFormAbstract.php';
  *
  * MDN: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form
  */
+
+// change file name to FormPost. Change class name to FormPost. Update all references.
 class PostForm extends FactoryElementFormAbstract
 {
 	protected array $AllowedFactoryElements = [
