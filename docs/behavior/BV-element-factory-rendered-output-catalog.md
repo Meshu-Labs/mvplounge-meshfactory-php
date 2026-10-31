@@ -30,7 +30,7 @@ Each script starts with `require_once bootstrap.php`, which locates `vendor/auto
 `mfAssertRenderableOutputs($factory, $className)` collects five outputs and asserts only:
 
 1. `compileAsArray()` returns an array.
-2. `compile()` returns an array.
+2. `compileAsArray()` returns an array.
 3. Some string inside the array outputs, or the JSON, HTML, or `string()` output, contains `<`.
 
 It prints all five outputs for human review. It does not compare any of them to an expected value. Consequences:
@@ -43,11 +43,11 @@ It prints all five outputs for human review. It does not compare any of them to 
 
 ## Domain Suites (explicit assertions)
 
-The three domain suites are the only scripts that assert specific fragments, and only in the Params flavor (Field, Form) or the Factory/Params flavors (Table). Their Generic flavors cover the remaining Form and Table classes (`Label`, `Button`, `Datalist`, `Legend`, `Meter`, `Optgroup`, `Output`, `Progress`, `TableRow`, `TableHead`, `TableFooter`, `TableRowBody`) with a fluency check (`addClass()` returns the same object) and a non-empty render.
+The three domain suites are the only scripts that assert specific fragments, and only in the Params flavor (Field, Form) or the Factory/Params flavors (Table). Their Generic flavors cover the remaining Form and Table classes (`FieldsetLabel`, `InputButton`, `Datalist`, `Legend`, `Meter`, `Optgroup`, `Output`, `Progress`, `TableRow`, `TableHead`, `TableFooter`, `TableRowBody`) with a fluency check (`addClass()` returns the same object) and a non-empty render.
 
 | Suite | Scenarios | Fragments asserted |
 |---|---|---|
-| `Field/Params` | `TextInput`, `EmailerInput`, `FormButton`, `HiddenInput`, `PasswordInput`, `RadioInput`, `SelectOption`, `SelectOptions` | Every global attribute fragment (`id`, `class`, `title="..."`, `style="display:block"`, `lang`, `dir`, `hidden="hidden"`, `tabindex="2"`, `draggable`, `contenteditable`, `spellcheck`, `translate`, `role`, three ARIA attributes) plus per-class fragments such as `name="text_name"`, `type="email"`, `value="2"`, `selected`, `checked`, `enabled`, and `>Two<` |
+| `Field/Params` | `InputText`, `InputEmailer`, `FormButton`, `InputHidden`, `InputPassword`, `InputRadio`, `SelectOption`, `SelectOptions` | Every global attribute fragment (`id`, `class`, `title="..."`, `style="display:block"`, `lang`, `dir`, `hidden="hidden"`, `tabindex="2"`, `draggable`, `contenteditable`, `spellcheck`, `translate`, `role`, three ARIA attributes) plus per-class fragments such as `name="text_name"`, `type="email"`, `value="2"`, `selected`, `checked`, `enabled`, and `>Two<` |
 | `Form/Factory` and `Form/Params` | Login, registration, address, and AJAX profile forms | Each form's `compileAsJson()` contains the action, field names, button label, hidden field names, and `multipart/form-data` or `_blank` where set |
 | `Table/Factory` and `Table/Params` | Four-column summary, merged cell, grouped header, data table | `compileAsArray()` JSON contains attribute fragments (`colspan`, `rowspan`, `scope`, `headers`, `abbr`) and cell text |
 
@@ -68,9 +68,9 @@ Output of a freshly constructed instance with no params, from the inventory scan
 | Scripting | `Script` | `<script></script>` |
 | Metadata | `Link`, `Meta` | `<link></link>`, `<meta></meta>` (`EF-001`) |
 | SVG, MathML | `Svg`, `Math` | `<svg></svg>`, `<math></math>` |
-| Field | `TextInput` | `<input class="field_ui" type="text">` |
-| Form element | `Label` | `<label></label>` |
-| Form element | `Button` | `<button></button>` |
+| Field | `InputText` | `<input class="field_ui" type="text">` |
+| Form element | `FieldsetLabel` | `<label></label>` |
+| Form element | `InputButton` | `<button></button>` |
 | Table | `TableCell` | `<td class="generic-cell"></td>` |
 | Table | `TableHeader` | `<th class="generic-th"></th>` |
 | Table | `TableBody` | `<table class="generic-table"></table>` (children only in `compileAsArray()`, `EF-005`) |
@@ -92,7 +92,7 @@ Rules visible across these outputs:
 | `(new Div())->addId('hero')->addClass('card shadow')->addData(['role-id'=>7])->addContent('Hello')` | `<div id="hero" data-role-id="7" class="card shadow">Hello</div>` |
 | `new Anchor(['href'=>'/home','target'=>'_blank','rel'=>'noopener','content'=>'Home'])` | `<a class="generic-a" href="/home" target="_blank" rel="noopener">Home</a>` |
 | `new Anchor(['href'=>'/home','target'=>'weird','content'=>'Home'])` | `<a class="generic-a" href="/home">Home</a>` |
-| `new TextInput(['name'=>'n','access'=>false])` | `<input class="field_ui" name="n" type="text" disabled>` |
+| `new InputText(['name'=>'n','access'=>false])` | `<input class="field_ui" name="n" type="text" disabled>` |
 | `new Div(['title'=>'"><script>alert(1)</script>'])` | `<div title=""><script>alert(1)</script>"></div>` (`EF-003`) |
 | `new Anchor(['href'=>'javascript:alert(1)','content'=>'x'])` | `<a class="generic-a" href="javascript:alert(1)">x</a>` (`EF-003`) |
 
@@ -100,7 +100,7 @@ Rules visible across these outputs:
 
 Table model keys (`TableBody::compileAsArray()`): `open`, `thead.{open,content,close,headers.{open,content,close,cells[]}}`, `tbody.{open,content,close,rows[].{open,content,close,cells[]}}`, `tfoot.{open,content,close}`, `close`. A cell is `{open: "<td class=\"generic-cell\">", content: "<div class=\"content\">Q1</div>", close: "</td>"}`.
 
-Form payload keys (`prepare()` and `compileAsJson()`): `open`, `hidden` (name to input HTML), `fields` (section to field name to input HTML), `buttons` (a `<fieldset>` containing the submit input), `close`.
+Form payload keys (`prepareFactoryModel()` and `compileAsJson()`): `open`, `hidden` (name to input HTML), `fields` (section to field name to input HTML), `fieldsets` (section to the `open`, `legend`, `label`, `fields`, `close` of its fieldset), `buttons` (a `<fieldset>` containing the submit input), `close`.
 
 ## How To Turn This Into Golden Tests
 

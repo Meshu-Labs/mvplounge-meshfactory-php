@@ -15,10 +15,10 @@ This document is a handoff reference for agents working in APP-EELC that consume
 ## Output API Contract
 
 - Use `string()` or `compileAsHtmlString(): ?string` for HTML output. The EELC facades use `string()`.
-- Use `compileAsArray(): ?array` (alias `compile()`) for structured payload output.
-- Use `compileAsJson(): ?string` only on forms (`PostForm`, `AjaxForm`) today. It does not exist on other elements; making it universal is tracked as `EF-043`.
+- Use `compileAsArray(): ?array` for structured payload output (the `compile()` alias was removed, `EF-049`).
+- Use `compileAsJson(): ?string` only on forms (`FormPost`, `FormAjax`) today. It does not exist on other elements; making it universal is tracked as `EF-043`.
 - Avoid `build()` in new code. It echoes and returns nothing.
-- Composite elements (`TableBody`, `DataTableBody`, `PostForm`) carry their children in `compileAsArray()` and `prepare()`; `string()` returns only the outer tag until `EF-005` is done.
+- Composite elements (`TableBody`, `DataTableBody`, `FormPost`) carry their children in `compileAsArray()` and `prepareFactoryModel()`; `string()` returns only the outer tag until `EF-005` is done.
 
 ## Facade Map (APP-EELC)
 
@@ -27,7 +27,7 @@ This document is a handoff reference for agents working in APP-EELC that consume
 | `Element.php` | `lc_element` | `P`, `H1`-`H6`, `Hl`, `Aside`, `Content`, `Header`, `Figure`, `Main`, `Img` |
 | `Links.php` | `lc_links` | `Anchor` |
 | `Table.php` | `lc_table` | `TableBody`, `DataTableBody`, `TableRow`, `TableCell`, `TableHeader` |
-| `Field.php`, `Form.php` | | assemble raw HTML today (`EF-073`); designers import `TextInput`, `EmailerInput`, `PasswordInput`, `HiddenInput`, `RadioInput`, `SelectOption`, `FormButton`, `PostForm`, `AjaxForm` directly |
+| `Field.php`, `Form.php` | | assemble raw HTML today (`EF-073`); designers import `InputText`, `InputEmailer`, `InputPassword`, `InputHidden`, `InputRadio`, `SelectOption`, `FormButton`, `FormPost`, `FormAjax` directly |
 
 Rules for new facade code:
 

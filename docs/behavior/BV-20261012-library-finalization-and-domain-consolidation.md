@@ -39,7 +39,7 @@ Affected families:
 
 - `SectioningContent`: `Article`, `Aside`, `Footer`, `Header`, `Nav`, `Section`
 - `TextContent`: `Div`, `Figure`, `Main`
-- `Forms`: `Label`
+- `Forms`: `Label` (now `FieldsetLabel`, see `EF-046`)
 - `InlineTextSemantics`: `Span`
 - `WebComponents`: `Content`
 

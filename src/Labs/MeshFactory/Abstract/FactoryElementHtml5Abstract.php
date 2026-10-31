@@ -8,7 +8,7 @@ use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 require_once __DIR__ . '/FactoryElementAbstract.php';
 require_once __DIR__ . '/../Enum/FactoryElement.php';
 require_once __DIR__ . '/../Element/Field/FormButton.php';
-require_once __DIR__ . '/../Element/Field/HiddenInput.php';
+require_once __DIR__ . '/../Element/Form/InputHidden.php';
 require_once __DIR__ . '/FactoryElementFieldAbstract.php';
 
 abstract class FactoryElementHtml5Abstract extends FactoryElementAbstract

@@ -251,10 +251,6 @@ abstract class FactoryAbstract
 		return is_array($_model) ? $_model : NULL;
 	}
 
-	public function compile(): ?array
-	{
-		return $this->compileAsArray();
-	}
 	public function getFactoryModel(): array
 	{
 		return [];

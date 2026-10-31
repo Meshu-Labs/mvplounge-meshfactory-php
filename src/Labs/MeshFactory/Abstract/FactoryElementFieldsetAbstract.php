@@ -13,11 +13,12 @@ use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 
 require_once __DIR__ . '/FactoryElementFieldAbstract.php';
 require_once __DIR__ . '/FactoryElementAbstract.php';
+require_once __DIR__ . '/FactoryElementFormElementsAbstract.php';
 require_once __DIR__ . '/../Enum/FactoryElementAttribute.php';
 
 use MvpLounge\MeshFactory\Abstract\FactoryElementFieldAbstract;
 
-class FactoryElementFieldsetAbstract extends FactoryElementAbstract
+abstract class FactoryElementFieldsetAbstract extends FactoryElementAbstract
 {
 
 	protected array $AllowedFactoryElements = [
@@ -33,6 +34,7 @@ class FactoryElementFieldsetAbstract extends FactoryElementAbstract
 	protected ?string $FactoryElementSystemClass = 'generic-fieldset';
 	protected ?string $FactoryElementFieldsetLegend = NULL;
 	protected array $FieldElementFieldsetCollection = [];
+	protected ?FactoryElementFormElementsAbstract $FactoryElementFieldsetLabel = NULL;
 
 	public function __construct($params = [])
 	{
@@ -43,8 +45,67 @@ class FactoryElementFieldsetAbstract extends FactoryElementAbstract
 	{
 		parent::__process_params($params);
 		if (is_array($params)) {
+			$this->__process_user($params);
 			$this->__process_legend($params);
+			$this->__process_label($params);
 		}
+	}
+
+	protected function __process_label($params): void
+	{
+		if (isset($params['label']) && $params['label'] !== '') {
+			$this->addLabel($params['label']);
+		}
+	}
+
+	/**
+	 * Stores the label element rendered inside the fieldset.
+	 * Accepts a label element, a text string, an array of label params, or NULL to clear it.
+	 */
+	public function addLabel($label): static
+	{
+		if (is_null($label)) {
+			$this->FactoryElementFieldsetLabel = NULL;
+			return $this;
+		}
+
+		if ($label instanceof FactoryElementFormElementsAbstract) {
+			$this->FactoryElementFieldsetLabel = $label;
+			return $this;
+		}
+
+		require_once __DIR__ . '/../Element/Form/FieldsetLabel.php';
+
+		if (is_array($label)) {
+			$this->FactoryElementFieldsetLabel = new \MvpLounge\MeshFactory\Element\Form\FieldsetLabel($label);
+		} elseif (is_scalar($label) && trim((string) $label) !== '') {
+			$this->FactoryElementFieldsetLabel = new \MvpLounge\MeshFactory\Element\Form\FieldsetLabel(['content' => trim((string) $label)]);
+		}
+
+		return $this;
+	}
+
+	public function getLabel(): ?FactoryElementFormElementsAbstract
+	{
+		return $this->FactoryElementFieldsetLabel;
+	}
+
+	public function getElementLabel(): ?string
+	{
+		return $this->FactoryElementFieldsetLabel?->compileAsHtmlString();
+	}
+
+	public function buildElementLabel()
+	{
+		$_label = $this->getElementLabel();
+		if ($_label !== NULL) {
+			echo $_label . "\n\t";
+		}
+	}
+
+	public function getFactoryAttributePropertyCollection(): array
+	{
+		return $this->getDefaultFactoryAttributePropertyCollection();
 	}
 
 	protected function __process_legend($params): void
@@ -97,6 +158,7 @@ class FactoryElementFieldsetAbstract extends FactoryElementAbstract
 		return [
 			'open' => $this->getElementOpen(),
 			'legend' => $this->FactoryElementFieldsetLegend,
+			'label' => $this->getElementLabel(),
 			'fields' => $this->getElementContent(),
 			'close' => $this->getElementClose()
 		];
@@ -108,6 +170,8 @@ class FactoryElementFieldsetAbstract extends FactoryElementAbstract
 		if ($this->FactoryElementFieldsetLegend !== NULL && trim($this->FactoryElementFieldsetLegend) !== '') {
 			$_content .= '<legend>' . htmlspecialchars($this->FactoryElementFieldsetLegend, ENT_QUOTES | ENT_HTML5) . '</legend>';
 		}
+
+		$_content .= $this->getElementLabel() ?? '';
 
 		if (count($this->FieldElementFieldsetCollection) > 0) {
 			foreach ($this->FieldElementFieldsetCollection as $_field) {

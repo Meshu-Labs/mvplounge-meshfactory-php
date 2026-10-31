@@ -99,20 +99,20 @@ $tsByElement = [
     'section' => 'Module/Form (wrapper)',
 ];
 $tsByClass = [
-    'TextInput' => 'Part/Field: Field.Input (text)',
-    'EmailerInput' => 'Part/Field: Field.Input (email)',
-    'PasswordInput' => 'Part/Field: Field.Input (password)',
-    'HiddenInput' => 'Part/Field: Field.Input (hidden)',
-    'RadioInput' => 'Part/Field: Field.Input (radio group)',
+    'InputText' => 'Part/Field: Field.Input (text)',
+    'InputEmailer' => 'Part/Field: Field.Input (email)',
+    'InputPassword' => 'Part/Field: Field.Input (password)',
+    'InputHidden' => 'Part/Field: Field.Input (hidden)',
+    'InputRadio' => 'Part/Field: Field.Input (radio group)',
     'FormButton' => 'Part/Field: Field.Input (button/submit/reset)',
-    'Button' => 'Part/Buttons: Button.Generic',
+    'InputButton' => 'Part/Buttons: Button.Generic',
 ];
 
 /** Concrete classes imported directly by APP-EELC (libraries/resource/ui, designer, Trait). */
 $eelcDirect = [
     'Img', 'Aside', 'Header', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'Hl', 'Figure', 'Main', 'P', 'Content', 'Anchor',
     'TableBody', 'DataTableBody', 'TableRow', 'TableRowBody', 'TableCell', 'TableHeader',
-    'PostForm', 'AjaxForm', 'TextInput', 'EmailerInput', 'PasswordInput', 'HiddenInput', 'RadioInput', 'SelectOption', 'FormButton'
+    'FormPost', 'FormAjax', 'InputText', 'InputEmailer', 'InputPassword', 'InputHidden', 'InputRadio', 'SelectOption', 'FormButton'
 ];
 
 $scan = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($libRoot . '/Element', FilesystemIterator::SKIP_DOTS));
@@ -303,9 +303,9 @@ foreach ($rows as $line) {
 $out[] = '';
 $out[] = '## Notes';
 $out[] = '';
-$out[] = '- `fieldset` has no class under `Element/`. It is rendered by `FactoryElementFieldsetAbstract`, a concrete (non-abstract) class that lives in `Abstract/`.';
+$out[] = '- `fieldset` is implemented by `Element/Form/Fieldset`, a concrete subclass of the abstract `FactoryElementFieldsetAbstract`. It stores an optional `FieldsetLabel`, and is used by fields, `FormButton` and form sections.';
 $out[] = '- `tbody` and `tfoot` are bound by `TableRowBody` and `TableFooter`; `table` is bound by `TableBody` and `DataTableBody` (names do not match their tags).';
-$out[] = '- Classes in `Element/Form` that use the `MvpLounge\MeshFactory\Element\Field` namespace (`TextInput`, `EmailerInput`, `PasswordInput`, `HiddenInput`, `RadioInput`, `FormButton`, `SelectOption`, `SelectOptions`) only autoload through the Composer classmap, not PSR-4.';
+$out[] = '- Classes in `Element/Form` that use the `MvpLounge\MeshFactory\Element\Field` namespace (`InputText`, `InputEmailer`, `InputPassword`, `InputHidden`, `InputRadio`, `FormButton`, `SelectOption`, `SelectOptions`) only autoload through the Composer classmap, not PSR-4.';
 $out[] = '';
 
 $markdown = implode("\n", $out);

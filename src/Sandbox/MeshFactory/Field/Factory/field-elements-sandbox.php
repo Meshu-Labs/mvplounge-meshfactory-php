@@ -24,13 +24,13 @@ try {
     };
 
     $cases = [
-        'TextInput' => static function () {
-            $factory = new \MvpLounge\MeshFactory\Element\Field\TextInput();
+        'InputText' => static function () {
+                    $factory = new \MvpLounge\MeshFactory\Element\Field\InputText();
             $factory->addName('text_name')->addPlaceholder('Text placeholder')->addType('text')->addValue('text_value')->addAccess(true);
             return $factory;
         },
-        'EmailerInput' => static function () {
-            $factory = new \MvpLounge\MeshFactory\Element\Field\EmailerInput();
+        'InputEmailer' => static function () {
+                    $factory = new \MvpLounge\MeshFactory\Element\Field\InputEmailer();
             $factory->addName('email_name')->addPlaceholder('name@example.com')->addValue('name@example.com')->addAccess(true);
             return $factory;
         },
@@ -39,18 +39,18 @@ try {
             $factory->addName('button_name')->addValue('Submit')->asSubmit()->addAccess(true);
             return $factory;
         },
-        'HiddenInput' => static function () {
-            $factory = new \MvpLounge\MeshFactory\Element\Field\HiddenInput();
+        'InputHidden' => static function () {
+                    $factory = new \MvpLounge\MeshFactory\Element\Field\InputHidden();
             $factory->addName('hidden_name')->addValue('hidden_value')->addAccess(true);
             return $factory;
         },
-        'PasswordInput' => static function () {
-            $factory = new \MvpLounge\MeshFactory\Element\Field\PasswordInput();
+        'InputPassword' => static function () {
+                    $factory = new \MvpLounge\MeshFactory\Element\Field\InputPassword();
             $factory->addName('password_name')->addLabel('Password')->addValue('secret')->addAccess(true);
             return $factory;
         },
-        'RadioInput' => static function () {
-            $factory = new \MvpLounge\MeshFactory\Element\Field\RadioInput();
+        'InputRadio' => static function () {
+                    $factory = new \MvpLounge\MeshFactory\Element\Field\InputRadio();
             $factory->addName('radio_name')->addValue('radio_value')->addChecked(true)->addAccess(true);
             return $factory;
         },

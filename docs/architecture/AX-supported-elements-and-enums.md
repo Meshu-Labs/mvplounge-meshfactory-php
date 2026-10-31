@@ -14,9 +14,9 @@ The enums are the compatibility contract. This page summarizes them; the exact p
 
 ## Element Coverage
 
-- 143 concrete classes in 16 domains under `src/Labs/MeshFactory/Element/` bind 136 of the 140 enum elements.
-- 4 enum elements have no class under `Element/`: `hgroup`, `fieldset`, `textarea`, `slot`. `fieldset` is rendered by `FactoryElementFieldsetAbstract` (see `EF-021`); the rest are `EF-020` and `EF-022`.
-- Several elements have more than one class: `input` (6 field classes), `table` (`TableBody`, `DataTableBody`), and `form` (`PostForm`, `AjaxForm`).
+- 144 concrete classes in 16 domains under `src/Labs/MeshFactory/Element/` bind 137 of the 140 enum elements.
+- 3 enum elements have no class under `Element/`: `hgroup`, `textarea`, `slot` (`EF-020`, `EF-022`). `fieldset` is implemented by `Element/Form/Fieldset` (`EF-047`).
+- Several elements have more than one class: `input` (6 field classes), `table` (`TableBody`, `DataTableBody`), and `form` (`FormPost`, `FormAjax`).
 
 Domains: DemarcatingEdits, EmbeddedContent, Form, ImageAndMultimedia, InlineTextSemantics, InteractiveElements, MetaData, ObsoleteAndDeprecated, Root, Scripting, SectioningContent, SvgAndMathMl, Table, TableContent, TextContent, WebComponents. The `Form` folder also holds the field classes, whose namespace is `Element\Field` (`EF-040`).
 

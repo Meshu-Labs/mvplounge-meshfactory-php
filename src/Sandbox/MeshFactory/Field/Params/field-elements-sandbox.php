@@ -73,7 +73,7 @@ try {
     };
 
     $cases = [
-        'TextInput' => static function () use ($globalParams, $globalExpected): array {
+        'InputText' => static function () use ($globalParams, $globalExpected): array {
             $suffix = 'text';
             $params = array_merge($globalParams($suffix), [
                 'name' => 'text_name',
@@ -82,9 +82,9 @@ try {
                 'value' => 'text_value',
                 'access' => true,
             ]);
-            return [new \MvpLounge\MeshFactory\Element\Field\TextInput($params), array_merge($globalExpected($suffix), ['name="text_name"', 'placeholder="Text placeholder"', 'type="text"', 'value="text_value"', 'enabled'])];
+            return [new \MvpLounge\MeshFactory\Element\Field\InputText($params), array_merge($globalExpected($suffix), ['name="text_name"', 'placeholder="Text placeholder"', 'type="text"', 'value="text_value"', 'enabled'])];
         },
-        'EmailerInput' => static function () use ($globalParams, $globalExpected): array {
+        'InputEmailer' => static function () use ($globalParams, $globalExpected): array {
             $suffix = 'email';
             $params = array_merge($globalParams($suffix), [
                 'name' => 'email_name',
@@ -93,7 +93,7 @@ try {
                 'value' => 'name@example.com',
                 'access' => true,
             ]);
-            return [new \MvpLounge\MeshFactory\Element\Field\EmailerInput($params), array_merge($globalExpected($suffix), ['name="email_name"', 'placeholder="name@example.com"', 'type="email"', 'value="name@example.com"', 'enabled'])];
+            return [new \MvpLounge\MeshFactory\Element\Field\InputEmailer($params), array_merge($globalExpected($suffix), ['name="email_name"', 'placeholder="name@example.com"', 'type="email"', 'value="name@example.com"', 'enabled'])];
         },
         'FormButton' => static function () use ($globalParams, $globalExpected): array {
             $suffix = 'button';
@@ -105,7 +105,7 @@ try {
             ]);
             return [new \MvpLounge\MeshFactory\Element\Field\FormButton($params), array_merge($globalExpected($suffix), ['name="button_name"', 'type="submit"', 'value="Submit"', 'enabled'])];
         },
-        'HiddenInput' => static function () use ($globalParams, $globalExpected): array {
+        'InputHidden' => static function () use ($globalParams, $globalExpected): array {
             $suffix = 'hidden';
             $params = array_merge($globalParams($suffix), [
                 'name' => 'hidden_name',
@@ -113,9 +113,9 @@ try {
                 'value' => 'hidden_value',
                 'access' => true,
             ]);
-            return [new \MvpLounge\MeshFactory\Element\Field\HiddenInput($params), array_merge($globalExpected($suffix), ['name="hidden_name"', 'type="hidden"', 'value="hidden_value"', 'enabled'])];
+            return [new \MvpLounge\MeshFactory\Element\Field\InputHidden($params), array_merge($globalExpected($suffix), ['name="hidden_name"', 'type="hidden"', 'value="hidden_value"', 'enabled'])];
         },
-        'PasswordInput' => static function () use ($globalParams, $globalExpected): array {
+        'InputPassword' => static function () use ($globalParams, $globalExpected): array {
             $suffix = 'password';
             $params = array_merge($globalParams($suffix), [
                 'name' => 'password_name',
@@ -123,9 +123,9 @@ try {
                 'value' => 'secret',
                 'access' => true,
             ]);
-            return [new \MvpLounge\MeshFactory\Element\Field\PasswordInput($params), array_merge($globalExpected($suffix), ['name="password_name"', 'type="password"', 'value="secret"', 'enabled'])];
+            return [new \MvpLounge\MeshFactory\Element\Field\InputPassword($params), array_merge($globalExpected($suffix), ['name="password_name"', 'type="password"', 'value="secret"', 'enabled'])];
         },
-        'RadioInput' => static function () use ($globalParams, $globalExpected): array {
+        'InputRadio' => static function () use ($globalParams, $globalExpected): array {
             $suffix = 'radio';
             $params = array_merge($globalParams($suffix), [
                 'name' => 'radio_name',
@@ -134,7 +134,7 @@ try {
                 'checked' => true,
                 'access' => true,
             ]);
-            return [new \MvpLounge\MeshFactory\Element\Field\RadioInput($params), array_merge($globalExpected($suffix), ['name="radio_name"', 'type="radio"', 'value="radio_value"', 'checked', 'enabled'])];
+            return [new \MvpLounge\MeshFactory\Element\Field\InputRadio($params), array_merge($globalExpected($suffix), ['name="radio_name"', 'type="radio"', 'value="radio_value"', 'checked', 'enabled'])];
         },
         'SelectOption' => static function () use ($globalParams, $globalExpected): array {
             $suffix = 'select';

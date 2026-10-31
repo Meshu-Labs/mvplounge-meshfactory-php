@@ -9,14 +9,12 @@ use MvpLounge\MeshFactory\Abstract\FactoryElementFieldsetAbstract;
 
 
 
-require_once __DIR__ . '/TextInput.php';
+require_once __DIR__ . '/InputText.php';
 require_once __DIR__ . '/../../Enum/FactoryElementAttribute.php';
 require_once __DIR__ . '/../../Enum/FactoryElementFieldType.php';
 
 
-// change file name to InputEmailer. Change class name to InputEmailer. Update all references.
-
-class EmailerInput extends TextInput
+class InputEmailer extends InputText
 {
 
 	protected array $AllowedFactoryElements = [

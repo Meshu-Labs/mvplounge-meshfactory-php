@@ -107,10 +107,8 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 
 	public function addFieldset($params): static
 	{
-		if (!class_exists(FactoryElementFieldsetAbstract::class, FALSE)) {
-			require_once __DIR__ . '/FactoryElementFieldsetAbstract.php';
-		}
-		$this->FactoryElementFieldFieldset = (new FactoryElementFieldsetAbstract())->configureFactory($params);
+		require_once __DIR__ . '/../Element/Form/Fieldset.php';
+		$this->FactoryElementFieldFieldset = (new \MvpLounge\MeshFactory\Element\Form\Fieldset())->configureFactory($params);
 		return $this;
 	}
 
@@ -387,11 +385,9 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 
 	public function getElementFieldset()
 	{
-		if (!class_exists(FactoryElementFieldsetAbstract::class, FALSE)) {
-			require_once __DIR__ . '/FactoryElementFieldsetAbstract.php';
-		}
+		require_once __DIR__ . '/../Element/Form/Fieldset.php';
 		if (!($this->FactoryElementFieldFieldset instanceof FactoryElementFieldsetAbstract)) {
-			$this->FactoryElementFieldFieldset = new FactoryElementFieldsetAbstract();
+			$this->FactoryElementFieldFieldset = new \MvpLounge\MeshFactory\Element\Form\Fieldset();
 		}
 		return $this->FactoryElementFieldFieldset;
 	}
@@ -399,6 +395,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 	public function compileAsHtmlStringWithFieldset(): ?string
 	{
 		return $this->getElementFieldset()->getElementOpen()
+			. ($this->getElementFieldset()->getElementLabel() ?? '')
 			. $this->getElementFieldLabelOpen()
 			. $this->getElementOpen()
 			. $this->buildElementContent()
@@ -433,6 +430,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 	public function buildWithFieldset()
 	{
 		$this->getElementFieldset()->buildElementOpen();
+		$this->getElementFieldset()->buildElementLabel();
 		$this->buildElementLabelOpen();
 		$this->buildElementOpen();
 		$this->buildElementContent();

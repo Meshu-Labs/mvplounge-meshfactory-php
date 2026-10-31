@@ -58,7 +58,7 @@ try {
             // Manage logic to instantiate the factory
             //
     
-            $factory = new \MvpLounge\MeshFactory\Element\Form\PostForm(array_merge($globalParams('login'), [
+            $factory = new \MvpLounge\MeshFactory\Element\Form\FormPost(array_merge($globalParams('login'), [
                 'action' => '/account/login',
                 'method' => 'post',
                 'enctype' => 'application/x-www-form-urlencoded',
@@ -69,7 +69,7 @@ try {
 
             $factory
                 ->addHiddenPostField(['name' => 'csrf_token', 'value' => 'login-token'])
-                ->addFormSectionFields('credentials', 'email', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('login_email'), [
+                ->addFormSectionFields('credentials', 'email', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('login_email'), [
                     'name' => 'email',
                     'label' => 'Email address',
                     'placeholder' => 'name@example.com',
@@ -79,7 +79,7 @@ try {
                         'user' => ['field-group', 'field-login-email'],
                     ],
                 ])))
-                ->addFormSectionFields('credentials', 'password', new \MvpLounge\MeshFactory\Element\Field\PasswordInput(array_merge($globalParams('login_password'), [
+                ->addFormSectionFields('credentials', 'password', new \MvpLounge\MeshFactory\Element\Field\InputPassword(array_merge($globalParams('login_password'), [
                     'name' => 'password',
                     'label' => 'Password',
                     'fieldset' => [
@@ -92,7 +92,7 @@ try {
             return [$factory, ['/account/login', 'email', 'password', 'Sign in', 'csrf_token']];
         },
         'RegistrationForm' => static function () use ($globalParams): array {
-            $factory = new \MvpLounge\MeshFactory\Element\Form\PostForm(array_merge($globalParams('registration'), [
+            $factory = new \MvpLounge\MeshFactory\Element\Form\FormPost(array_merge($globalParams('registration'), [
                 'action' => '/account/register',
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
@@ -104,7 +104,7 @@ try {
             $factory
                 ->addHiddenPostField(['name' => 'csrf_token', 'value' => 'registration-token'])
                 ->addHiddenPostField(['name' => 'account_type', 'value' => 'basic'])
-                ->addFormSectionFields('identity', 'first_name', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('first_name'), [
+                ->addFormSectionFields('identity', 'first_name', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('first_name'), [
                     'name' => 'first_name',
                     'label' => 'First name',
                     'placeholder' => 'Ada',
@@ -114,7 +114,7 @@ try {
                         'user' => ['field-group', 'field-registration-first-name'],
                     ],
                 ])))
-                ->addFormSectionFields('identity', 'last_name', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('last_name'), [
+                ->addFormSectionFields('identity', 'last_name', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('last_name'), [
                     'name' => 'last_name',
                     'label' => 'Last name',
                     'placeholder' => 'Lovelace',
@@ -124,7 +124,7 @@ try {
                         'user' => ['field-group', 'field-registration-last-name'],
                     ],
                 ])))
-                ->addFormSectionFields('identity', 'email', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('registration_email'), [
+                ->addFormSectionFields('identity', 'email', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('registration_email'), [
                     'name' => 'email',
                     'label' => 'Email address',
                     'placeholder' => 'name@example.com',
@@ -134,7 +134,7 @@ try {
                         'user' => ['field-group', 'field-registration-email'],
                     ],
                 ])))
-                ->addFormSectionFields('security', 'password', new \MvpLounge\MeshFactory\Element\Field\PasswordInput(array_merge($globalParams('registration_password'), [
+                ->addFormSectionFields('security', 'password', new \MvpLounge\MeshFactory\Element\Field\InputPassword(array_merge($globalParams('registration_password'), [
                     'name' => 'password',
                     'label' => 'Password',
                     'fieldset' => [
@@ -142,7 +142,7 @@ try {
                         'user' => ['field-group', 'field-registration-password'],
                     ],
                 ])))
-                ->addFormSectionFields('security', 'confirm_password', new \MvpLounge\MeshFactory\Element\Field\PasswordInput(array_merge($globalParams('registration_confirm_password'), [
+                ->addFormSectionFields('security', 'confirm_password', new \MvpLounge\MeshFactory\Element\Field\InputPassword(array_merge($globalParams('registration_confirm_password'), [
                     'name' => 'confirm_password',
                     'label' => 'Confirm password',
                     'fieldset' => [
@@ -155,7 +155,7 @@ try {
             return [$factory, ['/account/register', 'first_name', 'last_name', 'confirm_password', 'Create account', 'multipart/form-data']];
         },
         'AddressForm' => static function () use ($globalParams): array {
-            $factory = new \MvpLounge\MeshFactory\Element\Form\PostForm(array_merge($globalParams('address'), [
+            $factory = new \MvpLounge\MeshFactory\Element\Form\FormPost(array_merge($globalParams('address'), [
                 'action' => '/account/address',
                 'method' => 'post',
                 'novalidate' => 'novalidate',
@@ -165,7 +165,7 @@ try {
 
             $factory
                 ->addHiddenPostField(['name' => 'address_id', 'value' => 'primary'])
-                ->addFormSectionFields('address', 'street_1', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('street_1'), [
+                ->addFormSectionFields('address', 'street_1', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('street_1'), [
                     'name' => 'street_1',
                     'label' => 'Street 1',
                     'placeholder' => '123 Main Street',
@@ -175,7 +175,7 @@ try {
                         'user' => ['field-group', 'field-address-street-1'],
                     ],
                 ])))
-                ->addFormSectionFields('address', 'street_2', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('street_2'), [
+                ->addFormSectionFields('address', 'street_2', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('street_2'), [
                     'name' => 'street_2',
                     'label' => 'Street 2',
                     'placeholder' => 'Apartment, suite, unit',
@@ -185,7 +185,7 @@ try {
                         'user' => ['field-group', 'field-address-street-2'],
                     ],
                 ])))
-                ->addFormSectionFields('address', 'city', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('city'), [
+                ->addFormSectionFields('address', 'city', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('city'), [
                     'name' => 'city',
                     'label' => 'City',
                     'placeholder' => 'Seattle',
@@ -195,7 +195,7 @@ try {
                         'user' => ['field-group', 'field-address-city'],
                     ],
                 ])))
-                ->addFormSectionFields('address', 'region', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('region'), [
+                ->addFormSectionFields('address', 'region', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('region'), [
                     'name' => 'region',
                     'label' => 'State / Region',
                     'placeholder' => 'WA',
@@ -205,7 +205,7 @@ try {
                         'user' => ['field-group', 'field-address-region'],
                     ],
                 ])))
-                ->addFormSectionFields('address', 'postal_code', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('postal_code'), [
+                ->addFormSectionFields('address', 'postal_code', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('postal_code'), [
                     'name' => 'postal_code',
                     'label' => 'Postal code',
                     'placeholder' => '98101',
@@ -215,7 +215,7 @@ try {
                         'user' => ['field-group', 'field-address-postal-code'],
                     ],
                 ])))
-                ->addFormSectionFields('address', 'country', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('country'), [
+                ->addFormSectionFields('address', 'country', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('country'), [
                     'name' => 'country',
                     'label' => 'Country',
                     'placeholder' => 'United States',
@@ -230,7 +230,7 @@ try {
             return [$factory, ['/account/address', 'street_1', 'postal_code', 'Save address', 'address_id']];
         },
         'ProfileUpdateAjaxForm' => static function () use ($globalParams): array {
-            $factory = new \MvpLounge\MeshFactory\Element\Form\AjaxForm(array_merge($globalParams('profile_update'), [
+            $factory = new \MvpLounge\MeshFactory\Element\Form\FormAjax(array_merge($globalParams('profile_update'), [
                 'action' => '/api/account/profile',
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
@@ -242,7 +242,7 @@ try {
             $factory
                 ->addHiddenPostField(['name' => 'csrf_token', 'value' => 'profile-token'])
                 ->addHiddenPostField(['name' => 'mode', 'value' => 'ajax'])
-                ->addFormSectionFields('profile', 'display_name', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('display_name'), [
+                ->addFormSectionFields('profile', 'display_name', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('display_name'), [
                     'name' => 'display_name',
                     'label' => 'Display name',
                     'placeholder' => 'Mvp Lounge',
@@ -252,7 +252,7 @@ try {
                         'user' => ['field-group', 'field-profile-display-name'],
                     ],
                 ])))
-                ->addFormSectionFields('profile', 'phone', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('phone'), [
+                ->addFormSectionFields('profile', 'phone', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('phone'), [
                     'name' => 'phone',
                     'label' => 'Phone number',
                     'placeholder' => '+1 555 0100',
@@ -262,7 +262,7 @@ try {
                         'user' => ['field-group', 'field-profile-phone'],
                     ],
                 ])))
-                ->addFormSectionFields('profile', 'avatar', new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge($globalParams('avatar'), [
+                ->addFormSectionFields('profile', 'avatar', new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge($globalParams('avatar'), [
                     'name' => 'avatar',
                     'label' => 'Avatar path',
                     'placeholder' => '/images/avatar.png',

@@ -14,12 +14,12 @@ try {
     };
 
     $factories = [
-        'TextInput' => new \MvpLounge\MeshFactory\Element\Field\TextInput(),
-        'EmailerInput' => new \MvpLounge\MeshFactory\Element\Field\EmailerInput(),
+        'InputText' => new \MvpLounge\MeshFactory\Element\Field\InputText(),
+        'InputEmailer' => new \MvpLounge\MeshFactory\Element\Field\InputEmailer(),
         'FormButton' => new \MvpLounge\MeshFactory\Element\Field\FormButton(),
-        'HiddenInput' => new \MvpLounge\MeshFactory\Element\Field\HiddenInput(),
-        'PasswordInput' => new \MvpLounge\MeshFactory\Element\Field\PasswordInput(),
-        'RadioInput' => new \MvpLounge\MeshFactory\Element\Field\RadioInput(),
+        'InputHidden' => new \MvpLounge\MeshFactory\Element\Field\InputHidden(),
+        'InputPassword' => new \MvpLounge\MeshFactory\Element\Field\InputPassword(),
+        'InputRadio' => new \MvpLounge\MeshFactory\Element\Field\InputRadio(),
         'SelectOption' => new \MvpLounge\MeshFactory\Element\Field\SelectOption(),
         'SelectOptions' => new \MvpLounge\MeshFactory\Element\Field\SelectOptions()
     ];
@@ -33,14 +33,14 @@ try {
         $assert(is_string($html), $label . ' compileAsHtmlString() must return a string.');
     }
 
-    $firstField = (new \MvpLounge\MeshFactory\Element\Field\TextInput())->addName('first')->addLabel('First');
-    $replacementField = (new \MvpLounge\MeshFactory\Element\Field\TextInput())->addName('replacement');
-    $secondField = (new \MvpLounge\MeshFactory\Element\Field\TextInput())->addName('second');
+    $firstField = (new \MvpLounge\MeshFactory\Element\Field\InputText())->addName('first')->addLabel('First');
+    $replacementField = (new \MvpLounge\MeshFactory\Element\Field\InputText())->addName('replacement');
+    $secondField = (new \MvpLounge\MeshFactory\Element\Field\InputText())->addName('second');
     $fieldHtml = $firstField->compileAsHtmlString();
     $assert(str_contains($fieldHtml, '<label>First<input'), 'The label must wrap the input.');
     $assert(str_contains($fieldHtml, '</label>'), 'The label must close after the input.');
 
-    $fieldset = new \MvpLounge\MeshFactory\Abstract\FactoryElementFieldsetAbstract();
+    $fieldset = new \MvpLounge\MeshFactory\Element\Form\Fieldset();
     $assert($fieldset->addLegend(' Details & options ') === $fieldset, 'addLegend() must remain fluent.');
     $fieldset->addField('PRIMARY', $firstField)->addField('primary', $replacementField, false);
     $fieldset->addFieldCollection(['secondary' => $secondField, 'invalid' => 'not a field']);
@@ -52,7 +52,7 @@ try {
     $assert(str_contains($fieldset->getElementContent(), 'name="replacement"'), 'An overriding duplicate must replace the original field.');
     $assert(!str_contains($fieldset->getElementContent(), 'name="first"'), 'A replaced field must no longer render.');
     $assert($fieldset->compileAsArray()['fields'] === $fieldset->getElementContent(), 'Array output must contain fieldset content.');
-    $assert($fieldset->compile() === $fieldset->compileAsArray(), 'compile() must return the fieldset array.');
+    $assert(!method_exists($fieldset, 'compile'), 'The compile() alias must be removed in favor of compileAsArray().');
     $assert(str_contains($fieldset->compileAsHtmlString(), $fieldset->getElementContent()), 'HTML output must contain the fieldset content.');
     $assert($fieldset->string() === $fieldset->compileAsHtmlString(), 'string() must match fieldset HTML output.');
     ob_start();
@@ -61,8 +61,19 @@ try {
     $assert(str_contains($built, $fieldset->getElementContent()), 'build() must render the fieldset content.');
     $fieldset->addLegend(NULL);
     $assert(!str_contains($fieldset->getElementContent(), '<legend>'), 'A null legend must clear the legend.');
-    $configuredFieldset = (new \MvpLounge\MeshFactory\Abstract\FactoryElementFieldsetAbstract())->configureFactory(['legend' => 'Configured']);
+    $configuredFieldset = (new \MvpLounge\MeshFactory\Element\Form\Fieldset())->configureFactory(['legend' => 'Configured']);
     $assert(str_contains($configuredFieldset->getElementContent(), '<legend>Configured</legend>'), 'Configuration must set the legend.');
+
+    $labelledFieldset = new \MvpLounge\MeshFactory\Element\Form\Fieldset(['id' => 'fs_label', 'label' => 'Contact']);
+    $assert($labelledFieldset->getElementLabel() === '<label>Contact</label>', 'A string label must render as a FieldsetLabel.');
+    $assert($labelledFieldset->getLabel() instanceof \MvpLounge\MeshFactory\Element\Form\FieldsetLabel, 'The fieldset must store a FieldsetLabel element.');
+    $assert(str_contains($labelledFieldset->getElementContent(), '<label>Contact</label>'), 'The label must render inside the fieldset content.');
+    $assert($labelledFieldset->compileAsArray()['label'] === '<label>Contact</label>', 'Array output must contain the label.');
+    $assert($labelledFieldset->addLabel(NULL)->getElementLabel() === NULL, 'A null label must clear the label.');
+    $assert($labelledFieldset->addClass('extra')->getElementOpen() === '<fieldset id="fs_label" class="extra generic-fieldset">', 'The fieldset must render user and system classes.');
+
+    $labelledField = (new \MvpLounge\MeshFactory\Element\Field\InputText())->addName('contact')->addFieldset(['label' => 'Contact']);
+    $assert(str_contains($labelledField->compileAsHtmlStringWithFieldset(), '<fieldset class="generic-fieldset"><label>Contact</label>'), 'A field fieldset must render its label after the opening tag.');
 
     echo 'PASS assertions' . PHP_EOL;
 } catch (Throwable $e) {

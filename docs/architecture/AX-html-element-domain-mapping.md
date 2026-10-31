@@ -51,7 +51,7 @@ Canonical classes resolve under `MvpLounge\MeshFactory\Element\{Domain}\{Class}`
 | `FactoryElement::DIV` | `MvpLounge\MeshFactory\Element\TextContent\Div` | `TextContent` |
 | `FactoryElement::SPAN` | `MvpLounge\MeshFactory\Element\InlineTextSemantics\Span` | `InlineTextSemantics` |
 | `FactoryElement::ANCHOR` | `MvpLounge\MeshFactory\Element\InlineTextSemantics\Anchor` | `InlineTextSemantics` |
-| `FactoryElement::LABEL` | `MvpLounge\MeshFactory\Element\Form\Label` | `Form` |
+| `FactoryElement::LABEL` | `MvpLounge\MeshFactory\Element\Form\FieldsetLabel` | `Form` |
 | `FactoryElement::ASIDE` | `MvpLounge\MeshFactory\Element\SectioningContent\Aside` | `SectioningContent` |
 | `FactoryElement::CONTENT` | `MvpLounge\MeshFactory\Element\WebComponents\Content` | `WebComponents` |
 | `FactoryElement::HEADER` | `MvpLounge\MeshFactory\Element\SectioningContent\Header` | `SectioningContent` |
