@@ -8,7 +8,7 @@ All factory element abstractions must reside in `/src/Labs/MeshFactory/Abstract/
 
 Migration requirements:
 
-- Move abstract classes from `/Element/` subdirectories (Field, Form, Links, Table) to `/Abstract/`.
+- Move abstract classes from `/Element/` subdirectories to `/Abstract/`.
 - Update namespace declarations to `MvpLounge\MeshFactory\Abstract`.
 - Update relative `require_once` paths:
   - Parent classes: `__DIR__ . '/FactoryElementAbstract.php'`
@@ -16,6 +16,7 @@ Migration requirements:
   - Enums: `__DIR__ . '/../Enum/FactoryElement.php'`
 - Keep concrete implementations in `/src/Labs/MeshFactory/Element/{Domain}/`.
 - Concrete implementations must require abstracts from `/Abstract/`.
+- Every `require_once` target must exist and match its on-disk case (the CI runner is case-sensitive). Known violation tracked as `EF-041`: `FactoryElementHtml5Abstract` requires two files that do not exist.
 
 ## Concrete Implementation Update Requirements
 
@@ -41,6 +42,7 @@ When abstracts are migrated, update all concrete implementations immediately.
 - Do not create or reference classes in the deprecated plural namespace:
   - `MvpLounge\MeshFactory\Element\Forms\*`
   - `src/Labs/MeshFactory/Element/Forms/*`
+- Known exception (tracked as `EF-040`): the field classes `TextInput`, `EmailerInput`, `PasswordInput`, `HiddenInput`, `RadioInput`, `FormButton`, `SelectOption`, and `SelectOptions` live in `Element/Form/` but declare namespace `MvpLounge\MeshFactory\Element\Field`. They resolve through the Composer `classmap` in `composer.json`, not PSR-4. Do not add new classes with a namespace that differs from their folder.
 
 ## HTML Element and Attribute Authority
 
@@ -58,15 +60,14 @@ Research order:
 
 ## HTML Element Domain Organization
 
-HTML element classes under `src/Labs/MeshFactory/Element/Html/` must be apportioned into source-of-truth domains.
+HTML element classes under `src/Labs/MeshFactory/Element/` are apportioned into source-of-truth domains (MDN element groups).
 
 - `Main root` is normalized to `Root`.
 - `Document metadata` is normalized to `MetaData`.
-- Canonical source-of-truth element classes live under `Element/Html/{Domain}/`.
+- Canonical element classes live under `Element/{Domain}/`.
 - Each element class namespace must match its folder domain:
-  - `MvpLounge\MeshFactory\Element\Html\{Domain}\{Class}`
-- Shared HTML base class remains:
-  - `MvpLounge\MeshFactory\Element\Html\HtmlElement`
+  - `MvpLounge\MeshFactory\Element\{Domain}\{Class}`
+- Plain elements extend `MvpLounge\MeshFactory\Abstract\FactoryElementHtmlAbstract`. There is no `Element\Html` namespace and no `HtmlElement` base class.
 - Keep reserved keyword-safe class names where needed:
   - `object` -> `ObjectElement`
   - `var` -> `VarElement`
@@ -74,6 +75,7 @@ HTML element classes under `src/Labs/MeshFactory/Element/Html/` must be apportio
 Use the canonical mapping reference:
 
 - `docs/architecture/AX-html-element-domain-mapping.md`
+- `docs/architecture/AX-element-factory-inventory.md` (generated, per element)
 
 ## Fluent Interface Contract
 

@@ -30,10 +30,11 @@ All abstract factory base classes follow the naming convention `FactoryElement{D
 - `FactoryElementFieldInputAbstract` - Specific input field behavior
 - `FactoryElementFieldsetAbstract` - Fieldset container behavior
 - `FactoryElementFormAbstract` - Form container behavior
-- `FactoryElementHtml5Abstract` - HTML5 semantic element families
+- `FactoryElementHtmlAbstract` - Plain element base (global attributes only); 99 concrete subclasses
+- `FactoryElementHtml5Abstract` - Unused: no subclasses and broken `require_once` targets (`EF-041`)
 - `FactoryElementTableAbstract` - Table and table-related element families
 - `FactoryElementLinkAbstract` - Link/anchor element behavior
-- `FactoryElementCopyAbstract` - Copy/text element families
+- `FactoryElementCopyAbstract` - Unused: no subclasses (text elements extend `FactoryElementHtmlAbstract`; `EF-041`)
 
 ## What To Preserve
 

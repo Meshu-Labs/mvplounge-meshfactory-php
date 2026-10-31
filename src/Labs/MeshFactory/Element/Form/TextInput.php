@@ -12,6 +12,7 @@ if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 use MvpLounge\MeshFactory\Enum\FactoryElementFieldType;
 use MvpLounge\MeshFactory\Abstract\FactoryElementFieldInputAbstract;
+use MvpLounge\MeshFactory\Abstract\FactoryElementFieldsetAbstract;
 
 require_once __DIR__ . '/../../Abstract/FactoryElementFieldInputAbstract.php';
 require_once __DIR__ . '/../../Enum/FactoryElementAttribute.php';
@@ -25,6 +26,8 @@ require_once __DIR__ . '/../../Enum/FactoryElementFieldType.php';
  *
  * MDN: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input
  */
+// change file name to InputText. Change class name to InputText. Update all references.
+
 class TextInput extends FactoryElementFieldInputAbstract
 {
 
@@ -32,7 +35,7 @@ class TextInput extends FactoryElementFieldInputAbstract
 	protected ?FactoryElementFieldType $FactoryElementFieldType = FactoryElementFieldType::TEXT;
 	/** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/placeholder */
 	protected ?string $FactoryElementFieldPlaceholder = NULL;
-	protected ?object $FactoryElementFieldFieldset = NULL;
+	protected ?FactoryElementFieldsetAbstract $FactoryElementFieldFieldset = NULL;
 	protected ?string $FactoryElementSystemClass = 'field_ui';
 
 	public function __construct($params = [])

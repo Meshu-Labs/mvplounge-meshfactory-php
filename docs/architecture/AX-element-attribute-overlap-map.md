@@ -1,5 +1,7 @@
 # AX Element Attribute Overlap Map
 
+> Snapshot note: the counts below predate several element additions (it scanned 134 concrete classes; the code now has 143). Treat the figures as a point-in-time overlap study. Current per-class attribute gaps are in the generated [ElementFactory inventory](AX-element-factory-inventory.md).
+
 ## Purpose
 
 This document inventories non-global opening-tag attribute overlap across all concrete Element classes.

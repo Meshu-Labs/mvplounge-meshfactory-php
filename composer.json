@@ -62,5 +62,15 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "scripts": {
+        "test": "@php src/Sandbox/MeshFactory/run-all.php",
+        "inventory": "@php src/Sandbox/MeshFactory/_shared/generate-element-inventory.php --write",
+        "artifact": "@php scripts/build-artifact.php"
+    },
+    "scripts-descriptions": {
+        "test": "Run the full MeshFactory sandbox suite.",
+        "inventory": "Regenerate docs/architecture/AX-element-factory-inventory.md from the code.",
+        "artifact": "Build a Composer artifact zip (pass -- --version=dev-local --out=<dir>)."
     }
 }

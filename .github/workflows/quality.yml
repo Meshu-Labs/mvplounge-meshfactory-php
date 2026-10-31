@@ -5,6 +5,7 @@ on:
     branches: [dev, main]
   push:
     branches: [dev, main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -20,4 +21,17 @@ jobs:
       - name: Validate Composer metadata
         run: composer validate --strict --no-check-publish
       - name: Check PHP syntax
-        run: find src -type f -name '*.php' -print0 | xargs -0 -r -n 1 php -l
+        run: find src scripts -type f -name '*.php' -print0 | xargs -0 -r -n 1 php -l
+      - name: Generate autoloader
+        run: composer install --no-interaction --no-progress
+      - name: Run sandbox suite
+        run: composer test
+      - name: Build installable artifact
+        run: php scripts/build-artifact.php --version="dev-ci-${GITHUB_RUN_NUMBER}" --out=build
+      - name: Upload artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mvplounge-meshfactory-artifact
+          path: build/*.zip
+          if-no-files-found: error
+          retention-days: 14

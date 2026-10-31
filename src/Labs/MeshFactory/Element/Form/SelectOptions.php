@@ -13,6 +13,7 @@ use MvpLounge\MeshFactory\Enum\FactoryElement;
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 use MvpLounge\MeshFactory\Enum\FactoryElementPrimativeType;
 use MvpLounge\MeshFactory\Abstract\FactoryElementFieldAbstract;
+use MvpLounge\MeshFactory\Abstract\FactoryElementFieldsetAbstract;
 
 
 require_once __DIR__ . '/../../Abstract/FactoryElementFieldAbstract.php';
@@ -31,7 +32,7 @@ class SelectOptions extends FactoryElementFieldAbstract
 
 	protected ?FactoryElement $FactoryElement = FactoryElement::OPTION;
 	protected ?FactoryElementPrimativeType $FactoryElementFieldValueType = FactoryElementPrimativeType::INT;
-	protected ?object $FactoryElementFieldFieldset = NULL;
+	protected ?FactoryElementFieldsetAbstract $FactoryElementFieldFieldset = NULL;
 	protected ?bool $FactoryElementFieldSelected = FALSE;
 	protected ?string $FactoryElementSystemClass = 'field_ui';
 
@@ -55,6 +56,13 @@ class SelectOptions extends FactoryElementFieldAbstract
 		$this->buildElementContent();
 		$this->buildElementClose();
 
+	}
+
+	public function compileAsHtmlString(): ?string
+	{
+		return $this->getElementOpen()
+			. $this->getElementContent()
+			. $this->getElementClose();
 	}
 
 	public function getFactoryModel(): array
@@ -101,19 +109,6 @@ class SelectOptions extends FactoryElementFieldAbstract
 			$this->addSelected($params['selected']);
 		}
 	}
-
-	public function compileAsHtmlString(): ?string
-	{
-		return $this->getElementOpen()
-			. $this->getElementContent()
-			. $this->getElementClose();
-	}
-
-	public function string(): ?string
-	{
-		return $this->compileAsHtmlString();
-	}
-
 	public function not_selected(): static
 	{
 		$this->addSelected(FALSE);

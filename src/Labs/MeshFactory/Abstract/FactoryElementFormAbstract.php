@@ -208,15 +208,15 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 		return $this;
 	}
 
-	public function addFormSectionFields($section = 'main', $namesrace = NULL, $field = NULL): static
+	public function addFormSectionFields($section = 'main', $namespace = NULL, $field = NULL): static
 	{
-		$_section = strtolower($section);
+		$_section = strtolower((string) $section);
 		if (!isset($this->FactoryElementFormSectionFields[$_section])) {
 			$this->FactoryElementFormSectionFields[$_section] = [];
 		}
 
-		if (!isset($this->FactoryElementFormSectionFields[$_section][$namesrace])) {
-			$this->FactoryElementFormSectionFields[$_section][$namesrace] = $field;
+		if ($namespace !== NULL && $field !== NULL) {
+			$this->FactoryElementFormSectionFields[$_section][(string) $namespace] = $field;
 		}
 
 		return $this;
@@ -284,8 +284,9 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 	{
 
 		$_field_sections = $this->getFormSectionFields($section);
-		if (count($_field_sections) > 0) {
-			foreach ($_field_sections as $_fields) {
+		if (count($_field_sections['field'] ?? []) > 0) {
+			$_field_sections['fieldset']->buildElementOpen();
+			foreach ($_field_sections['field'] as $_fields) {
 				if (is_array($_fields)) {
 					$this->buildFormField($_fields);
 				} elseif ($_fields instanceof FactoryElementFieldAbstract) {
@@ -294,12 +295,12 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 					echo $_fields;
 				}
 			}
+			$_field_sections['fieldset']->buildElementClose();
 		}
 	}
 
 	public function buildFormSubmitButton()
 	{
-
 		echo $this->getFormSubmitButton()->asSubmit()->build() . "\n\t";
 	}
 
@@ -321,15 +322,12 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 	protected function buildFormField($fields)
 	{
 		foreach ($fields as $_fl) {
-
-
 			if (is_string($_fl)) {
 				echo $_fl . "\n\t";
 			} elseif ($_fl instanceof FactoryElementAbstract) {
 				$_fl->build();
 			}
 		}
-
 	}
 
 	public function getFormSubmitButton()
@@ -427,49 +425,41 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 	}
 	public function getFormMethod(): string
 	{
-
 		return $this->FactoryElementFormMethod;
 	}
 
 	public function getFormEncodingTyre(): ?string
 	{
-
 		return $this->FactoryElementFormEnc;
 	}
 
 	public function getFormNoValidate(): ?string
 	{
-
 		return $this->FactoryElementFormNoValidate;
 	}
 
 	public function getFormTarget(): ?string
 	{
-
 		return $this->FactoryElementFormTarget;
 	}
 
 	public function getFormAction(): ?string
 	{
-
 		return $this->FactoryElementFormAction;
 	}
 
 	public function getFormHiddenVars(): ?array
 	{
-
 		return $this->FactoryElementFormHiddenVars;
 	}
 
 	public function compileFormResetButton()
 	{
-
 		echo $this->getFormResetButton()->compileAsArray();
 	}
 
 	public function compileAsArray(): ?array
 	{
-
 		return [
 			'open' => $this->getElementOpen(),
 			'hidden' => $this->compileFormHiddenVars(),
@@ -478,6 +468,8 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 			'close' => $this->getElementClose()
 		];
 	}
+
+	// factor out complile() and replace all instances with compileAsArray()
 
 	public function compile(): ?array
 	{
@@ -610,11 +602,6 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 		$_payload = $this->prepare();
 		$_json = json_encode($_payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 		return is_string($_json) ? $_json : NULL;
-	}
-
-	public function complieAsJson(): ?string
-	{
-		return $this->compileAsJson();
 	}
 
 }

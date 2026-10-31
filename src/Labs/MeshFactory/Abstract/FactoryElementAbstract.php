@@ -11,7 +11,6 @@ if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
 
 use MvpLounge\MeshFactory\Abstract\FactoryAbstract;
 use MvpLounge\MeshFactory\Enum\FactoryElement;
-use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 use MvpLounge\MeshFactory\Enum\FactoryElementWindowTarget;
 
 

@@ -13,6 +13,7 @@ use MvpLounge\MeshFactory\Enum\FactoryElement;
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 use MvpLounge\MeshFactory\Enum\FactoryElementPrimativeType;
 use MvpLounge\MeshFactory\Abstract\FactoryElementFieldAbstract;
+use MvpLounge\MeshFactory\Abstract\FactoryElementFieldsetAbstract;
 
 
 require_once __DIR__ . '/SelectOptions.php';
@@ -35,7 +36,7 @@ class SelectOption extends FactoryElementFieldAbstract
 	protected ?FactoryElementPrimativeType $FactoryElementFieldValueType = FactoryElementPrimativeType::INT;
 	protected ?array $FactoryElementSelectFieldOptions = [];
 	protected bool $FactoryElementFieldSelected = FALSE;
-	protected ?object $FactoryElementFieldFieldset = NULL;
+	protected ?FactoryElementFieldsetAbstract $FactoryElementFieldFieldset = NULL;
 	protected ?string $FactoryElementSystemClass = 'field_ui';
 
 	public function __construct($params = [])
@@ -51,7 +52,38 @@ class SelectOption extends FactoryElementFieldAbstract
 		}
 	}
 
+	public function compileAsHtmlStringWithFieldset(): ?string
+	{
+		return $this->getElementFieldset()->getElementOpen()
+			. $this->getElementFieldLabelOpen()
+			. $this->getElementOpen()
+			. $this->getElementFieldOptions(TRUE)
+			. $this->getElementClose()
+			. $this->getElementFieldLabelClose()
+			. $this->getElementFieldset()->getElementClose();
+	}
+
+	public function compileAsHtmlString(): ?string
+	{
+		return $this->getElementFieldLabelOpen()
+			. $this->getElementOpen()
+			. $this->getElementFieldOptions(true)
+			. $this->getElementClose()
+			. $this->getElementFieldLabelClose();
+
+	}
+
+
 	public function build()
+	{
+		$this->buildElementLabelOpen();
+		$this->buildElementOpen();
+		$this->buildElementOptions();
+		$this->buildElementClose();
+		$this->buildElementLabelClose();
+	}
+
+	public function buildWithFieldset()
 	{
 		$this->getElementFieldset()->buildElementOpen();
 		$this->buildElementLabelOpen();
@@ -60,7 +92,6 @@ class SelectOption extends FactoryElementFieldAbstract
 		$this->buildElementClose();
 		$this->buildElementLabelClose();
 		$this->getElementFieldset()->buildElementClose();
-
 	}
 
 	public function buildElementOptions()
@@ -114,22 +145,6 @@ class SelectOption extends FactoryElementFieldAbstract
 	public function hasOptions()
 	{
 		return count($this->FactoryElementSelectFieldOptions) > 0;
-	}
-
-	public function compileAsHtmlString(): ?string
-	{
-		return $this->getElementFieldset()->getElementOpen()
-			. $this->getElementFieldLabelOpen()
-			. $this->getElementOpen()
-			. $this->getElementFieldOptions(TRUE)
-			. $this->getElementClose()
-			. $this->getElementFieldLabelClose()
-			. $this->getElementFieldset()->getElementClose();
-	}
-
-	public function string(): ?string
-	{
-		return $this->compileAsHtmlString();
 	}
 
 	public function getElementFieldSelected(): bool

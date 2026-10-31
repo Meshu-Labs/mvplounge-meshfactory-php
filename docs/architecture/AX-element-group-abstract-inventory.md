@@ -1,5 +1,7 @@
 # AX Element Group Abstract Inventory
 
+> Counts in this table were refreshed from the code. For per-element detail, tiers, and test coverage use the generated [ElementFactory inventory](AX-element-factory-inventory.md) (`composer inventory`). Two abstracts have no subclasses and are not listed here: `FactoryElementHtml5Abstract` and `FactoryElementCopyAbstract` (`EF-041`).
+
 This inventory maps concrete Element domains to their abstract parent layer using MDN element-group boundaries as the source-of-truth model.
 
 ## Source of Truth
@@ -17,7 +19,7 @@ This inventory maps concrete Element domains to their abstract parent layer usin
 | EmbeddedContent | FactoryElementEmbeddedContentAbstract | 7 | Resource/embed orientation |
 | Form | FactoryElementFormElementsAbstract, FactoryElementFormAbstract | 10 | Form shell and form-associated elements |
 | Field | FactoryElementFieldAbstract, FactoryElementFieldInputAbstract | 8 | Field family remains exception-depth chain |
-| ImageAndMultimedia | FactoryElementImageAndMultimediaAbstract | 6 | Media/image orientation |
+| ImageAndMultimedia | FactoryElementImageAndMultimediaAbstract | 7 | Media/image orientation |
 | InlineTextSemantics | FactoryElementHtmlAbstract, FactoryElementLinkAbstract | 32 | `Anchor` remains link-specialized |
 | InteractiveElements | FactoryElementHtmlAbstract | 3 | No domain-specific attributes currently modeled |
 | MetaData | FactoryElementMetaDataAbstract | 5 | Metadata and head-resource families |
@@ -28,7 +30,7 @@ This inventory maps concrete Element domains to their abstract parent layer usin
 | SvgAndMathMl | FactoryElementHtmlAbstract | 2 | Non-HTML XML namespaces |
 | Table | FactoryElementTableAbstract | 8 | Existing table specialization retained |
 | TableContent | FactoryElementHtmlAbstract | 3 | No domain-specific attributes currently modeled |
-| TextContent | FactoryElementHtmlAbstract | 14 | No domain-specific attributes currently modeled |
+| TextContent | FactoryElementHtmlAbstract | 22 | No domain-specific attributes currently modeled |
 | WebComponents | FactoryElementHtmlAbstract | 4 | No domain-specific attributes currently modeled |
 
 ## Retained Attribute-Introducing Abstract Layer

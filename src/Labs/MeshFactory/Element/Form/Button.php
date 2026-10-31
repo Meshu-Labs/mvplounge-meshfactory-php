@@ -13,6 +13,8 @@ use MvpLounge\MeshFactory\Abstract\FactoryElementFormElementsAbstract;
 
 require_once __DIR__ . '/../../Abstract/FactoryElementFormElementsAbstract.php';
 
+// change file name to InputButton. Change class name to InputButton. Update all references.
+
 class Button extends FactoryElementFormElementsAbstract
 {
     protected array $AllowedFactoryElements = [
