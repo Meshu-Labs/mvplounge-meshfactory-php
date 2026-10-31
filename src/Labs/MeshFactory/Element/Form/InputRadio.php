@@ -67,36 +67,41 @@ class InputRadio extends FactoryElementFieldInputAbstract
 		return $this;
 	}
 
-	public function compileAsHtmlStringWithFieldset(): ?string
+	public function getElementFieldWrapperType(): string
 	{
-		return $this->getElementFieldset()->getElementOpen()
-			. $this->getElementFieldLabelOpen()
-			. $this->renderRadioMarkup()
-			. $this->getElementFieldLabelClose()
-			. $this->getElementFieldset()->getElementClose();
+		return $this->hasRadioCollection() ? 'radio-group' : parent::getElementFieldWrapperType();
 	}
 
 	public function compileAsHtmlString(): ?string
 	{
-		return $this->getElementFieldLabelOpen()
-			. $this->renderRadioMarkup()
-			. $this->getElementFieldLabelClose();
+		if (!$this->hasRadioCollection()) {
+			return parent::compileAsHtmlString();
+		}
+
+		return $this->getElementFieldWrapperOpen()
+			. $this->getElementFieldLabelWrapper()
+			. $this->renderRadioWrappedMarkup()
+			. $this->getElementFieldWrapperClose();
 	}
 
 	public function build()
 	{
-		$this->buildElementLabelOpen();
-		$this->buildElementRadios();
-		$this->buildElementLabelClose();
+		if (!$this->hasRadioCollection()) {
+			parent::build();
+			return;
+		}
+
+		echo $this->compileAsHtmlString() . "\n\t";
 	}
 
-	public function buildWithFieldset()
+	public function getElementFieldControl(): string
 	{
-		$this->getElementFieldset()->buildElementOpen();
-		$this->buildElementLabelOpen();
+		return $this->renderRadioMarkup();
+	}
+
+	public function buildElementFieldControl(): void
+	{
 		$this->buildElementRadios();
-		$this->buildElementLabelClose();
-		$this->getElementFieldset()->buildElementClose();
 	}
 
 	public function buildElementRadios(): void
@@ -104,21 +109,67 @@ class InputRadio extends FactoryElementFieldInputAbstract
 		echo $this->renderRadioMarkup();
 	}
 
+	protected function hasRadioCollection(): bool
+	{
+		return count($this->FactoryElementFieldCollection) > 0;
+	}
+
+	/** Raw radios: `div.radio-wrapper > label[for] > text + input#id` (explicit `for` plus implicit nesting). */
 	protected function renderRadioMarkup(): string
 	{
-		if (count($this->FactoryElementFieldCollection) > 0) {
+		if ($this->hasRadioCollection()) {
 			$_radios = [];
-			foreach ($this->FactoryElementFieldCollection as $_radio) {
+			foreach ($this->FactoryElementFieldCollection as $_index => $_radio) {
+				$this->prepareRadio($_radio, $_index);
 				$_radios[] = sprintf(
-					'<div class="radio-wrapper">%s%s</div>',
-					$_radio->getElementFieldLabelOpen(),
-					$_radio->addClass($this->FactoryElementUserClass)->addName($this->FactoryElementName)->getElementOpen()
+					'<div class="radio-wrapper">%s%s%s</div>',
+					$_radio->getElementFieldUnwrappedLabelOpen(),
+					$_radio->getElementOpen(),
+					$_radio->getElementFieldUnwrappedLabelClose()
 				);
 			}
 			return implode('', $_radios);
 		}
 
 		return $this->getElementOpen();
+	}
+
+	/** Wrapped radios mirror `UI_RadioInputGroupField`: `label[for] > div.field-inner-wrapper > input#id` followed by the label block. */
+	protected function renderRadioWrappedMarkup(): string
+	{
+		$_radios = [];
+		foreach ($this->FactoryElementFieldCollection as $_index => $_radio) {
+			$this->prepareRadio($_radio, $_index);
+			$_radios[] = sprintf(
+				'<label%s>%s%s%s<div class="clear"></div></label>',
+				$_radio->getElementFieldLabelAttributes(),
+				$_radio->getElementFieldInnerWrapperOpen(),
+				$_radio->getElementOpen() . $_radio->getElementFieldInnerWrapperClose(),
+				$_radio->getElementFieldLabelWrapper()
+			);
+		}
+		return implode('', $_radios);
+	}
+
+	/** Applies the group class and name, and gives each radio an id so its label can use an explicit `for`. */
+	protected function prepareRadio(InputRadio $radio, $index): InputRadio
+	{
+		$radio->addClass($this->FactoryElementUserClass)->addName($this->FactoryElementName);
+
+		if ($radio->getFactoryId() === NULL) {
+			$_base = $this->getFactoryId() ?? $this->FactoryElementName;
+			if ($_base !== NULL && $_base !== '') {
+				$radio->addId(preg_replace('/[^A-Za-z0-9_-]/', '_', $_base . '_' . $index));
+			}
+		}
+
+		return $radio;
+	}
+
+	protected function getElementFieldLabelAttributes(): string
+	{
+		$_id = $this->getFactoryId();
+		return $_id ? sprintf(' for="%s"', htmlspecialchars($_id, ENT_QUOTES)) : '';
 	}
 
 	public function getFactoryModel(): array
@@ -138,11 +189,13 @@ class InputRadio extends FactoryElementFieldInputAbstract
 
 		$_radios = [];
 
-		if (count($this->FactoryElementFieldCollection) > 0) {
+		if ($this->hasRadioCollection()) {
 			foreach ($this->FactoryElementFieldCollection as $_radio_index => $_radio) {
+				$this->prepareRadio($_radio, $_radio_index);
 				$_radios[$_radio_index] = [
-					'label' => $_radio->getElementFieldLabelOpen(),
-					'field' => $_radio->addClass($this->FactoryElementUserClass)->addName($this->FactoryElementName)->getElementOpen()
+					'label' => $_radio->getElementFieldLabelWrapper(),
+					'labelAttributes' => $_radio->getElementFieldLabelAttributes(),
+					'field' => $_radio->getElementOpen()
 				];
 			}
 		}

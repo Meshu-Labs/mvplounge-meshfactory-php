@@ -46,7 +46,12 @@ try {
     $form->addFormSubmitButton('Submit');
     $prepared = $form->prepareFactoryModel();
     $assert(str_contains(implode('', $prepared['hidden']), 'name="token"'), 'The form must render its hidden field.');
-    $assert(str_contains($prepared['fields']['main']['email'], '<label>Email<input'), 'The form must render the field inside its label.');
+    $assert(str_contains($prepared['fields']['main']['email'], '<label><div class="field-inner-label-wrapper"><span class="fld-label-header">Email</span>'), 'The form must render the field inside its label.');
+    $assert(str_starts_with($prepared['fields']['main']['email'], '<div class="field-wrapper text" data-field="email">'), 'The form must render fields with the wrapped default.');
+    ob_start();
+    $form->buildFormHiddenPostVars();
+    $builtHidden = (string) ob_get_clean();
+    $assert(str_contains($builtHidden, 'name="token"') && !str_contains($builtHidden, 'field-wrapper'), 'Form hidden post variables must render as bare inputs.');
     $assert(str_contains($prepared['buttons'], 'Submit'), 'The form must render its submit button.');
     $assert(!method_exists($form, 'compile') && !method_exists($form, 'prepare'), 'The compile() and prepare() names must be removed.');
     $assert(str_contains($prepared['fieldsets']['main']['open'], 'id="fieldset_section_main"'), 'The section fieldset must expose its opening tag.');

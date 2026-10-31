@@ -10,6 +10,7 @@ This README is the primary summary for the platform.
 - Element inventory (generated, one row per element): [docs/architecture/AX-element-factory-inventory.md](docs/architecture/AX-element-factory-inventory.md)
 - Implementation backlog (Given-When-Then): [docs/behavior/BV-element-factory-implementation-backlog.md](docs/behavior/BV-element-factory-implementation-backlog.md)
 - TypeScript alignment: [docs/architecture/AX-element-factory-typescript-alignment.md](docs/architecture/AX-element-factory-typescript-alignment.md)
+- Field modes (wrapped default, raw): [docs/architecture/AX-element-factory-field-modes.md](docs/architecture/AX-element-factory-field-modes.md)
 - Detailed architecture encyclopedia: [docs/architecture/AX-overview.md](docs/architecture/AX-overview.md)
 - Agent governance and operating policy: [AGENTS.md](AGENTS.md)
 

@@ -52,46 +52,18 @@ class SelectOption extends FactoryElementFieldAbstract
 		}
 	}
 
-	public function compileAsHtmlStringWithFieldset(): ?string
+	public function getElementFieldControl(): string
 	{
-		return $this->getElementFieldset()->getElementOpen()
-			. $this->getElementFieldLabelOpen()
-			. $this->getElementOpen()
+		return $this->getElementOpen()
 			. $this->getElementFieldOptions(TRUE)
-			. $this->getElementClose()
-			. $this->getElementFieldLabelClose()
-			. $this->getElementFieldset()->getElementClose();
+			. $this->getElementClose();
 	}
 
-	public function compileAsHtmlString(): ?string
+	public function buildElementFieldControl(): void
 	{
-		return $this->getElementFieldLabelOpen()
-			. $this->getElementOpen()
-			. $this->getElementFieldOptions(true)
-			. $this->getElementClose()
-			. $this->getElementFieldLabelClose();
-
-	}
-
-
-	public function build()
-	{
-		$this->buildElementLabelOpen();
 		$this->buildElementOpen();
 		$this->buildElementOptions();
 		$this->buildElementClose();
-		$this->buildElementLabelClose();
-	}
-
-	public function buildWithFieldset()
-	{
-		$this->getElementFieldset()->buildElementOpen();
-		$this->buildElementLabelOpen();
-		$this->buildElementOpen();
-		$this->buildElementOptions();
-		$this->buildElementClose();
-		$this->buildElementLabelClose();
-		$this->getElementFieldset()->buildElementClose();
 	}
 
 	public function buildElementOptions()

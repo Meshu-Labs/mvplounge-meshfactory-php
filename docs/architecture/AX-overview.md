@@ -12,6 +12,7 @@ Use this folder for deep technical and design details.
 - [ElementFactory API Reference](AX-element-factory-api-reference.md)
 - [ElementFactory Inventory](AX-element-factory-inventory.md) (generated)
 - [ElementFactory and TypeScript Alignment](AX-element-factory-typescript-alignment.md)
+- [ElementFactory Field Modes: Wrapped and Raw](AX-element-factory-field-modes.md)
 - [Implementation Contracts](AX-implementation-contracts.md)
 - [System Overview](AX-system-overview.md)
 - [Factory Naming and Inheritance](AX-factory-naming-and-inheritance.md)

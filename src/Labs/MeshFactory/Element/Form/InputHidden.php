@@ -40,4 +40,32 @@ class InputHidden extends FactoryElementFieldInputAbstract
 
 	}
 
+	/** Hidden inputs are bare by default so scripts can select them without wrapper markup. */
+	public function compileAsHtmlString(): ?string
+	{
+		return $this->getElementFieldControl();
+	}
+
+	public function build()
+	{
+		$this->buildElementFieldControl();
+	}
+
+	/** Inside a fieldset that mixes hidden and visible fields, the hidden field takes the wrapped structure. */
+	public function compileAsHtmlStringWithFieldset(): ?string
+	{
+		return $this->getElementFieldset()->getElementOpen()
+			. ($this->getElementFieldset()->getElementLabel() ?? '')
+			. parent::compileAsHtmlString()
+			. $this->getElementFieldset()->getElementClose();
+	}
+
+	public function buildWithFieldset()
+	{
+		$this->getElementFieldset()->buildElementOpen();
+		$this->getElementFieldset()->buildElementLabel();
+		parent::build();
+		$this->getElementFieldset()->buildElementClose();
+	}
+
 }

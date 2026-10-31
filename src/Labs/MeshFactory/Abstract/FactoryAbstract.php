@@ -301,6 +301,11 @@ abstract class FactoryAbstract
 			'id' => $this->getFactoryId(),
 			'name' => $this->getFactoryName(),
 			'class' => $this->getFactoryClasses(),
+			'user' => $this->getFactoryUserClass(),
+			'system' => $this->getFactorySystemClass(),
+			'data' => $this->getFactoryDataParams(),
+			'ext' => $this->getFactoryExtendedProperties(),
+			'configuration' => $this->getFactoryConfiguration(),
 			'title' => $this->FactoryTitle,
 			'style' => $this->FactoryStyle,
 			'lang' => $this->FactoryLang,
@@ -314,12 +319,7 @@ abstract class FactoryAbstract
 			'role' => $this->FactoryRole,
 			'aria-label' => $this->FactoryAriaLabel,
 			'aria-labelledby' => $this->FactoryAriaLabelledby,
-			'aria-describedby' => $this->FactoryAriaDescribedby,
-			'configuration' => $this->getFactoryConfiguration(),
-			'user' => $this->getFactoryUserClass(),
-			'system' => $this->getFactorySystemClass(),
-			'data' => $this->getFactoryDataParams(),
-			'ext' => $this->getFactoryExtendedProperties()
+			'aria-describedby' => $this->FactoryAriaDescribedby
 		];
 	}
 

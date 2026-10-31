@@ -321,7 +321,7 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 	public function buildFormHiddenPostVars()
 	{
 		foreach ($this->getHiddenPostFields() as $_hidden) {
-			echo $_hidden->build() . "\n\t";
+			$_hidden->buildUnwrapped();
 		}
 	}
 

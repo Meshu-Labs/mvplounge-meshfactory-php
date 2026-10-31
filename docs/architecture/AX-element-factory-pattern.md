@@ -7,6 +7,7 @@ Related documents:
 - [API reference](AX-element-factory-api-reference.md): methods by layer.
 - [Inventory](AX-element-factory-inventory.md): every element, its class, tier, test coverage, and TypeScript counterpart.
 - [TypeScript alignment](AX-element-factory-typescript-alignment.md): mapping to the Mesh UI library.
+- [Field modes](AX-element-factory-field-modes.md): wrapped (default) and raw field output.
 - [Rendered output catalog](../behavior/BV-element-factory-rendered-output-catalog.md): what the sandbox renders.
 - [Implementation backlog](../behavior/BV-element-factory-implementation-backlog.md): Given-When-Then stories.
 
@@ -88,7 +89,7 @@ Depth rule: concrete classes sit at most two abstracts below `FactoryAbstract`, 
 
 Two consequences worth knowing:
 
-- Only keys in the attribute map reach step 3. Params such as `data`, `user`, `system`, `configuration`, `ext`, `label`, `fieldset` are not mapped, so they are ignored today, and `content` works only in the constructor. Use `addData()`, `addClass()`, `addContent()`, and the other mutators instead. See `EF-004`.
+- Only keys in the attribute map reach step 3. Params such as `data`, `user`, `system`, `configuration`, `ext`, `label`, `fieldset` are not mapped, so they are ignored today on non-field elements (field classes process `label` and `tooltip`, `EF-066`), and `content` works only in the constructor. Use `addData()`, `addClass()`, `addContent()`, and the other mutators instead. See `EF-004`.
 - The allowed list is also the gate at render time. An attribute that is not allowed returns `NULL` and is dropped silently.
 
 ## Three Invocation Styles
