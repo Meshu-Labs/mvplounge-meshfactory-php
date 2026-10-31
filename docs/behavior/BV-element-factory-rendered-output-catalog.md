@@ -47,11 +47,12 @@ The three domain suites are the only scripts that assert specific fragments, and
 
 | Suite | Scenarios | Fragments asserted |
 |---|---|---|
+| `Field/Generic` | `Fieldset`, `FieldsetLabel`, all field classes | Exact wrapped structure against the Storybook tree (label, tooltip, inner wrapper, clears), raw output, wrapper tokens (`text`, `email`, `pw`, `select`, `submit`, `button`, `radio-group`), bare hidden fields (wrapped only with a fieldset), radio `for`/`id` pairing, radio and select cascade, and fieldset combinations (`EF-066`) |
 | `Field/Params` | `InputText`, `InputEmailer`, `FormButton`, `InputHidden`, `InputPassword`, `InputRadio`, `SelectOption`, `SelectOptions` | Every global attribute fragment (`id`, `class`, `title="..."`, `style="display:block"`, `lang`, `dir`, `hidden="hidden"`, `tabindex="2"`, `draggable`, `contenteditable`, `spellcheck`, `translate`, `role`, three ARIA attributes) plus per-class fragments such as `name="text_name"`, `type="email"`, `value="2"`, `selected`, `checked`, `enabled`, and `>Two<` |
 | `Form/Factory` and `Form/Params` | Login, registration, address, and AJAX profile forms | Each form's `compileAsJson()` contains the action, field names, button label, hidden field names, and `multipart/form-data` or `_blank` where set |
 | `Table/Factory` and `Table/Params` | Four-column summary, merged cell, grouped header, data table | `compileAsArray()` JSON contains attribute fragments (`colspan`, `rowspan`, `scope`, `headers`, `abbr`) and cell text |
 
-These suites assert `enabled` on fields, which `EF-008` would change, and they never assert that `label` or `fieldset` params render.
+These suites assert `enabled` on fields, which `EF-008` would change. The Params flavor does not yet assert that `label` or `fieldset` params render; `Field/Generic` pins the wrapped and raw label output.
 
 ## Rendered Output By Family (default state)
 
@@ -68,7 +69,7 @@ Output of a freshly constructed instance with no params, from the inventory scan
 | Scripting | `Script` | `<script></script>` |
 | Metadata | `Link`, `Meta` | `<link></link>`, `<meta></meta>` (`EF-001`) |
 | SVG, MathML | `Svg`, `Math` | `<svg></svg>`, `<math></math>` |
-| Field | `InputText` | `<input class="field_ui" type="text">` |
+| Field | `InputText` | `<div class="field-wrapper text" data-field="">` + label + `<div class="field-inner-wrapper"><input class="field_ui" type="text">` + clears (wrapped default; raw: `<input class="field_ui" type="text">`) |
 | Form element | `FieldsetLabel` | `<label></label>` |
 | Form element | `InputButton` | `<button></button>` |
 | Table | `TableCell` | `<td class="generic-cell"></td>` |

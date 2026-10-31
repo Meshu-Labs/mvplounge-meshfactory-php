@@ -10,7 +10,7 @@ This document records what lines up today, what does not, and the order in which
 |---|---|---|
 | Unit | One class per HTML element (140 enum tags) | One component per *Part* or *Module* (a composed wrapper) |
 | Location | `src/Labs/MeshFactory/Element/{Domain}` | `src/library/Foundation/{Part,Module,Helper}` |
-| Example | `InputText` renders `<input>` | `UI_TextInputWrappedField` renders `div.field-wrapper > label > div.field-inner-wrapper > input` |
+| Example | `InputText::build()` renders the wrapped tree; `buildUnwrapped()` renders `<input>` | `UI_TextInputWrappedField` renders `div.field-wrapper > label > div.field-inner-wrapper > input` |
 | Naming | `Class` | `UI_{Name}` with `_StorybookComponent` for story wrappers |
 
 The mismatch is the main alignment problem. A PHP `InputText` is the atom *inside* a TypeScript part. To produce the same DOM, PHP needs composite classes (Parts) above the element classes. This is `EF-060`.
@@ -33,7 +33,7 @@ TypeScript atoms below were read from `src/library/Foundation`. Status describes
 
 | TypeScript atom | Exports | PHP counterpart | Status |
 |---|---|---|---|
-| `Part/Field` `Field.Input` | `UI_TextInputWrappedField`, `UI_EmailInputWrappedField`, `UI_PasswordInputWrappedField`, and wrapped fields for tel, number, url, hidden, submit, image, range, reset, search, button, checkbox, color, date, file, time, radio | `InputText`, `InputEmailer`, `InputPassword`, `InputHidden`, `InputRadio`, `FormButton` | 6 of 18 types. No wrapper (`EF-060`, `EF-023`). |
+| `Part/Field` `Field.Input` | `UI_TextInputWrappedField`, `UI_EmailInputWrappedField`, `UI_PasswordInputWrappedField`, and wrapped fields for tel, number, url, hidden, submit, image, range, reset, search, button, checkbox, color, date, file, time, radio | `InputText`, `InputEmailer`, `InputPassword`, `InputHidden`, `InputRadio`, `FormButton` | 6 of 18 types. Wrapped by default, raw via `*Unwrapped` (`EF-066`, [field modes](AX-element-factory-field-modes.md)). 12 types missing (`EF-023`). |
 | `Part/Field` `Field.Select` | `UI_SelectWrappedField`, `UI_SelectField` | `SelectOption`, `SelectOptions` | Elements exist. No `multiple`, `disabled`, `optgroup`; string-key bug (`EF-024`, `EF-006`). |
 | `Part/Field` `Field.Textarea` | `UI_TextareaWrappedField`, `UI_TextareaField` | none | Unbound (`EF-020`). |
 | `Part/Field` `Fieldset.Collection` | `UI_FieldsetInputResolveFieldPart` | `Element\Form\Fieldset` | Aligned in name; label and class rendering delivered (`EF-047`). |
@@ -47,7 +47,7 @@ TypeScript atoms below were read from `src/library/Foundation`. Status describes
 | `Module/Navigation` | `SocialNavigationMenu` | `Nav`, `Ul`, `Li`, `Anchor` | Compose with elements. |
 | `Module/Accordion` | `UI_AccordionModule` family | `Details`, `Summary`, `Aside`, `Div` | Compose with elements. |
 | `Module/Table` | style and script only; **no TSX** | `TableBody`, `DataTableBody`, `TableRow`, `TableHeader`, `TableCell` | PHP is ahead (`EF-061`). |
-| `Helper` `UI_WrappedFieldLabel` | label plus tooltip | `getElementFieldLabelOpen()` | No tooltip (`EF-060`). |
+| `Helper` `UI_WrappedFieldLabel` | label plus tooltip | `getElementFieldLabelWrapper()`, `getElementFieldLabelOpen()` | Tooltip supported (`EF-066`). |
 
 ## DOM Contracts (reference trees)
 
@@ -124,7 +124,7 @@ TypeScript: none yet. The module's SCSS and script exist; a `_type/Table.module.
 | Token | Meaning | PHP source | TypeScript source |
 |---|---|---|---|
 | `field_ui` | The control itself | `$FactoryElementSystemClass = 'field_ui'` on field classes | Select, textarea, input fields |
-| `field-wrapper`, `field-inner-wrapper`, `clear` | Field wrapper tree | missing | Field parts |
+| `field-wrapper`, `field-inner-wrapper`, `clear` | Field wrapper tree | `FactoryElementFieldAbstract` wrapped default (`EF-066`) | Wrapper `styleClass` missing |
 | `generic-*` | Table and anchor defaults | `generic-table`, `generic-thead`, `generic-tr`, `generic-th`, `generic-cell`, `generic-tbody`, `generic-footer`, `generic-a`, `generic-fieldset` | none |
 | `post-form`, `ajax-form`, `post` | Form variants and submit button | `FormPost`, `FormAjax`, `FormButton` | none |
 | `html-button`, `button-wrapper`, `gen-para` | Button and paragraph parts | missing | Button, paragraph |
@@ -138,7 +138,7 @@ Rule: a token that styles a component must exist on both sides or be documented 
 | Element id | `id` | `id` |
 | Wrapper class | `styleClass` | `class` / `addClass()` |
 | Field name | `partFieldMeta.name` | `name` |
-| Field label and tooltip | `partFieldMeta.label`, `.tooltip` | `addLabel()` (param ignored, `EF-004`); no tooltip |
+| Field label and tooltip | `partFieldMeta.label`, `.tooltip` | `label` and `tooltip` params, `addLabel()`, `addTooltip()` |
 | Control class | `partFieldMeta.fieldStyleClass` | `$FactoryElementSystemClass` / `addClass()` |
 | Placeholder | `partFieldMeta.placeholder` | `placeholder` (`InputText`) |
 | Default value | `partFieldMeta.defaultValue`, `.value` | `value` |

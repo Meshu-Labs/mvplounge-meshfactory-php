@@ -17,7 +17,7 @@ This is the single working list for ElementFactory implementation work. Each row
 
 - Enum elements: 140
 - Concrete classes: 144
-- Tiers: Unbound 3, Stub 94, Family 38, Behavioral 12
+- Tiers: Unbound 3, Stub 94, Family 37, Behavioral 13
 - Spec attributes not yet modeled across curated elements: 105 (a trailing `*` means the attribute is also missing from `FactoryElementAttribute`)
 - Attributes allowed by a class but not defined for its element by the HTML Standard: 115
 - Void elements that render a closing tag: Img, Area, Base, Br, Col, Embed, Hr, Link, Meta, Param, Source, Track, Wbr
@@ -66,7 +66,7 @@ This is the single working list for ElementFactory implementation work. Each row
 | `fieldset` | `Fieldset` | Form | FactoryElementFieldsetAbstract | Family | - | - | g | Part/Field: Fieldset.Collection | - |
 | `input` | `FormButton` | Form | FactoryElementFieldInputAbstract | Behavioral | type-dependent | - | gfp | Part/Field: Field.Input (button/submit/reset) | yes |
 | `input` | `InputEmailer` | Form | InputText | Family | type-dependent | - | gfp | Part/Field: Field.Input (email) | yes |
-| `input` | `InputHidden` | Form | FactoryElementFieldInputAbstract | Family | type-dependent | - | gfp | Part/Field: Field.Input (hidden) | yes |
+| `input` | `InputHidden` | Form | FactoryElementFieldInputAbstract | Behavioral | type-dependent | - | gfp | Part/Field: Field.Input (hidden) | yes |
 | `input` | `InputPassword` | Form | FactoryElementFieldInputAbstract | Family | type-dependent | - | gfp | Part/Field: Field.Input (password) | yes |
 | `input` | `InputRadio` | Form | FactoryElementFieldInputAbstract | Behavioral | type-dependent | - | gfp | Part/Field: Field.Input (radio group) | yes |
 | `input` | `InputText` | Form | FactoryElementFieldInputAbstract | Behavioral | type-dependent | - | gfp | Part/Field: Field.Input (text) | yes |

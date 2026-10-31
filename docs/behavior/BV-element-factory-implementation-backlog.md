@@ -21,7 +21,7 @@ This is the inventory of known gaps in the ElementFactory, written as Given-When
 | EF-006 | Select with string keys collapses every value to `0` | A. Rendering correctness | P1 | Open |
 | EF-007 | Reset button renders `type="button"` | A. Rendering correctness | P1 | Open |
 | EF-008 | `access` renders the non-HTML attribute `enabled` | A. Rendering correctness | P2 | Open |
-| EF-009 | Fieldset string path echoes output | A. Rendering correctness | P2 | Open |
+| EF-009 | Fieldset string path echoes output | A. Rendering correctness | P2 | Delivered |
 | EF-020 | `textarea` has no class | B. Missing elements | P1 | Open |
 | EF-021 | `fieldset` class lives in `Abstract/` | B. Missing elements | P2 | Delivered |
 | EF-022 | `hgroup` and `slot` have no class | B. Missing elements | P2 | Open |
@@ -48,12 +48,13 @@ This is the inventory of known gaps in the ElementFactory, written as Given-When
 | EF-051 | Sandbox assertions do not pin rendered output | E. Test depth | P1 | Open |
 | EF-052 | Sandbox runner portable and enforced in CI | E. Test depth | P1 | Delivered |
 | EF-053 | Sandbox template documents are missing | E. Test depth | P2 | Delivered |
-| EF-060 | Field parts do not match TypeScript DOM structure | F. TypeScript alignment | P1 | Open |
+| EF-060 | Field parts do not match TypeScript DOM structure | F. TypeScript alignment | P1 | Partially delivered |
 | EF-061 | Table has a PHP implementation but no TypeScript `_type` | F. TypeScript alignment | P1 | Open |
 | EF-062 | No shared golden fixtures between PHP and Storybook | F. TypeScript alignment | P1 | Open |
 | EF-063 | Prop and enum names are not mapped | F. TypeScript alignment | P2 | Open |
 | EF-064 | No PHP counterpart for `Button.Generic` | F. TypeScript alignment | P2 | Open |
 | EF-065 | No PHP counterparts for `Copy.*` parts | F. TypeScript alignment | P2 | Open |
+| EF-066 | Fields render wrapped by default with a raw variant | F. TypeScript alignment | P1 | Delivered |
 | EF-070 | Installable artifact and CI upload | G. Packaging and consumption | P1 | Delivered |
 | EF-071 | First Linux CI run of the sandbox suite | G. Packaging and consumption | P1 | Open |
 | EF-072 | EELC pins `dev-main` instead of a release | G. Packaging and consumption | P2 | Open |
@@ -146,9 +147,9 @@ This is the inventory of known gaps in the ElementFactory, written as Given-When
 - **And** `access => false` renders `disabled`
 - **And** the existing field sandbox expectations that assert `enabled` are updated.
 
-### EF-009 Fieldset string path echoes output (P2)
+### EF-009 Fieldset string path echoes output (P2, Delivered)
 
-**Evidence**: `FactoryElementFieldAbstract::compileAsHtmlStringWithFieldset()` calls `buildElementContent()`, which `echo`es a newline and tab and returns `null`. Callers see stray whitespace in output and no content in the returned string.
+**Evidence**: `compileAsHtmlStringWithFieldset()` once called `buildElementContent()`, which echoed. It now concatenates `getElementOpen()`, `getElementContent()` and the wrapped field string, and the Field Generic sandbox pins the exact result.
 
 - **Given** a field rendered with `compileAsHtmlStringWithFieldset()`
 - **When** the call returns
@@ -452,9 +453,9 @@ Counts below come from the generator: 105 spec attributes not yet modeled and 11
 
 See [AX-element-factory-typescript-alignment.md](../architecture/AX-element-factory-typescript-alignment.md) for the mapping these stories rely on.
 
-### EF-060 Field parts do not match TypeScript DOM structure (P1)
+### EF-060 Field parts do not match TypeScript DOM structure (P1, Partially delivered)
 
-**Evidence**: TypeScript `UI_*WrappedField` renders `div.field-wrapper.{type} > label > div.field-inner-wrapper > .field_ui + div.clear`. PHP `InputText::compileAsHtmlString()` renders `<label>text<input class="field_ui">` with no wrapper divs, and the `label` param is currently ignored (`EF-004`).
+**Evidence**: TypeScript `UI_*WrappedField` renders `div.field-wrapper.{type} > label > div.field-inner-wrapper > .field_ui + div.clear`. `EF-066` delivered this tree for the six PHP field types. What remains: the 12 field types without a PHP class, the wrapper `styleClass`, and the whitespace and fieldset class differences listed in [AX-element-factory-field-modes.md](../architecture/AX-element-factory-field-modes.md).
 
 - **Given** a designer renders a text, select, or textarea field
 - **When** they call the PHP composite (`FieldWrapper` or equivalent)
@@ -501,6 +502,22 @@ See [AX-element-factory-typescript-alignment.md](../architecture/AX-element-fact
 - **Given** a designer needs a styled paragraph, heading, list, or image
 - **When** they use the PHP part
 - **Then** class tokens (`gen-para`, ...) and structure match the TypeScript part.
+
+### EF-066 Fields render wrapped by default with a raw variant (P1, Delivered)
+
+**Evidence**: The TypeScript Form Input Part has a "wrapped" form (`div.field-wrapper > label > div.field-inner-wrapper > control`) and a "raw" form. PHP rendered only a bare `<label>text<input>` and the user-built `buildUnwrapped*` methods had no compile counterpart. Decision and contract: [AX-element-factory-field-modes.md](../architecture/AX-element-factory-field-modes.md).
+
+- **Given** a designer builds any field (`InputText`, `InputEmailer`, `InputPassword`, `InputHidden`, `InputRadio`, `SelectOption`, `FormButton`)
+- **When** they call `compileAsHtmlString()`, `string()`, `build()`, or the `WithFieldset` variants
+- **Then** the output is the wrapped Storybook structure, with the `pw` token for passwords, `radio-group` for radio collections, and `select` for selects
+- **And** hidden fields render the bare input, and take the wrapped structure only with a fieldset
+- **And** a label renders `field-inner-label-wrapper` with `fld-label-header` and, when set, a `fld-label-tooltip` span (the label's explanation or description text)
+- **And** radio labels carry an explicit `for` matching the input `id` and also nest the input
+- **And** `compileAsHtmlStringUnwrapped()`, `buildUnwrapped()`, and the `...UnwrappedWithFieldset()` variants render the raw control and a bare label with the label text only
+- **And** `label` and `tooltip` constructor params are processed
+- **And** form hidden post variables render raw.
+
+Remaining gaps are listed in `EF-060`.
 
 ---
 

@@ -55,6 +55,12 @@ Classes in `Element/Form/` are named `{Group}{Variant}` so related classes sort 
 - Other classes (`FormButton`, `SelectOption`, `SelectOptions`, `Datalist`, `Legend`, `Meter`, `Optgroup`, `Output`, `Progress`) keep their names until a story renames them.
 - The file name matches the class name, and namespaces do not change with a rename.
 
+## Dependency Loading Convention
+
+- Put every `require_once` at the top of the file, after the `use` imports, and refer to classes through a `use` import instead of a fully qualified name inside methods.
+- Do not call `require_once` inside a method unless a circular load makes it unavoidable. Break the cycle instead: a base class must not require its own subclasses or consumers when it only uses them in type hints or `instanceof` checks (`FactoryElementFieldsetAbstract` therefore does not require `FactoryElementFieldAbstract`).
+- After changing requires, load each touched file on its own in a fresh PHP process to prove there is no cycle, then run `composer test`.
+
 ## HTML Element and Attribute Authority
 
 Use these references as authoritative for elements and attributes:

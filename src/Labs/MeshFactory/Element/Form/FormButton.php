@@ -50,6 +50,11 @@ class FormButton extends FactoryElementFieldInputAbstract
 		return $this;
 	}
 
+	protected function usesFieldLabelTag(): bool
+	{
+		return $this->FactoryElementFieldType !== FactoryElementFieldType::SUBMIT;
+	}
+
 	public function compileAsHtmlString(): ?string
 	{
 		return $this->compileAsHtmlStringWithFieldset();
@@ -59,7 +64,22 @@ class FormButton extends FactoryElementFieldInputAbstract
 	{
 		return $this->getElementFieldset()->getElementOpen()
 			. ($this->getElementFieldset()->getElementLabel() ?? '')
-			. $this->getElementOpen()
+			. parent::compileAsHtmlString()
+			. $this->getElementFieldset()->getElementClose();
+	}
+
+	public function compileAsHtmlStringUnwrapped(): ?string
+	{
+		return $this->compileAsHtmlStringUnwrappedWithFieldset();
+	}
+
+	public function compileAsHtmlStringUnwrappedWithFieldset(): ?string
+	{
+		return $this->getElementFieldset()->getElementOpen()
+			. ($this->getElementFieldset()->getElementLabel() ?? '')
+			. $this->getElementFieldUnwrappedLabelOpen()
+			. $this->getElementFieldControl()
+			. $this->getElementFieldUnwrappedLabelClose()
 			. $this->getElementFieldset()->getElementClose();
 	}
 
@@ -72,7 +92,22 @@ class FormButton extends FactoryElementFieldInputAbstract
 	{
 		$this->getElementFieldset()->buildElementOpen();
 		$this->getElementFieldset()->buildElementLabel();
-		$this->buildElementOpen();
+		parent::build();
+		$this->getElementFieldset()->buildElementClose();
+	}
+
+	public function buildUnwrapped()
+	{
+		$this->buildUnwrappedWithFieldset();
+	}
+
+	public function buildUnwrappedWithFieldset()
+	{
+		$this->getElementFieldset()->buildElementOpen();
+		$this->getElementFieldset()->buildElementLabel();
+		$this->buildElementFieldUnwrappedLabelOpen();
+		$this->buildElementFieldControl();
+		$this->buildElementFieldUnwrappedLabelClose();
 		$this->getElementFieldset()->buildElementClose();
 	}
 

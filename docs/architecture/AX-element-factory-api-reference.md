@@ -118,12 +118,16 @@ Only `addFor`. Subclasses: `FieldsetLabel`, `InputButton`, `Datalist`, `Legend`,
 | `addType($type)` | Enum or string; resolved with `FactoryElementFieldType::tryFrom`. Unknown values are dropped (`EF-007`). |
 | `addValueType($type)` / `addValue($value)` | Value is coerced by `FactoryElementPrimativeType` (`int`, `bool`, `string`, `float`). |
 | `addAccess(bool)` | Renders `enabled` or `disabled` (`EF-008`). |
-| `addLabel($label)`, `addFieldset(array)`, `addLength($n)`, `addAct($act)` | Label and fieldset need these calls; the matching params are ignored today (`EF-004`). |
-| `getElementFieldLabelOpen()` / `getElementFieldLabelClose()` | `<label>text` and `</label>`. |
+| `addLabel($label)`, `addTooltip($text)`, `addFieldset(array)`, `addLength($n)`, `addAct($act)` | `label` and `tooltip` params are processed; `fieldset` and the rest follow `EF-004`. |
+| `getElementFieldLabelOpen()` / `getElementFieldLabelClose()` | Wrapped: `<label>` plus the `field-inner-label-wrapper` block, and `</label>`. `getElementFieldLabelWrapper()` returns the block alone; `getElementFieldUnwrappedLabelOpen()` / `...Close()` return the raw `<label>text` and `</label>`. |
+| `addTooltip($text)` | The label's explanation or description text. Renders `<span class="fld-label-tooltip">` inside the label block in wrapped mode, only when a label exists; never in raw mode. |
 | `getElementFieldset()` | Lazily creates an `Element\Form\Fieldset` (concrete subclass of `FactoryElementFieldsetAbstract`; supports `legend`, `label`, `user` classes). |
-| `compileAsHtmlString()` | Label open + input + label close. |
-| `compileAsHtmlStringWithFieldset()` | Wraps in the fieldset (`EF-009`). |
-| `buildWithFieldset()` | Echo variant. |
+| `compileAsHtmlString()`, `string()`, `build()` | Wrapped default: `div.field-wrapper > label > div.field-inner-wrapper > control` ([field modes](AX-element-factory-field-modes.md)). |
+| `compileAsHtmlStringUnwrapped()`, `buildUnwrapped()` | Raw: `<label>text<control></label>`. |
+| `compileAsHtmlStringWithFieldset()`, `buildWithFieldset()` | Wrap the wrapped default in the fieldset (`EF-009`). |
+| `compileAsHtmlStringUnwrappedWithFieldset()`, `buildUnwrappedWithFieldset()` | Wrap the raw output in the fieldset. |
+| `getElementFieldControl()` / `buildElementFieldControl()` | Control hook. Subclasses (select, radio) override this, not the compile and build methods. |
+| `getElementFieldWrapperType()` | Wrapper token (`text`, `email`, `pw`, `hidden` with a fieldset, `select`, `submit`, `button`, `radio-group`). |
 | `getFactoryModel()` | `name`, `field`, `fieldset`. |
 
 Field leaf classes:
@@ -133,7 +137,7 @@ Field leaf classes:
 | `InputText` | `text` | `addPlaceholder`, `getPlaceholderText` |
 | `InputEmailer` | `email` | inherits `InputText` |
 | `InputPassword` | `password` | |
-| `InputHidden` | `hidden` | |
+| `InputHidden` | none (bare); `hidden` with a fieldset | Bare by default; wrapped only via the `WithFieldset` methods. |
 | `InputRadio` | `radio` | `addChecked`, `addCheckedElements(array)`, `getElementRadios()`, `getElementFieldChecked()` |
 | `FormButton` | `button` / `submit` | `asButton()`, `asSubmit()` |
 | `SelectOption` | select | `addOptions(array)`, `getElementFieldOptions($string)`, `hasOptions()` |

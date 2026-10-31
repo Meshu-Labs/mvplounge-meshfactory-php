@@ -14,9 +14,11 @@ use MvpLounge\MeshFactory\Enum\FactoryElement;
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 use MvpLounge\MeshFactory\Enum\FactoryElementFieldType;
 use MvpLounge\MeshFactory\Enum\FactoryElementPrimativeType;
+use MvpLounge\MeshFactory\Element\Form\Fieldset;
 
 
 require_once __DIR__ . '/FactoryElementAbstract.php';
+require_once __DIR__ . '/../Element/Form/Fieldset.php';
 require_once __DIR__ . '/../Enum/FactoryElementAttribute.php';
 require_once __DIR__ . '/../Enum/FactoryElementFieldType.php';
 require_once __DIR__ . '/../Enum/FactoryElementPrimativeType.php';
@@ -59,6 +61,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 	protected ?float $FactoryElementFieldFloatValue = NULL;
 	protected ?int $FactoryElementFieldIntValue = NULL;
 	protected ?string $FactoryElementFieldLabel = NULL;
+	protected ?string $FactoryElementFieldTooltip = NULL;
 	protected ?int $FactoryElementFieldLength = NULL;
 	protected ?string $FactoryElementFieldStringValue = NULL;
 	protected ?string $FactoryElementSystemClass = 'field_ui';
@@ -67,6 +70,15 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 	public function __construct($params = [])
 	{
 		parent::__construct($params);
+	}
+
+	protected function __process_params($params): void
+	{
+		parent::__process_params($params);
+		if (is_array($params)) {
+			$this->__process_label($params);
+			$this->__process_tooltip($params);
+		}
 	}
 
 	protected function __process_access($params): void
@@ -107,8 +119,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 
 	public function addFieldset($params): static
 	{
-		require_once __DIR__ . '/../Element/Form/Fieldset.php';
-		$this->FactoryElementFieldFieldset = (new \MvpLounge\MeshFactory\Element\Form\Fieldset())->configureFactory($params);
+		$this->FactoryElementFieldFieldset = (new Fieldset())->configureFactory($params);
 		return $this;
 	}
 
@@ -125,6 +136,21 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		$this->FactoryElementFieldLabel = $label;
 		return $this;
 	}
+
+	protected function __process_tooltip($params): void
+	{
+
+		if (!empty($params['tooltip'])) {
+			$this->addTooltip($params['tooltip']);
+		}
+	}
+
+	public function addTooltip($tooltip): static
+	{
+		$this->FactoryElementFieldTooltip = $tooltip;
+		return $this;
+	}
+
 
 	protected function __process_length($params): void
 	{
@@ -356,19 +382,135 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		return $this->FactoryElementFieldType?->value;
 	}
 
-	public function getElementFieldLabelOpen(): ?string
+	/**
+	 * Wrapped mode: `<label>` plus the `field-inner-label-wrapper` block (header and tooltip) when a label exists.
+	 * Mirrors the TypeScript `UI_WrappedFieldLabel` part.
+	 */
+	public function getElementFieldLabelOpen(): string
 	{
-		return $this->FactoryElementFieldLabel ? sprintf('<label>%s', $this->FactoryElementFieldLabel) : NULL;
+		return $this->usesFieldLabelTag() ? '<label' . $this->getElementFieldLabelAttributes() . '>' . $this->getElementFieldLabelWrapper() : '';
 	}
 
-	public function getElementFieldLabelClose(): ?string
+	/** Extra attributes for the `<label>` tag (leading space included). Radios add the explicit `for`. */
+	protected function getElementFieldLabelAttributes(): string
 	{
-		return $this->FactoryElementFieldLabel ? '</label>' : NULL;
+		return '';
 	}
+
+	public function getElementFieldLabelWrapper(): string
+	{
+		return $this->FactoryElementFieldLabel ?
+			sprintf(
+				'<div class="field-inner-label-wrapper">%s%s<div class="clear"></div></div>',
+				$this->getElementFieldLabel(),
+				$this->getElementFieldTooltip()
+			) : '';
+	}
+
+	/** Wrapped fields render a `<label>` around the inner wrapper; submit-style controls opt out. */
+	protected function usesFieldLabelTag(): bool
+	{
+		return TRUE;
+	}
+
+	public function getElementFieldWrapperType(): string
+	{
+		$_type = $this->FactoryElementFieldType?->value;
+
+		if ($_type === NULL) {
+			return $this->FactoryElement?->value ?? '';
+		}
+
+		return match ($_type) {
+			FactoryElementFieldType::PASSWORD->value => 'pw',
+			default => $_type
+		};
+	}
+
+	public function getElementFieldWrapperOpen(): string
+	{
+		return sprintf(
+			'<div class="field-wrapper %s" data-field="%s">',
+			$this->getElementFieldWrapperType(),
+			$this->FactoryElementName ?? $this->getFactoryName() ?? $this->getFactoryId() ?? ''
+		);
+	}
+
+	public function getElementFieldWrapperClose(): string
+	{
+		return '<div class="clear"></div></div>';
+	}
+
+	public function getElementFieldInnerWrapperOpen(): string
+	{
+		return '<div class="field-inner-wrapper">';
+	}
+
+	public function getElementFieldInnerWrapperClose(): string
+	{
+		return '<div class="clear"></div></div>';
+	}
+
+	/** The bare control markup. Subclasses override this hook, never the compile/build pipeline. */
+	public function getElementFieldControl(): string
+	{
+		return $this->getElementOpen()
+			. $this->getElementContent()
+			. $this->getElementClose();
+	}
+
+	public function buildElementFieldControl(): void
+	{
+		$this->buildElementOpen();
+		$this->buildElementContent();
+		$this->buildElementClose();
+	}
+
+	public function getElementFieldUnwrappedLabelOpen(): string
+	{
+		return $this->FactoryElementFieldLabel ?
+			sprintf('<label%s>%s', $this->getElementFieldLabelAttributes(), $this->FactoryElementFieldLabel) : '';
+	}
+
+	public function getElementFieldLabel(): string
+	{
+		return $this->FactoryElementFieldLabel ?
+			sprintf(
+				'<span class="fld-label-header">%s</span>',
+				$this->FactoryElementFieldLabel
+			) : '';
+	}
+
+	public function getElementFieldLabelUnwrapped(): string
+	{
+		return $this->FactoryElementFieldLabel ?? '';
+
+	}
+
+	public function getElementFieldLabelClose(): string
+	{
+		return $this->usesFieldLabelTag() ? '</label>' : '';
+	}
+
+	public function getElementFieldUnwrappedLabelClose(): string
+	{
+		return $this->FactoryElementFieldLabel ? '</label>' : '';
+	}
+
+
+	/**
+	 * Tooltip = label explanation or description text. Rendered only in wrapped mode and only when a label exists;
+	 * raw (unwrapped) fields render the label text alone.
+	 */
+	public function getElementFieldTooltip(): string
+	{
+		return $this->FactoryElementFieldTooltip ? sprintf('<span class="fld-label-tooltip">%s</span>', $this->FactoryElementFieldTooltip) : '';
+	}
+
 
 	public function getElementFieldLength(): ?string
 	{
-		return $this->FactoryElementFieldLabel;
+		return $this->FactoryElementFieldLength;
 
 	}
 
@@ -383,11 +525,10 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		return $this->FactoryElementFieldAct;
 	}
 
-	public function getElementFieldset()
+	public function getElementFieldset($params = []): ?FactoryElementFieldsetAbstract
 	{
-		require_once __DIR__ . '/../Element/Form/Fieldset.php';
 		if (!($this->FactoryElementFieldFieldset instanceof FactoryElementFieldsetAbstract)) {
-			$this->FactoryElementFieldFieldset = new \MvpLounge\MeshFactory\Element\Form\Fieldset();
+			$this->FactoryElementFieldFieldset = new Fieldset($params);
 		}
 		return $this->FactoryElementFieldFieldset;
 	}
@@ -396,55 +537,113 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 	{
 		return $this->getElementFieldset()->getElementOpen()
 			. ($this->getElementFieldset()->getElementLabel() ?? '')
-			. $this->getElementFieldLabelOpen()
-			. $this->getElementOpen()
-			. $this->buildElementContent()
-			. $this->getElementClose()
-			. $this->getElementFieldLabelClose()
+			. $this->compileAsHtmlString()
 			. $this->getElementFieldset()->getElementClose();
 	}
 
+	/** Wrapped (default) output: `div.field-wrapper > label > div.field-inner-wrapper > control`. */
 	public function compileAsHtmlString(): ?string
 	{
-		return $this->getElementFieldLabelOpen()
-			. $this->getElementOpen()
-			. $this->getElementContent()
-			. $this->getElementClose()
-			. $this->getElementFieldLabelClose();
+		return $this->getElementFieldWrapperOpen()
+			. $this->getElementFieldLabelOpen()
+			. $this->getElementFieldInnerWrapperOpen()
+			. $this->getElementFieldControl()
+			. $this->getElementFieldInnerWrapperClose()
+			. $this->getElementFieldLabelClose()
+			. $this->getElementFieldWrapperClose();
 	}
 
-	public function string(): ?string
+	/** Raw output: `<label>text<control></label>` with no wrapper divs. */
+	public function compileAsHtmlStringUnwrapped(): ?string
 	{
-		return $this->compileAsHtmlString();
+		return $this->getElementFieldUnwrappedLabelOpen()
+			. $this->getElementFieldControl()
+			. $this->getElementFieldUnwrappedLabelClose();
+	}
+
+	public function compileAsHtmlStringUnwrappedWithFieldset(): ?string
+	{
+		return $this->getElementFieldset()->getElementOpen()
+			. ($this->getElementFieldset()->getElementLabel() ?? '')
+			. $this->compileAsHtmlStringUnwrapped()
+			. $this->getElementFieldset()->getElementClose();
+	}
+
+	public function buildFieldWrapperOpen()
+	{
+		echo $this->getElementFieldWrapperOpen() . "\n\t";
+	}
+
+	public function buildFieldWrapperClose()
+	{
+		echo $this->getElementFieldWrapperClose() . "\n\t";
+	}
+
+	public function buildFieldInnerWrapperOpen()
+	{
+		echo $this->getElementFieldInnerWrapperOpen() . "\n\t";
+	}
+
+	public function buildFieldInnerWrapperClose()
+	{
+		echo $this->getElementFieldInnerWrapperClose() . "\n\t";
 	}
 
 	public function build()
 	{
-		$this->buildElementLabelOpen();
-		$this->buildElementOpen();
-		$this->buildElementContent();
-		$this->buildElementClose();
-		$this->buildElementLabelClose();
+		$this->buildFieldWrapperOpen();
+		$this->buildElementFieldLabelOpen();
+		$this->buildFieldInnerWrapperOpen();
+		$this->buildElementFieldControl();
+		$this->buildFieldInnerWrapperClose();
+		$this->buildElementFieldLabelClose();
+		$this->buildFieldWrapperClose();
 	}
 
 	public function buildWithFieldset()
 	{
 		$this->getElementFieldset()->buildElementOpen();
 		$this->getElementFieldset()->buildElementLabel();
-		$this->buildElementLabelOpen();
-		$this->buildElementOpen();
-		$this->buildElementContent();
-		$this->buildElementClose();
-		$this->buildElementLabelClose();
+		$this->build();
 		$this->getElementFieldset()->buildElementClose();
 	}
 
-	public function buildElementLabelOpen()
+	public function buildUnwrapped()
+	{
+		$this->buildElementFieldUnwrappedLabelOpen();
+		$this->buildElementFieldControl();
+		$this->buildElementFieldUnwrappedLabelClose();
+	}
+
+	public function buildUnwrappedWithFieldset()
+	{
+		$this->getElementFieldset()->buildElementOpen();
+		$this->getElementFieldset()->buildElementLabel();
+		$this->buildUnwrapped();
+		$this->getElementFieldset()->buildElementClose();
+	}
+
+	public function buildElementFieldLabelOpen()
 	{
 		echo $this->getElementFieldLabelOpen() . "\n\t";
 	}
 
-	public function buildElementLabelClose()
+	public function buildElementFieldUnwrappedLabelOpen()
+	{
+		echo $this->getElementFieldUnwrappedLabelOpen() . "\n\t";
+	}
+
+	public function buildElementFieldUnwrappedLabelClose()
+	{
+		echo $this->getElementFieldUnwrappedLabelClose() . "\n\t";
+	}
+
+	public function buildElementFieldLabelUnwrapped()
+	{
+		echo $this->getElementFieldLabelUnwrapped() . "\n\t";
+	}
+
+	public function buildElementFieldLabelClose()
 	{
 		echo $this->getElementFieldLabelClose() . "\n\t";
 	}

@@ -11,12 +11,12 @@ if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
 use MvpLounge\MeshFactory\Enum\FactoryElement;
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 
-require_once __DIR__ . '/FactoryElementFieldAbstract.php';
 require_once __DIR__ . '/FactoryElementAbstract.php';
 require_once __DIR__ . '/FactoryElementFormElementsAbstract.php';
+require_once __DIR__ . '/../Element/Form/FieldsetLabel.php';
 require_once __DIR__ . '/../Enum/FactoryElementAttribute.php';
 
-use MvpLounge\MeshFactory\Abstract\FactoryElementFieldAbstract;
+use MvpLounge\MeshFactory\Element\Form\FieldsetLabel;
 
 abstract class FactoryElementFieldsetAbstract extends FactoryElementAbstract
 {
@@ -74,12 +74,10 @@ abstract class FactoryElementFieldsetAbstract extends FactoryElementAbstract
 			return $this;
 		}
 
-		require_once __DIR__ . '/../Element/Form/FieldsetLabel.php';
-
 		if (is_array($label)) {
-			$this->FactoryElementFieldsetLabel = new \MvpLounge\MeshFactory\Element\Form\FieldsetLabel($label);
+			$this->FactoryElementFieldsetLabel = new FieldsetLabel($label);
 		} elseif (is_scalar($label) && trim((string) $label) !== '') {
-			$this->FactoryElementFieldsetLabel = new \MvpLounge\MeshFactory\Element\Form\FieldsetLabel(['content' => trim((string) $label)]);
+			$this->FactoryElementFieldsetLabel = new FieldsetLabel(['content' => trim((string) $label)]);
 		}
 
 		return $this;
