@@ -381,6 +381,8 @@ abstract class FactoryAbstract
 		return NULL;
 	}
 
+	// factor out string(): ?string in all instances, replace with compileAsHtmlString(): ?string
+
 	public function string(): ?string
 	{
 		return $this->compileAsHtmlString();

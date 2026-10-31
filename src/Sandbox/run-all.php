@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$php = 'C:/xampp_devops_test/php/php.exe';
+$php = PHP_BINARY;
 $runners = [];
 
 $iterator = new DirectoryIterator(__DIR__);

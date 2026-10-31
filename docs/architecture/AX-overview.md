@@ -8,6 +8,10 @@ Use this folder for deep technical and design details.
 
 ## Architecture Map
 
+- [ElementFactory Pattern](AX-element-factory-pattern.md) (start here)
+- [ElementFactory API Reference](AX-element-factory-api-reference.md)
+- [ElementFactory Inventory](AX-element-factory-inventory.md) (generated)
+- [ElementFactory and TypeScript Alignment](AX-element-factory-typescript-alignment.md)
 - [Implementation Contracts](AX-implementation-contracts.md)
 - [System Overview](AX-system-overview.md)
 - [Factory Naming and Inheritance](AX-factory-naming-and-inheritance.md)

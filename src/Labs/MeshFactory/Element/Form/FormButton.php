@@ -13,6 +13,7 @@ use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 use MvpLounge\MeshFactory\Enum\FactoryElementFieldType;
 use MvpLounge\MeshFactory\Enum\FactoryElementPrimativeType;
 use MvpLounge\MeshFactory\Abstract\FactoryElementFieldInputAbstract;
+use MvpLounge\MeshFactory\Abstract\FactoryElementFieldsetAbstract;
 
 require_once __DIR__ . '/../../Abstract/FactoryElementFieldInputAbstract.php';
 require_once __DIR__ . '/../../Enum/FactoryElementAttribute.php';
@@ -27,7 +28,7 @@ class FormButton extends FactoryElementFieldInputAbstract
 	protected ?\MvpLounge\MeshFactory\Enum\FactoryElement $FactoryElement = \MvpLounge\MeshFactory\Enum\FactoryElement::INPUT;
 	protected ?FactoryElementFieldType $FactoryElementFieldType = FactoryElementFieldType::BUTTON;
 	protected ?FactoryElementPrimativeType $FactoryElementFieldValueType = FactoryElementPrimativeType::STRING;
-	protected ?object $FactoryElementFieldFieldset = NULL;
+	protected ?FactoryElementFieldsetAbstract $FactoryElementFieldFieldset = NULL;
 	protected ?array $FactoryElementUserClass = ['post'];
 
 	public function __construct($params = [])
@@ -66,12 +67,20 @@ class FormButton extends FactoryElementFieldInputAbstract
 			. $this->getElementFieldset()->getElementClose();
 	}
 
-	public function string(): ?string
+	public function compileAsHtmlStringWithFieldset(): ?string
 	{
-		return $this->compileAsHtmlString();
+		return $this->getElementFieldset()->getElementOpen()
+			. $this->getElementOpen()
+			. $this->getElementFieldset()->getElementClose();
+	}
+	public function build()
+	{
+		$this->getElementFieldset()->buildElementOpen();
+		$this->buildElementOpen();
+		$this->getElementFieldset()->buildElementClose();
 	}
 
-	public function build()
+	public function buildWithFieldset()
 	{
 		$this->getElementFieldset()->buildElementOpen();
 		$this->buildElementOpen();
@@ -80,7 +89,6 @@ class FormButton extends FactoryElementFieldInputAbstract
 
 	public function getFactoryModel(): array
 	{
-
 		return [
 			'field' => $this->getElementOpen(),
 			'fieldset' => $this->getElementFieldset()->compileAsArray()

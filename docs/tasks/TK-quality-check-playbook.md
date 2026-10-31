@@ -190,10 +190,11 @@ Factory strategy scaffold ownership and editable boundaries are defined in:
 
 - `docs/tasks/TK-factory-sandbox-template.md`
 
-Run the MeshFactory sandbox suite through the library runner:
+Run the MeshFactory sandbox suite through the library runner (either command; the runner uses the PHP that starts it):
 
 ```powershell
 & "C:/xampp_devops_test/php/php.exe" "c:/_src/app-mvplounge-meshfactory/src/Sandbox/MeshFactory/run-all.php"
+& "C:/xampp_devops_test/php/php.exe" "C:/Users/lball/AppData/Roaming/Composer/latest.phar" test
 ```
 
 ## Params Sandbox Template

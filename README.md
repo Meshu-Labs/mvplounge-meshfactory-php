@@ -6,6 +6,10 @@ This README is the primary summary for the platform.
 ## Documentation Model
 
 - Docs entrypoint and namespace summary: [docs/.instructions.md](docs/.instructions.md)
+- ElementFactory pattern guide with invocation examples: [docs/architecture/AX-element-factory-pattern.md](docs/architecture/AX-element-factory-pattern.md)
+- Element inventory (generated, one row per element): [docs/architecture/AX-element-factory-inventory.md](docs/architecture/AX-element-factory-inventory.md)
+- Implementation backlog (Given-When-Then): [docs/behavior/BV-element-factory-implementation-backlog.md](docs/behavior/BV-element-factory-implementation-backlog.md)
+- TypeScript alignment: [docs/architecture/AX-element-factory-typescript-alignment.md](docs/architecture/AX-element-factory-typescript-alignment.md)
 - Detailed architecture encyclopedia: [docs/architecture/AX-overview.md](docs/architecture/AX-overview.md)
 - Agent governance and operating policy: [AGENTS.md](AGENTS.md)
 
@@ -65,7 +69,7 @@ See the [branching and publishing setup](docs/tasks/TK-quality-check-playbook.md
 
 ## Installation
 
-This package requires PHP 8.1 or later.
+This package requires PHP 8.2 or later.
 
 ```bash
 composer require mvplounge/meshfactory
@@ -76,3 +80,30 @@ Composer loads the package classes automatically. For manual bootstrap, include 
 ```php
 require __DIR__ . '/vendor/autoload.php';
 ```
+
+## Quick Start
+
+Every element is one class. Build it with a fluent chain or a params array, then render it:
+
+```php
+use MvpLounge\MeshFactory\Element\TextContent\Div;
+use MvpLounge\MeshFactory\Element\InlineTextSemantics\Anchor;
+
+echo (new Div())->addId('hero')->addClass('card')->addContent('Hello')->string();
+// <div id="hero" class="card">Hello</div>
+
+echo (new Anchor(['href' => '/home', 'target' => '_blank', 'content' => 'Home']))->string();
+// <a class="generic-a" href="/home" target="_blank">Home</a>
+```
+
+Read [AX-element-factory-pattern.md](docs/architecture/AX-element-factory-pattern.md) for the full pattern, tables, forms, and extension recipes.
+
+## Working With The Library
+
+| Task | Command |
+|---|---|
+| Run the full sandbox suite | `composer test` |
+| Regenerate the element inventory | `composer inventory` |
+| Build an installable artifact | `composer artifact -- --version=dev-local` |
+
+Packaging, local consumption through Composer, and testing inside the EELC instance are covered in [TK-package-and-xamppire-consumption.md](docs/tasks/TK-package-and-xamppire-consumption.md). Known gaps are tracked as Given-When-Then stories in [BV-element-factory-implementation-backlog.md](docs/behavior/BV-element-factory-implementation-backlog.md).

@@ -13,6 +13,7 @@ use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 use MvpLounge\MeshFactory\Enum\FactoryElementFieldType;
 use MvpLounge\MeshFactory\Enum\FactoryElementPrimativeType;
 use MvpLounge\MeshFactory\Abstract\FactoryElementFieldInputAbstract;
+use MvpLounge\MeshFactory\Abstract\FactoryElementFieldsetAbstract;
 
 
 require_once __DIR__ . '/../../Abstract/FactoryElementFieldInputAbstract.php';
@@ -21,7 +22,7 @@ require_once __DIR__ . '/../../Enum/FactoryElementFieldType.php';
 require_once __DIR__ . '/../../Enum/FactoryElementPrimativeType.php';
 
 
-
+// change file name to InputRadio. Change class name to InputRadio. Update all references.
 class RadioInput extends FactoryElementFieldInputAbstract
 {
 	protected array $AllowedFactoryElementAttributes = [
@@ -37,7 +38,7 @@ class RadioInput extends FactoryElementFieldInputAbstract
 	protected ?\MvpLounge\MeshFactory\Enum\FactoryElement $FactoryElement = \MvpLounge\MeshFactory\Enum\FactoryElement::INPUT;
 	protected ?FactoryElementFieldType $FactoryElementFieldType = FactoryElementFieldType::RADIO;
 	protected ?FactoryElementPrimativeType $FactoryElementFieldValueType = FactoryElementPrimativeType::STRING;
-	protected ?object $FactoryElementFieldFieldset = NULL;
+	protected ?FactoryElementFieldsetAbstract $FactoryElementFieldFieldset = NULL;
 
 	public function __construct($params = [])
 	{
@@ -67,33 +68,66 @@ class RadioInput extends FactoryElementFieldInputAbstract
 		return $this;
 	}
 
+	public function compileAsHtmlStringWithFieldset(): ?string
+	{
+		return $this->getElementFieldset()->getElementOpen()
+			. $this->getElementFieldLabelOpen()
+			. $this->renderRadioMarkup()
+			. $this->getElementFieldLabelClose()
+			. $this->getElementFieldset()->getElementClose();
+	}
+
+	public function compileAsHtmlString(): ?string
+	{
+		return $this->getElementFieldLabelOpen()
+			. $this->renderRadioMarkup()
+			. $this->getElementFieldLabelClose();
+	}
+
 	public function build()
 	{
-		$this->getElementFieldset()->buildElementOpen();
+		$this->buildElementLabelOpen();
 		$this->buildElementRadios();
-		$this->getElementFieldset()->buildElementClose();
+		$this->buildElementLabelClose();
+	}
 
+	public function buildWithFieldset()
+	{
+		$this->getElementFieldset()->buildElementOpen();
+		$this->buildElementLabelOpen();
+		$this->buildElementRadios();
+		$this->buildElementLabelClose();
+		$this->getElementFieldset()->buildElementClose();
 	}
 
 	public function buildElementRadios(): void
 	{
-		if (count($this->FactoryElementFieldCollection) > 0) {
-			foreach ($this->FactoryElementFieldCollection as $_radio) {
+		echo $this->renderRadioMarkup();
+	}
 
-				echo sprintf(
-					'<div class="radio-wrarrer">%s%s</div>',
+	protected function renderRadioMarkup(): string
+	{
+		if (count($this->FactoryElementFieldCollection) > 0) {
+			$_radios = [];
+			foreach ($this->FactoryElementFieldCollection as $_radio) {
+				$_radios[] = sprintf(
+					'<div class="radio-wrapper">%s%s</div>',
 					$_radio->getElementFieldLabelOpen(),
 					$_radio->addClass($this->FactoryElementUserClass)->addName($this->FactoryElementName)->getElementOpen()
 				);
 			}
+			return implode('', $_radios);
 		}
+
+		return $this->getElementOpen();
 	}
 
 	public function getFactoryModel(): array
 	{
 
 		return [
-			'fields' => $this->getElementRadios(),
+			'name' => $this->getFactoryName(),
+			'field' => $this->getElementRadios(),
 			'fieldset' => $this->getElementFieldset()->compileAsArray()
 		];
 	}
