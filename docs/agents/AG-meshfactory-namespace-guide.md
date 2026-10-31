@@ -28,7 +28,7 @@ All abstract factory base classes follow the naming convention `FactoryElement{D
 - `FactoryElementAbstract` - Element-level abstract providing element-specific behavior
 - `FactoryElementFieldAbstract` - Field element families
 - `FactoryElementFieldInputAbstract` - Specific input field behavior
-- `FactoryElementFieldsetAbstract` - Fieldset container behavior
+- `FactoryElementFieldsetAbstract` - Fieldset container behavior (abstract; instantiate `Element\Form\Fieldset`)
 - `FactoryElementFormAbstract` - Form container behavior
 - `FactoryElementHtmlAbstract` - Plain element base (global attributes only); 99 concrete subclasses
 - `FactoryElementHtml5Abstract` - Unused: no subclasses and broken `require_once` targets (`EF-041`)
@@ -110,13 +110,13 @@ All abstract factory base classes follow the naming convention `FactoryElement{D
 	- Prefer a family-specific enum only when the attribute is not a good fit for the shared field attribute set.
 	- `FactoryElementFieldAbstract` owns shared field attributes like `access`, `value`, and `selected`.
 	- `FactoryElementFieldInputAbstract` owns input-specific attributes like `type`, `placeholder`, and `checked`.
-	- `TextInput`, `EmailerInput`, and `PasswordInput` should expose the input shape their type implies, not a broader set.
-	- `HiddenInput` should stay minimal and only expose hidden-input behavior.
-	- `RadioInput` should expose `checked` and the radio collection behavior.
+	- `InputText`, `InputEmailer`, and `InputPassword` should expose the input shape their type implies, not a broader set.
+		- `InputHidden` should stay minimal and only expose hidden-input behavior.
+		- `InputRadio` should expose `checked` and the radio collection behavior.
 	- `SelectOption` and `SelectOptions` should stay centered on `value` and `selected`.
 	- `FormButton` should stay centered on button-type input behavior and fieldset composition.
 	- `FactoryElementFieldsetAbstract` should stay focused on fieldset-level behavior only.
-- For Html5 classes, keep the base generic. A class like `Label` that alone declares `FactoryElementAttribute::FOR` should also own the `for` property flow and its `getFactoryAttributePropertyCollection()` override.
+- For Html5 classes, keep the base generic. A class like `FieldsetLabel` that alone declares `FactoryElementAttribute::FOR` should also own the `for` property flow and its `getFactoryAttributePropertyCollection()` override.
 - For classes that include `img`, verify the image-only attributes are modeled explicitly instead of being left implicit.
 - If a class only supports shared DOM attributes, keep the collection method thin and avoid inventing extra enums.
 
@@ -209,7 +209,7 @@ This section defines mandatory quality checks to prevent partial migrations and 
 
 **Rule 6: Direct Instantiation ($new)**
 - All `new ClassName()` operations MUST use the current class name.
-- Violation example: `new FieldsetFactoryBase($params)` should be `new FactoryElementFieldsetAbstract($params)`
+- Violation example: `new FieldsetFactoryBase($params)` should be `new Fieldset($params)` (`FactoryElementFieldsetAbstract` is abstract)
 - Process: Direct instantiations must be updated when parent class names change.
 
 **Rule 7: No Duplicate File Names**
@@ -270,7 +270,7 @@ Run this check annually or before major releases to catch drift:
 	```php
 	// WRONG - mixing old and new types in same class family:
 	public function addField(): FactoryElementFieldAbstract { ... }
-	public function addFieldset(): FieldsetFactoryBase { ... }  // Should be FactoryElementFieldsetAbstract
+	public function addFieldset(): FieldsetFactoryBase { ... }  // Should be Fieldset (extends FactoryElementFieldsetAbstract)
 	```
 	Fix: Ensure all return types use consistent naming.
 

@@ -13,7 +13,7 @@ if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
 use MvpLounge\MeshFactory\Enum\FactoryElement;
 use MvpLounge\MeshFactory\Element\Field\FormButton;
 
-require_once __DIR__ . '/../Form/PostForm.php';
+require_once __DIR__ . '/FormPost.php';
 
 
 
@@ -23,9 +23,7 @@ require_once __DIR__ . '/../Form/PostForm.php';
  *
  * MDN: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form
  */
-
-// change file name to FormAjax. Change class name to FormAjax. Update all references.
-class AjaxForm extends PostForm
+class FormAjax extends FormPost
 {
 	protected array $AllowedFactoryElements = [
 		FactoryElement::FORM

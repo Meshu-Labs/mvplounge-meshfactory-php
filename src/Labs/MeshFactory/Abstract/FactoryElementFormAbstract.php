@@ -14,12 +14,14 @@ use MvpLounge\MeshFactory\Enum\FactoryElement;
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
 use MvpLounge\MeshFactory\Enum\FactoryElementWindowTarget;
 use MvpLounge\MeshFactory\Element\Field\FormButton;
-use MvpLounge\MeshFactory\Element\Field\HiddenInput;
+use MvpLounge\MeshFactory\Element\Field\InputHidden;
+use MvpLounge\MeshFactory\Element\Form\Fieldset;
 
 
 require_once __DIR__ . '/FactoryElementAbstract.php';
+require_once __DIR__ . '/../Element/Form/Fieldset.php';
 require_once __DIR__ . '/../Element/Form/FormButton.php';
-require_once __DIR__ . '/../Element/Form/HiddenInput.php';
+require_once __DIR__ . '/../Element/Form/InputHidden.php';
 require_once __DIR__ . '/../Enum/FactoryElement.php';
 require_once __DIR__ . '/../Enum/FactoryElementAttribute.php';
 require_once __DIR__ . '/../Enum/FactoryElementWindowTarget.php';
@@ -206,19 +208,62 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 			'type' => $type
 		]);
 		return $this;
+
 	}
 
-	public function addFormSectionFields($section = 'main', $namespace = NULL, $field = NULL): static
+	protected function getFormSectionKey($section): string
 	{
-		$_section = strtolower((string) $section);
+		return strtolower(trim((string) $section)) ?: 'main';
+	}
+
+	protected function ensureFormSection($section = 'main', $fieldset = []): string
+	{
+		$_section = $this->getFormSectionKey($section);
 		if (!isset($this->FactoryElementFormSectionFields[$_section])) {
-			$this->FactoryElementFormSectionFields[$_section] = [];
+			$this->FactoryElementFormSectionFields[$_section] = [
+				'field' => [],
+				'fieldset' => (new Fieldset([
+					'id' => sprintf('fieldset_section_%s', $_section),
+					'user' => [
+						'col',
+						'full'
+					]
+				]))
+			];
 		}
+
+		if (is_array($fieldset) && count($fieldset) > 0) {
+			$this->FactoryElementFormSectionFields[$_section]['fieldset']->configureFactory($fieldset);
+		}
+
+		return $_section;
+	}
+
+	public function addFormSectionFields($section = 'main', $namespace = NULL, $field = NULL, $fieldset = []): static
+	{
+		$_section = $this->ensureFormSection($section, $fieldset);
 
 		if ($namespace !== NULL && $field !== NULL) {
-			$this->FactoryElementFormSectionFields[$_section][(string) $namespace] = $field;
+			$this->FactoryElementFormSectionFields[$_section]['field'][(string) $namespace] = $field;
 		}
 
+		return $this;
+	}
+
+	public function getFormSectionFieldset($section = 'main'): FactoryElementFieldsetAbstract
+	{
+		return $this->FactoryElementFormSectionFields[$this->ensureFormSection($section)]['fieldset'];
+	}
+
+	public function addFormSectionFieldsetLabel($section = 'main', $label = NULL): static
+	{
+		$this->getFormSectionFieldset($section)->addLabel($label);
+		return $this;
+	}
+
+	public function addFormSectionFieldsetClass($section = 'main', $class = NULL): static
+	{
+		$this->getFormSectionFieldset($section)->addClass($class);
 		return $this;
 	}
 
@@ -230,7 +275,7 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 	public function addHiddenPostField($params): static
 	{
 		if (is_array($params)) {
-			$this->FactoryElementFormHiddenVars[] = new HiddenInput($params);
+			$this->FactoryElementFormHiddenVars[] = new InputHidden($params);
 		}
 
 		return $this;
@@ -282,10 +327,14 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 
 	public function buildFormSectionFields($section = '')
 	{
+		$_sections = $section === '' ? $this->getFormSectionFields() : [$this->getFormSectionKey($section) => $this->getFormSectionFields($section)];
 
-		$_field_sections = $this->getFormSectionFields($section);
-		if (count($_field_sections['field'] ?? []) > 0) {
+		foreach ($_sections as $_field_sections) {
+			if (!is_array($_field_sections) || count($_field_sections['field'] ?? []) <= 0) {
+				continue;
+			}
 			$_field_sections['fieldset']->buildElementOpen();
+			$_field_sections['fieldset']->buildElementLabel();
 			foreach ($_field_sections['field'] as $_fields) {
 				if (is_array($_fields)) {
 					$this->buildFormField($_fields);
@@ -309,14 +358,14 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 		return $this->FactoryElementFormHiddenVars;
 	}
 
-	public function getFormSectionFields($section = '')
+	public function getFormSectionFields($section = ''): array
 	{
 
 		if ($section !== '') {
-			return $this->FactoryElementFormSectionFields[$section] ?? [];
-		} else {
-			return $this->FactoryElementFormSectionFields;
+			return $this->FactoryElementFormSectionFields[$this->getFormSectionKey($section)] ?? [];
 		}
+
+		return $this->FactoryElementFormSectionFields;
 	}
 
 	protected function buildFormField($fields)
@@ -453,30 +502,36 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 		return $this->FactoryElementFormHiddenVars;
 	}
 
-	public function compileFormResetButton()
+	public function compileFormResetButtonAsArray(): array
 	{
-		echo $this->getFormResetButton()->compileAsArray();
+		return $this->getFormResetButton()->compileAsArray();
 	}
 
 	public function compileAsArray(): ?array
 	{
 		return [
 			'open' => $this->getElementOpen(),
-			'hidden' => $this->compileFormHiddenVars(),
-			'fields' => $this->compileFormFields(),
+			'hidden' => $this->compileFormHiddenVarsAsArray(),
+			'fieldsets' => $this->compileFormFieldsetsAsArray(),
+			'fields' => $this->compileFormFieldsAsArray(),
 			'buttons' => $this->compileFormSubmitButton(),
 			'close' => $this->getElementClose()
 		];
 	}
 
-	// factor out complile() and replace all instances with compileAsArray()
-
-	public function compile(): ?array
+	public function compileFormFieldsetsAsArray(): array
 	{
-		return $this->compileAsArray();
+		$_fieldsets = [];
+		foreach ($this->getFormSectionFields() as $_section_id => $_section) {
+			if (isset($_section['fieldset'])) {
+				$_fieldsets[$_section_id] = $_section['fieldset']->compileAsArray();
+			}
+		}
+
+		return $_fieldsets;
 	}
 
-	public function compileFormHiddenVars($string = FALSE): array
+	public function compileFormHiddenVarsAsArray($string = FALSE): array
 	{
 
 		$_field_return = [];
@@ -493,7 +548,7 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 		return $_field_return;
 	}
 
-	public function compileFormFields($string = FALSE): array
+	public function compileFormFieldsAsArray($string = FALSE): array
 	{
 
 		$_field_return = [];
@@ -504,7 +559,7 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 				continue;
 			}
 
-			if (count($_section) > 0) {
+			if (count($_section['field'] ?? []) > 0) {
 				$_field_return = array_merge($_field_return, [$_field_section_id => $this->compileFormSection($_section, $string)]);
 			}
 		}
@@ -523,11 +578,13 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 
 		$_field_return = [];
 
-		if (count($section) <= 0) {
+		$_fields = $section['field'] ?? [];
+
+		if (count($_fields) <= 0) {
 			return $_field_return;
 		}
 
-		foreach ($section as $_fld_index => $_field) {
+		foreach ($_fields as $_fld_index => $_field) {
 
 			if ($_field instanceof FactoryElementFieldAbstract) {
 				$_field_return[$_fld_index] = $string ? $_field->compileAsHtmlString() : $_field->compileAsArray();
@@ -545,10 +602,21 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 		return [
 			'open' => $this->getElementOpen(),
 			'hidden' => $this->getFormHiddenVars(),
+			'fieldsets' => $this->getFormFieldsets(),
 			'fields' => $this->getFormFields(),
 			'buttons' => $this->getFormButtons(),
 			'close' => $this->getElementClose()
 		];
+	}
+
+	public function getFormFieldsets(): array
+	{
+		$_fieldsets = [];
+		foreach ($this->FactoryElementFormSectionFields as $_section_id => $_section) {
+			$_fieldsets[$_section_id] = $_section['fieldset'];
+		}
+
+		return $_fieldsets;
 	}
 
 	public function getFormFields(): array
@@ -556,18 +624,10 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 
 		$_fields = [];
 
-		if (count($this->FactoryElementFormSectionFields) > 0) {
-			foreach ($this->FactoryElementFormSectionFields as $field_section => $fields_section_array) {
-				if (is_array($fields_section_array)) {
-					foreach ($fields_section_array as $field_index => $field) {
-						if (!isset($_fields[$field_section])) {
-							$_fields[$field_section] = [];
-						}
-						$_fields[$field_section][$field_index] = $field;
-					}
-				}
-			}
+		foreach ($this->FactoryElementFormSectionFields as $_section_id => $_section) {
+			$_fields[$_section_id] = $_section['field'] ?? [];
 		}
+
 		return $_fields;
 	}
 
@@ -586,12 +646,13 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 		return $_buttons;
 	}
 
-	public function prepare(): array
+	public function prepareFactoryModel(): array
 	{
 		return [
 			'open' => $this->getElementOpen(),
-			'hidden' => $this->compileFormHiddenVars(TRUE),
-			'fields' => $this->compileFormFields(TRUE),
+			'hidden' => $this->compileFormHiddenVarsAsArray(TRUE),
+			'fieldsets' => $this->compileFormFieldsetsAsArray(),
+			'fields' => $this->compileFormFieldsAsArray(TRUE),
 			'buttons' => $this->getFormSubmitButton()->compileAsHtmlString(),
 			'close' => $this->getElementClose()
 		];
@@ -599,7 +660,7 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 
 	public function compileAsJson(): ?string
 	{
-		$_payload = $this->prepare();
+		$_payload = $this->prepareFactoryModel();
 		$_json = json_encode($_payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 		return is_string($_json) ? $_json : NULL;
 	}

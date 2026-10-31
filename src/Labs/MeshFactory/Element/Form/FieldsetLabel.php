@@ -8,18 +8,16 @@ if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
     throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
 }
 
-use MvpLounge\MeshFactory\Enum\FactoryElement;
 use MvpLounge\MeshFactory\Abstract\FactoryElementFormElementsAbstract;
+use MvpLounge\MeshFactory\Enum\FactoryElement;
 
 require_once __DIR__ . '/../../Abstract/FactoryElementFormElementsAbstract.php';
 
-// change file name to InputButton. Change class name to InputButton. Update all references.
-
-class Button extends FactoryElementFormElementsAbstract
+class FieldsetLabel extends FactoryElementFormElementsAbstract
 {
     protected array $AllowedFactoryElements = [
-        FactoryElement::BUTTON
+        FactoryElement::LABEL
     ];
 
-    protected ?FactoryElement $FactoryElement = FactoryElement::BUTTON;
+    protected ?FactoryElement $FactoryElement = FactoryElement::LABEL;
 }

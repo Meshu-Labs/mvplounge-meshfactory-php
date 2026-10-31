@@ -42,7 +42,18 @@ When abstracts are migrated, update all concrete implementations immediately.
 - Do not create or reference classes in the deprecated plural namespace:
   - `MvpLounge\MeshFactory\Element\Forms\*`
   - `src/Labs/MeshFactory/Element/Forms/*`
-- Known exception (tracked as `EF-040`): the field classes `TextInput`, `EmailerInput`, `PasswordInput`, `HiddenInput`, `RadioInput`, `FormButton`, `SelectOption`, and `SelectOptions` live in `Element/Form/` but declare namespace `MvpLounge\MeshFactory\Element\Field`. They resolve through the Composer `classmap` in `composer.json`, not PSR-4. Do not add new classes with a namespace that differs from their folder.
+- Known exception (tracked as `EF-040`): the field classes `InputText`, `InputEmailer`, `InputPassword`, `InputHidden`, `InputRadio`, `FormButton`, `SelectOption`, and `SelectOptions` live in `Element/Form/` but declare namespace `MvpLounge\MeshFactory\Element\Field`. They resolve through the Composer `classmap` in `composer.json`, not PSR-4. Do not add new classes with a namespace that differs from their folder.
+
+## Form Folder Class Naming
+
+Classes in `Element/Form/` are named `{Group}{Variant}` so related classes sort together (`EF-046`):
+
+- `Form*` for forms: `FormPost`, `FormAjax`.
+- `Input*` for input controls: `InputText`, `InputEmailer`, `InputPassword`, `InputHidden`, `InputRadio`, `InputButton`.
+- `FieldsetLabel` for the label bound to a fieldset (`Fieldset` stores one, `EF-047`).
+- `Fieldset` for the concrete fieldset subclass of `FactoryElementFieldsetAbstract`.
+- Other classes (`FormButton`, `SelectOption`, `SelectOptions`, `Datalist`, `Legend`, `Meter`, `Optgroup`, `Output`, `Progress`) keep their names until a story renames them.
+- The file name matches the class name, and namespaces do not change with a rename.
 
 ## HTML Element and Attribute Authority
 

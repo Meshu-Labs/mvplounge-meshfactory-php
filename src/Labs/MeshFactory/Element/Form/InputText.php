@@ -26,9 +26,7 @@ require_once __DIR__ . '/../../Enum/FactoryElementFieldType.php';
  *
  * MDN: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input
  */
-// change file name to InputText. Change class name to InputText. Update all references.
-
-class TextInput extends FactoryElementFieldInputAbstract
+class InputText extends FactoryElementFieldInputAbstract
 {
 
 	protected ?\MvpLounge\MeshFactory\Enum\FactoryElement $FactoryElement = \MvpLounge\MeshFactory\Enum\FactoryElement::INPUT;

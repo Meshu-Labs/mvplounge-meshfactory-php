@@ -22,8 +22,7 @@ require_once __DIR__ . '/../../Enum/FactoryElementFieldType.php';
 require_once __DIR__ . '/../../Enum/FactoryElementPrimativeType.php';
 
 
-// change file name to InputRadio. Change class name to InputRadio. Update all references.
-class RadioInput extends FactoryElementFieldInputAbstract
+class InputRadio extends FactoryElementFieldInputAbstract
 {
 	protected array $AllowedFactoryElementAttributes = [
 		FactoryElementAttribute::NAME,
@@ -62,7 +61,7 @@ class RadioInput extends FactoryElementFieldInputAbstract
 	{
 		if (is_array($params)) {
 			foreach ($params as $_radios) {
-				$this->FactoryElementFieldCollection[] = new RadioInput($_radios);
+				$this->FactoryElementFieldCollection[] = new InputRadio($_radios);
 			}
 		}
 		return $this;

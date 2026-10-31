@@ -10,10 +10,10 @@ This document records what lines up today, what does not, and the order in which
 |---|---|---|
 | Unit | One class per HTML element (140 enum tags) | One component per *Part* or *Module* (a composed wrapper) |
 | Location | `src/Labs/MeshFactory/Element/{Domain}` | `src/library/Foundation/{Part,Module,Helper}` |
-| Example | `TextInput` renders `<input>` | `UI_TextInputWrappedField` renders `div.field-wrapper > label > div.field-inner-wrapper > input` |
+| Example | `InputText` renders `<input>` | `UI_TextInputWrappedField` renders `div.field-wrapper > label > div.field-inner-wrapper > input` |
 | Naming | `Class` | `UI_{Name}` with `_StorybookComponent` for story wrappers |
 
-The mismatch is the main alignment problem. A PHP `TextInput` is the atom *inside* a TypeScript part. To produce the same DOM, PHP needs composite classes (Parts) above the element classes. This is `EF-060`.
+The mismatch is the main alignment problem. A PHP `InputText` is the atom *inside* a TypeScript part. To produce the same DOM, PHP needs composite classes (Parts) above the element classes. This is `EF-060`.
 
 ```mermaid
 flowchart TB
@@ -33,17 +33,17 @@ TypeScript atoms below were read from `src/library/Foundation`. Status describes
 
 | TypeScript atom | Exports | PHP counterpart | Status |
 |---|---|---|---|
-| `Part/Field` `Field.Input` | `UI_TextInputWrappedField`, `UI_EmailInputWrappedField`, `UI_PasswordInputWrappedField`, and wrapped fields for tel, number, url, hidden, submit, image, range, reset, search, button, checkbox, color, date, file, time, radio | `TextInput`, `EmailerInput`, `PasswordInput`, `HiddenInput`, `RadioInput`, `FormButton` | 6 of 18 types. No wrapper (`EF-060`, `EF-023`). |
+| `Part/Field` `Field.Input` | `UI_TextInputWrappedField`, `UI_EmailInputWrappedField`, `UI_PasswordInputWrappedField`, and wrapped fields for tel, number, url, hidden, submit, image, range, reset, search, button, checkbox, color, date, file, time, radio | `InputText`, `InputEmailer`, `InputPassword`, `InputHidden`, `InputRadio`, `FormButton` | 6 of 18 types. No wrapper (`EF-060`, `EF-023`). |
 | `Part/Field` `Field.Select` | `UI_SelectWrappedField`, `UI_SelectField` | `SelectOption`, `SelectOptions` | Elements exist. No `multiple`, `disabled`, `optgroup`; string-key bug (`EF-024`, `EF-006`). |
 | `Part/Field` `Field.Textarea` | `UI_TextareaWrappedField`, `UI_TextareaField` | none | Unbound (`EF-020`). |
-| `Part/Field` `Fieldset.Collection` | `UI_FieldsetInputResolveFieldPart` | `FactoryElementFieldsetAbstract` | Misplaced (`EF-021`). |
-| `Part/Buttons` `Button.Generic` | `UI_Button_HtmlPart` | `Anchor` plus `Button` stub | No composite (`EF-064`). |
+| `Part/Field` `Fieldset.Collection` | `UI_FieldsetInputResolveFieldPart` | `Element\Form\Fieldset` | Aligned in name; label and class rendering delivered (`EF-047`). |
+| `Part/Buttons` `Button.Generic` | `UI_Button_HtmlPart` | `Anchor` plus `InputButton` stub | No composite (`EF-064`). |
 | `Part/Copy` `Copy.Paragraph` | `UI_GenericParagraph` | `P` | Element only, no `gen-para` token (`EF-065`). |
 | `Part/Copy` `Copy.Header` | `h1`-`h6` | `H1`-`H6`, `Hl` | Element only. |
 | `Part/Copy` `Copy.Lists` | `ul`, `ol`, `li` | `Ul`, `Ol`, `Li` | Element only. |
 | `Part/Copy` `Copy.Images` | image blocks | `Img` | Element only, not sandboxed (`EF-050`). |
 | `Part/Cards`, `Part/Headers`, `Part/Controls` | `div`-composed cards, header block, controls | `Div`, `Header`, `P`, `A` | Compose with elements; no named PHP parts. |
-| `Module/Form` | `UI_FormModule` | `PostForm`, `AjaxForm` | Attribute parity partial (`EF-063`). |
+| `Module/Form` | `UI_FormModule` | `FormPost`, `FormAjax` | Attribute parity partial (`EF-063`). |
 | `Module/Navigation` | `SocialNavigationMenu` | `Nav`, `Ul`, `Li`, `Anchor` | Compose with elements. |
 | `Module/Accordion` | `UI_AccordionModule` family | `Details`, `Summary`, `Aside`, `Div` | Compose with elements. |
 | `Module/Table` | style and script only; **no TSX** | `TableBody`, `DataTableBody`, `TableRow`, `TableHeader`, `TableCell` | PHP is ahead (`EF-061`). |
@@ -111,7 +111,7 @@ TypeScript (`Form.module.tsx`):
 </section>
 ```
 
-PHP `PostForm` renders the `<form>` only and defaults `autocomplete="off"`.
+PHP `FormPost` renders the `<form>` only and defaults `autocomplete="off"`.
 
 ### Table
 
@@ -126,7 +126,7 @@ TypeScript: none yet. The module's SCSS and script exist; a `_type/Table.module.
 | `field_ui` | The control itself | `$FactoryElementSystemClass = 'field_ui'` on field classes | Select, textarea, input fields |
 | `field-wrapper`, `field-inner-wrapper`, `clear` | Field wrapper tree | missing | Field parts |
 | `generic-*` | Table and anchor defaults | `generic-table`, `generic-thead`, `generic-tr`, `generic-th`, `generic-cell`, `generic-tbody`, `generic-footer`, `generic-a`, `generic-fieldset` | none |
-| `post-form`, `ajax-form`, `post` | Form variants and submit button | `PostForm`, `AjaxForm`, `FormButton` | none |
+| `post-form`, `ajax-form`, `post` | Form variants and submit button | `FormPost`, `FormAjax`, `FormButton` | none |
 | `html-button`, `button-wrapper`, `gen-para` | Button and paragraph parts | missing | Button, paragraph |
 
 Rule: a token that styles a component must exist on both sides or be documented as server-only.
@@ -140,7 +140,7 @@ Rule: a token that styles a component must exist on both sides or be documented 
 | Field name | `partFieldMeta.name` | `name` |
 | Field label and tooltip | `partFieldMeta.label`, `.tooltip` | `addLabel()` (param ignored, `EF-004`); no tooltip |
 | Control class | `partFieldMeta.fieldStyleClass` | `$FactoryElementSystemClass` / `addClass()` |
-| Placeholder | `partFieldMeta.placeholder` | `placeholder` (`TextInput`) |
+| Placeholder | `partFieldMeta.placeholder` | `placeholder` (`InputText`) |
 | Default value | `partFieldMeta.defaultValue`, `.value` | `value` |
 | Select options | `partFieldMeta.options[{value,text,disabled}]` | `addOptions([value => text])` |
 | Multiple | `partFieldMeta.multiple` | none (`EF-024`) |
