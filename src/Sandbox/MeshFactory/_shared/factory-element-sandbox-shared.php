@@ -272,14 +272,12 @@ if (!function_exists('mfCollectOutputs')) {
     function mfCollectOutputs(object $factory): array
     {
         $arrayData = method_exists($factory, 'compileAsArray') ? $factory->compileAsArray() : null;
-        $compileData = method_exists($factory, 'compile') ? $factory->compile() : null;
         $jsonData = method_exists($factory, 'compileAsJson') ? $factory->compileAsJson() : null;
         $htmlData = method_exists($factory, 'compileAsHtmlString') ? $factory->compileAsHtmlString() : null;
         $stringData = method_exists($factory, 'string') ? $factory->string() : null;
 
         return [
             'arrayData' => is_array($arrayData) ? $arrayData : null,
-            'compileData' => is_array($compileData) ? $compileData : null,
             'jsonData' => is_string($jsonData) ? $jsonData : null,
             'htmlData' => is_string($htmlData) ? $htmlData : null,
             'stringData' => is_string($stringData) ? $stringData : null
@@ -310,7 +308,7 @@ if (!function_exists('mfCollectStrings')) {
 if (!function_exists('mfExtractMarkup')) {
     function mfExtractMarkup(array $outputs): string
     {
-        foreach (['arrayData', 'compileData'] as $key) {
+        foreach (['arrayData'] as $key) {
             if (!is_array($outputs[$key])) {
                 continue;
             }
@@ -344,7 +342,6 @@ if (!function_exists('mfAssertRenderableOutputs')) {
         $outputs = mfCollectOutputs($factory);
         mfPrintRenderableOutputs($className, $outputs);
         mfAssert(is_array($outputs['arrayData']), $className . ' compileAsArray() must return array.');
-        mfAssert(is_array($outputs['compileData']), $className . ' compile() must return array.');
 
         $markup = mfExtractMarkup($outputs);
         mfAssert($markup !== '', $className . ' did not produce renderable markup from compile/render methods.');
@@ -358,7 +355,6 @@ if (!function_exists('mfPrintRenderableOutputs')) {
 
         $labels = [
             'arrayData' => 'compileAsArray()',
-            'compileData' => 'compile()',
             'jsonData' => 'compileAsJson()',
             'htmlData' => 'compileAsHtmlString()',
             'stringData' => 'string()'

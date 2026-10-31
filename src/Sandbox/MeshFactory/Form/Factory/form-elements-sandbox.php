@@ -51,8 +51,8 @@ try {
         ];
     };
 
-    $makeTextField = static function (string $name, string $label, string $placeholder, array $extra = []): \MvpLounge\MeshFactory\Element\Field\TextInput {
-        $field = new \MvpLounge\MeshFactory\Element\Field\TextInput(array_merge([
+    $makeTextField = static function (string $name, string $label, string $placeholder, array $extra = []):     \MvpLounge\MeshFactory\Element\Field\InputText {
+            $field = new \MvpLounge\MeshFactory\Element\Field\InputText(array_merge([
             'name' => $name,
             'label' => $label,
             'placeholder' => $placeholder,
@@ -72,8 +72,8 @@ try {
         return $field;
     };
 
-    $makePasswordField = static function (string $name, string $label): \MvpLounge\MeshFactory\Element\Field\PasswordInput {
-        return new \MvpLounge\MeshFactory\Element\Field\PasswordInput([
+    $makePasswordField = static function (string $name, string $label):     \MvpLounge\MeshFactory\Element\Field\InputPassword {
+            return new \MvpLounge\MeshFactory\Element\Field\InputPassword([
             'name' => $name,
             'label' => $label,
             'fieldset' => [
@@ -89,7 +89,7 @@ try {
 
     $cases = [
         'LoginForm' => static function () use ($globalFormParams, $makeTextField, $makePasswordField): array {
-            $factory = (new \MvpLounge\MeshFactory\Element\Form\PostForm($globalFormParams('login')))
+            $factory = (new \MvpLounge\MeshFactory\Element\Form\FormPost($globalFormParams('login')))
                 ->addAction('/account/login')
                 ->addMethod('post')
                 ->addNoValidate('novalidate')
@@ -103,7 +103,7 @@ try {
             return [$factory, ['/account/login', 'email', 'password', 'Sign in', 'csrf_token']];
         },
         'RegistrationForm' => static function () use ($globalFormParams, $makeTextField, $makePasswordField): array {
-            $factory = (new \MvpLounge\MeshFactory\Element\Form\PostForm($globalFormParams('registration')))
+            $factory = (new \MvpLounge\MeshFactory\Element\Form\FormPost($globalFormParams('registration')))
                 ->addAction('/account/register')
                 ->addMethod('post')
                 ->addEnc('multipart/form-data')
@@ -122,7 +122,7 @@ try {
             return [$factory, ['/account/register', 'first_name', 'last_name', 'confirm_password', 'Create account', 'multipart/form-data']];
         },
         'AddressForm' => static function () use ($globalFormParams, $makeTextField): array {
-            $factory = (new \MvpLounge\MeshFactory\Element\Form\PostForm($globalFormParams('address')))
+            $factory = (new \MvpLounge\MeshFactory\Element\Form\FormPost($globalFormParams('address')))
                 ->addAction('/account/address')
                 ->addMethod('post')
                 ->addNoValidate('novalidate')
@@ -140,7 +140,7 @@ try {
             return [$factory, ['/account/address', 'street_1', 'postal_code', 'Save address', 'address_id']];
         },
         'ProfileUpdateAjaxForm' => static function () use ($globalFormParams, $makeTextField): array {
-            $factory = (new \MvpLounge\MeshFactory\Element\Form\AjaxForm($globalFormParams('profile-update')))
+            $factory = (new \MvpLounge\MeshFactory\Element\Form\FormAjax($globalFormParams('profile-update')))
                 ->addAction('/api/account/profile')
                 ->addMethod('post')
                 ->addEnc('multipart/form-data')

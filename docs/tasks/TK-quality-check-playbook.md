@@ -227,7 +227,6 @@ Domain suites should auto-discover concrete classes in their matching Element do
 The suites must remain warning-free and include compile pathway checks for:
 
 - `compileAsArray()`
-- `compile()`
 - `compileAsJson()` when implemented
 - `compileAsHtmlString()` when implemented
 - `string()` when implemented

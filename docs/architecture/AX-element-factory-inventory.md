@@ -16,8 +16,8 @@ This is the single working list for ElementFactory implementation work. Each row
 ## Summary
 
 - Enum elements: 140
-- Concrete classes: 143
-- Tiers: Unbound 4, Stub 94, Family 37, Behavioral 12
+- Concrete classes: 144
+- Tiers: Unbound 3, Stub 94, Family 38, Behavioral 12
 - Spec attributes not yet modeled across curated elements: 105 (a trailing `*` means the attribute is also missing from `FactoryElementAttribute`)
 - Attributes allowed by a class but not defined for its element by the HTML Standard: 115
 - Void elements that render a closing tag: Img, Area, Base, Br, Col, Embed, Hr, Link, Meta, Param, Source, Track, Wbr
@@ -26,7 +26,7 @@ This is the single working list for ElementFactory implementation work. Each row
 |---|---:|
 | DemarcatingEdits | 2 |
 | EmbeddedContent | 7 |
-| Form | 18 |
+| Form | 19 |
 | ImageAndMultimedia | 7 |
 | InlineTextSemantics | 32 |
 | InteractiveElements | 3 |
@@ -63,22 +63,22 @@ This is the single working list for ElementFactory implementation work. Each row
 | `hl` | `Hl` | TextContent | FactoryElementHtmlAbstract | Stub | - | - | - | - | yes |
 | `hgroup` | - | - | - | Unbound | - | - | - | - | - |
 | `img` | `Img` | ImageAndMultimedia | FactoryElementImageAndMultimediaAbstract | Family | `height`*, `ismap`*, `referrerpolicy`, `sizes`, `srcset`, `usemap`*, `width`* | `preload`, `poster`, `autoplay`, `controls`, `loop`, `muted` | - | Part/Copy: Copy.Images, Part/Logos | yes |
-| `fieldset` | - | - | - | Unbound | `disabled`, `form`, `name` | - | - | - | - |
-| `input` | `EmailerInput` | Form | TextInput | Family | type-dependent | - | gfp | Part/Field: Field.Input (email) | yes |
+| `fieldset` | `Fieldset` | Form | FactoryElementFieldsetAbstract | Family | - | - | g | Part/Field: Fieldset.Collection | - |
 | `input` | `FormButton` | Form | FactoryElementFieldInputAbstract | Behavioral | type-dependent | - | gfp | Part/Field: Field.Input (button/submit/reset) | yes |
-| `input` | `HiddenInput` | Form | FactoryElementFieldInputAbstract | Family | type-dependent | - | gfp | Part/Field: Field.Input (hidden) | yes |
-| `input` | `PasswordInput` | Form | FactoryElementFieldInputAbstract | Family | type-dependent | - | gfp | Part/Field: Field.Input (password) | yes |
-| `input` | `RadioInput` | Form | FactoryElementFieldInputAbstract | Behavioral | type-dependent | - | gfp | Part/Field: Field.Input (radio group) | yes |
-| `input` | `TextInput` | Form | FactoryElementFieldInputAbstract | Behavioral | type-dependent | - | gfp | Part/Field: Field.Input (text) | yes |
+| `input` | `InputEmailer` | Form | InputText | Family | type-dependent | - | gfp | Part/Field: Field.Input (email) | yes |
+| `input` | `InputHidden` | Form | FactoryElementFieldInputAbstract | Family | type-dependent | - | gfp | Part/Field: Field.Input (hidden) | yes |
+| `input` | `InputPassword` | Form | FactoryElementFieldInputAbstract | Family | type-dependent | - | gfp | Part/Field: Field.Input (password) | yes |
+| `input` | `InputRadio` | Form | FactoryElementFieldInputAbstract | Behavioral | type-dependent | - | gfp | Part/Field: Field.Input (radio group) | yes |
+| `input` | `InputText` | Form | FactoryElementFieldInputAbstract | Behavioral | type-dependent | - | gfp | Part/Field: Field.Input (text) | yes |
 | `select` | `SelectOption` | Form | FactoryElementFieldAbstract | Behavioral | `autocomplete`, `disabled`, `form`, `multiple`*, `required`*, `size`* | `value` | gfp | Part/Field: Field.Select | yes |
 | `option` | `SelectOptions` | Form | FactoryElementFieldAbstract | Behavioral | `disabled`, `label`* | - | gfp | Part/Field: Field.Select | - |
 | `textarea` | - | - | - | Unbound | `autocomplete`, `cols`, `dirname`*, `disabled`, `form`, `maxlength`*, `minlength`*, `name`, `placeholder`, `readonly`*, `required`*, `rows`, `wrap`* | - | - | - | - |
-| `form` | `AjaxForm` | Form | PostForm | Behavioral | `name`, `rel` | - | gfp | Module/Form: UI_FormModule | yes |
-| `form` | `PostForm` | Form | FactoryElementFormAbstract | Family | `name`, `rel` | - | gfp | Module/Form: UI_FormModule | yes |
+| `form` | `FormAjax` | Form | FormPost | Behavioral | `name`, `rel` | - | gfp | Module/Form: UI_FormModule | yes |
+| `form` | `FormPost` | Form | FactoryElementFormAbstract | Family | `name`, `rel` | - | gfp | Module/Form: UI_FormModule | yes |
 | `a` | `Anchor` | InlineTextSemantics | FactoryElementLinkAbstract | Family | `download`* | `media` | GFP | Part/Buttons: Button.Generic | yes |
 | `div` | `Div` | TextContent | FactoryElementHtmlAbstract | Stub | - | - | GFP | - | - |
 | `span` | `Span` | InlineTextSemantics | FactoryElementHtmlAbstract | Stub | - | - | GFP | - | - |
-| `label` | `Label` | Form | FactoryElementFormElementsAbstract | Family | - | - | g | Helper: UI_WrappedFieldLabel | - |
+| `label` | `FieldsetLabel` | Form | FactoryElementFormElementsAbstract | Family | - | - | g | Helper: UI_WrappedFieldLabel | - |
 | `aside` | `Aside` | SectioningContent | FactoryElementHtmlAbstract | Stub | - | - | GFP | Module/Accordion | yes |
 | `content` | `Content` | WebComponents | FactoryElementHtmlAbstract | Stub | - | - | GFP | - | yes |
 | `slot` | - | - | - | Unbound | `name` | - | - | - | - |
@@ -110,7 +110,7 @@ This is the single working list for ElementFactory implementation work. Each row
 | `blockquote` | `Blockquote` | TextContent | FactoryElementHtmlAbstract | Stub | `cite`* | - | GFP | - | - |
 | `body` | `Body` | Root | FactoryElementHtmlAbstract | Stub | - | - | GFP | - | - |
 | `br` | `Br` | InlineTextSemantics | FactoryElementHtmlAbstract | Stub | - | - | GFP | - | - |
-| `button` | `Button` | Form | FactoryElementFormElementsAbstract | Family | `disabled`, `form`, `name`, `type`, `value` | `for` | g | Part/Buttons: Button.Generic | - |
+| `button` | `InputButton` | Form | FactoryElementFormElementsAbstract | Family | `disabled`, `form`, `name`, `type`, `value` | `for` | g | Part/Buttons: Button.Generic | - |
 | `canvas` | `Canvas` | Scripting | FactoryElementScriptingAbstract | Family | `height`*, `width`* | `src`, `type`, `integrity`, `crossorigin`, `referrerpolicy` | GFP | - | - |
 | `caption` | `Caption` | TableContent | FactoryElementHtmlAbstract | Stub | - | - | GFP | - | - |
 | `center` | `Center` | ObsoleteAndDeprecated | FactoryElementHtmlAbstract | Stub | - | - | GFP | - | - |
@@ -203,6 +203,6 @@ This is the single working list for ElementFactory implementation work. Each row
 
 ## Notes
 
-- `fieldset` has no class under `Element/`. It is rendered by `FactoryElementFieldsetAbstract`, a concrete (non-abstract) class that lives in `Abstract/`.
+- `fieldset` is implemented by `Element/Form/Fieldset`, a concrete subclass of the abstract `FactoryElementFieldsetAbstract`. It stores an optional `FieldsetLabel`, and is used by fields, `FormButton` and form sections.
 - `tbody` and `tfoot` are bound by `TableRowBody` and `TableFooter`; `table` is bound by `TableBody` and `DataTableBody` (names do not match their tags).
-- Classes in `Element/Form` that use the `MvpLounge\MeshFactory\Element\Field` namespace (`TextInput`, `EmailerInput`, `PasswordInput`, `HiddenInput`, `RadioInput`, `FormButton`, `SelectOption`, `SelectOptions`) only autoload through the Composer classmap, not PSR-4.
+- Classes in `Element/Form` that use the `MvpLounge\MeshFactory\Element\Field` namespace (`InputText`, `InputEmailer`, `InputPassword`, `InputHidden`, `InputRadio`, `FormButton`, `SelectOption`, `SelectOptions`) only autoload through the Composer classmap, not PSR-4.

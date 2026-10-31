@@ -116,7 +116,7 @@ Test-Path vendor\mvplounge\meshfactory\src\Labs\MeshFactory\Abstract\FactoryAbst
 # expected: <p>ok</p>
 
 # 3. A Form-folder field class resolves through the classmap
-& $php -r "require 'vendor/autoload.php'; echo class_exists(MvpLounge\MeshFactory\Element\Field\TextInput::class) ? 'yes' : 'no';"
+& $php -r "require 'vendor/autoload.php'; echo class_exists(MvpLounge\MeshFactory\Element\Field\InputText::class) ? 'yes' : 'no';"
 ```
 
 Then load the EELC page that uses the facade you changed and compare rendered HTML with the previous build, as the migration checklist in `AG-app-eelc-referential-instructions.md` requires.
@@ -141,7 +141,7 @@ Remove-Item vendor\mvplounge -Recurse -Force
 | `Package mvplounge/meshfactory has no version defined` | Zip built without a `version` (for example plain `composer archive`) | Build with `scripts/build-artifact.php` |
 | `Your requirements could not be resolved` with an artifact | The constraint does not match the version in the zip | Require the exact version string you built (`dev-local`, `dev-ci-42`) |
 | Old code after rebuilding the same version | Composer cache or lock | `composer clear-cache`, then `composer update mvplounge/meshfactory` |
-| `Class "MvpLounge\MeshFactory\Element\Field\TextInput" not found` | Autoloader built without the classmap | `composer dump-autoload`; the Field classes live in `Element/Form/` (`EF-040`) |
+| `Class "MvpLounge\MeshFactory\Element\Field\InputText" not found` | Autoloader built without the classmap | `composer dump-autoload`; the Field classes live in `Element/Form/` (`EF-040`) |
 | `composer test` fails with `Composer autoload not found` | `vendor/` missing | `composer install` once in the repository |
 | Windows symlink error in mode A | Missing privilege | keep `"symlink": false` |
 

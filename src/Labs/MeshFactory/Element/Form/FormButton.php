@@ -49,40 +49,29 @@ class FormButton extends FactoryElementFieldInputAbstract
 		$this->FactoryElementFieldType = FactoryElementFieldType::SUBMIT;
 		return $this;
 	}
-	public function compile(): array
-	{
-
-		return [
-			'field' => $this->getElementOpen(),
-			'fieldset' => $this->getElementFieldset()->compileAsArray()
-		];
-	}
-
-
 
 	public function compileAsHtmlString(): ?string
 	{
-		return $this->getElementFieldset()->getElementOpen()
-			. $this->getElementOpen()
-			. $this->getElementFieldset()->getElementClose();
+		return $this->compileAsHtmlStringWithFieldset();
 	}
 
 	public function compileAsHtmlStringWithFieldset(): ?string
 	{
 		return $this->getElementFieldset()->getElementOpen()
+			. ($this->getElementFieldset()->getElementLabel() ?? '')
 			. $this->getElementOpen()
 			. $this->getElementFieldset()->getElementClose();
 	}
+
 	public function build()
 	{
-		$this->getElementFieldset()->buildElementOpen();
-		$this->buildElementOpen();
-		$this->getElementFieldset()->buildElementClose();
+		$this->buildWithFieldset();
 	}
 
 	public function buildWithFieldset()
 	{
 		$this->getElementFieldset()->buildElementOpen();
+		$this->getElementFieldset()->buildElementLabel();
 		$this->buildElementOpen();
 		$this->getElementFieldset()->buildElementClose();
 	}

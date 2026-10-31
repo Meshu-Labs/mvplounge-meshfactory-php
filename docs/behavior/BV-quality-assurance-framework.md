@@ -117,7 +117,6 @@ $bytes = [System.IO.File]::ReadAllBytes($filePath) | Select-Object -First 3
 - Confirm Generic, Params, and Factory strategies execute for full Element coverage.
 - Confirm all compile pathways are exercised by coverage suites:
 	- `compileAsArray()`
-	- `compile()`
 	- `compileAsJson()` where implemented
 	- `compileAsHtmlString()` where implemented
 	- `string()` where implemented

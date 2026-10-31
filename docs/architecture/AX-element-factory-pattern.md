@@ -151,17 +151,17 @@ return $anchor->string();   // string() === compileAsHtmlString()
 | Method | Returns | Use for |
 |---|---|---|
 | `compileAsHtmlString()` / `string()` | `?string` | Final HTML. Preferred in new code. |
-| `compileAsArray()` / `compile()` | `?array` | Structured model: `open`, `content`, `close`, plus composite children. |
+| `compileAsArray()` | `?array` | Structured model: `open`, `content`, `close`, plus composite children. The `compile()` alias was removed (`EF-049`). |
 | `compileAsJson()` | `?string` | Forms only today (`EF-043`). |
 | `build()` | `void` (echoes) | Legacy streaming output. Not for new code. |
-| `prepare()` | `array` | Forms: HTML strings for `open`, `hidden`, `fields`, `buttons`, `close`. |
+| `prepareFactoryModel()` | `array` | Forms: HTML strings for `open`, `hidden`, `fields`, `fieldsets`, `buttons`, `close`. |
 
 ```php
 (new Div(['id' => 'x', 'content' => 'Hi']))->compileAsArray();
 // ['open' => '<div id="x">', 'content' => 'Hi', 'close' => '</div>']
 ```
 
-Policy from EELC `AX-ui-resource-and-factory-standards.md`: prefer `compile()` or `string()` for testability and use `build()` only when immediate echo is required.
+Policy from EELC `AX-ui-resource-and-factory-standards.md`: prefer `compileAsArray()` or `string()` for testability and use `build()` only when immediate echo is required.
 
 ## Family Examples
 
@@ -221,17 +221,17 @@ $model = $t->compileAsArray();   // use this; string() drops children today (EF-
 ### Forms and fields (composite)
 
 ```php
-use MvpLounge\MeshFactory\Element\Form\PostForm;
-use MvpLounge\MeshFactory\Element\Field\TextInput;
+use MvpLounge\MeshFactory\Element\Form\FormPost;
+use MvpLounge\MeshFactory\Element\Field\InputText;
 
-$form = (new PostForm(['id' => 'login']))
+$form = (new FormPost(['id' => 'login']))
     ->addAction('/login')
     ->addMethod('post')
     ->addHiddenPostField(['name' => 'csrf', 'value' => 'token'])
-    ->addFormSectionFields('main', 'email', new TextInput(['name' => 'email', 'placeholder' => 'you@x.com']))
+    ->addFormSectionFields('main', 'email', new InputText(['name' => 'email', 'placeholder' => 'you@x.com']))
     ->addFormSubmitButton('Sign in');
 
-$payload = $form->prepare();       // or compileAsJson()
+$payload = $form->prepareFactoryModel();       // or compileAsJson()
 ```
 
 `$payload`:
@@ -246,7 +246,7 @@ $payload = $form->prepare();       // or compileAsJson()
 }
 ```
 
-Compose the page by echoing `open`, `hidden`, each section's fields, `buttons`, and `close`. `AjaxForm` extends `PostForm` and adds the `ajax-form` class. Field value types are set by `FactoryElementPrimativeType` (`int`, `bool`, `string`, `float`) and drive how `addValue()` coerces input.
+Compose the page by echoing `open`, `hidden`, each section's fields, `buttons`, and `close`. `FormAjax` extends `FormPost` and adds the `ajax-form` class. Field value types are set by `FactoryElementPrimativeType` (`int`, `bool`, `string`, `float`) and drive how `addValue()` coerces input.
 
 ### Select
 

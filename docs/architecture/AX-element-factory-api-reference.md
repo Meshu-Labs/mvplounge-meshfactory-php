@@ -27,7 +27,7 @@ Shared DOM-level state and output aliases.
 | `getDefaultFactoryAttributePropertyCollection()` | `array` | Global attributes plus `configuration`, `user`, `system`, `data`, `ext`. Every override must start from this. |
 | `getFactoryAttributePropertyCollection()` | `array` | Overridden by every family. Opening-tag values only. |
 | `getFactoryModel()` | `array` | Model payload for composites. |
-| `compileAsArray()` / `compile()` | `?array` | Alias of `getFactoryModel()`. |
+| `compileAsArray()` | `?array` | Alias of `getFactoryModel()`. The `compile()` alias was removed (`EF-049`). |
 | `compileAsHtmlString()` / `string()` | `?string` | Open + content + close when the element has them. |
 | `getFactoryId()`, `getFactoryName()`, `getFactoryConfiguration()`, `getFactoryUserClass()`, `getFactorySystemClass()`, `getFactoryDataParams()`, `getFactoryExtendedProperties()`, `getFactoryLang()`, `getLang($namespace)`, `getElementConfiguration()` | various | Accessors. |
 
@@ -96,19 +96,20 @@ Table composites:
 | Method | Notes |
 |---|---|
 | `addAction`, `addMethod` (`post`, `get`), `addEnc` / `addEnctype`, `addNoValidate`, `addTarget`, `addAutoComplete` (`on`/`off`, default `off`), `addActivity` | Form attributes. |
-| `addHiddenPostField(array $params)` | Adds a `HiddenInput`. |
-| `addFormSectionFields($section, $namespace, $field)` | Registers a field under a section. |
+| `addHiddenPostField(array $params)` | Adds an `InputHidden`. |
+| `addFormSectionFields($section, $namespace, $field, $fieldset = [])` | Registers a field under a section and creates the section `Fieldset`, merging `$fieldset` params (`EF-048`). |
 | `addFormButton($value, $type, ...)`, `addFormSubmitButton(...)`, `addFormResetButton(...)` | Buttons (`EF-007` for reset). |
-| `getFormSubmitButton()`, `getFormResetButton()`, `getHiddenPostFields()`, `getFormSectionFields($section)`, `getFormButtons()`, `getFormFields()` | Accessors. |
-| `prepare()` | Arrays of HTML strings: `open`, `hidden`, `fields`, `buttons`, `close`. |
-| `compileAsArray()`, `compileFormHiddenVars($string)`, `compileFormFields($string)`, `compileFormSubmitButton()`, `compileFormSection(...)` | Model variants. |
-| `compileAsJson()` | `json_encode(prepare())` with unescaped slashes and Unicode. |
+| `getFormSectionFieldset($section)`, `addFormSectionFieldsetLabel($section, $label)`, `addFormSectionFieldsetClass($section, $class)` | Section fieldset access (`Element\Form\Fieldset`). Section names are case-insensitive; the default section is `main`. |
+| `getFormSubmitButton()`, `getFormResetButton()`, `getHiddenPostFields()`, `getFormSectionFields($section = '')`, `getFormButtons()`, `getFormFields()`, `getFormFieldsets()` | Accessors. `getFormSectionFields()` returns all sections when the name is empty. |
+| `prepareFactoryModel()` | Arrays of HTML strings: `open`, `hidden`, `fields`, `fieldsets`, `buttons`, `close`. |
+| `compileAsArray()`, `compileFormHiddenVarsAsArray($string)`, `compileFormFieldsAsArray($string)`, `compileFormFieldsetsAsArray()`, `compileFormSubmitButton()`, `compileFormResetButtonAsArray()`, `compileFormSection(...)` | Model variants. |
+| `compileAsJson()` | `json_encode(prepareFactoryModel())` with unescaped slashes and Unicode. |
 
-Subclasses: `PostForm` (default class `post-form`), `AjaxForm`.
+Subclasses: `FormPost` (default class `post-form`), `FormAjax`.
 
 ### FactoryElementFormElementsAbstract
 
-Only `addFor`. Subclasses: `Label`, `Button`, `Datalist`, `Legend`, `Meter`, `Optgroup`, `Output`, `Progress`. Most are bare stubs (`EF-025`, `EF-024`).
+Only `addFor`. Subclasses: `FieldsetLabel`, `InputButton`, `Datalist`, `Legend`, `Meter`, `Optgroup`, `Output`, `Progress`. Most are bare stubs (`EF-025`, `EF-024`).
 
 ### FactoryElementFieldAbstract and FactoryElementFieldInputAbstract
 
@@ -119,7 +120,7 @@ Only `addFor`. Subclasses: `Label`, `Button`, `Datalist`, `Legend`, `Meter`, `Op
 | `addAccess(bool)` | Renders `enabled` or `disabled` (`EF-008`). |
 | `addLabel($label)`, `addFieldset(array)`, `addLength($n)`, `addAct($act)` | Label and fieldset need these calls; the matching params are ignored today (`EF-004`). |
 | `getElementFieldLabelOpen()` / `getElementFieldLabelClose()` | `<label>text` and `</label>`. |
-| `getElementFieldset()` | Lazily creates a `FactoryElementFieldsetAbstract`. |
+| `getElementFieldset()` | Lazily creates an `Element\Form\Fieldset` (concrete subclass of `FactoryElementFieldsetAbstract`; supports `legend`, `label`, `user` classes). |
 | `compileAsHtmlString()` | Label open + input + label close. |
 | `compileAsHtmlStringWithFieldset()` | Wraps in the fieldset (`EF-009`). |
 | `buildWithFieldset()` | Echo variant. |
@@ -129,11 +130,11 @@ Field leaf classes:
 
 | Class | Type | Extra methods |
 |---|---|---|
-| `TextInput` | `text` | `addPlaceholder`, `getPlaceholderText` |
-| `EmailerInput` | `email` | inherits `TextInput` |
-| `PasswordInput` | `password` | |
-| `HiddenInput` | `hidden` | |
-| `RadioInput` | `radio` | `addChecked`, `addCheckedElements(array)`, `getElementRadios()`, `getElementFieldChecked()` |
+| `InputText` | `text` | `addPlaceholder`, `getPlaceholderText` |
+| `InputEmailer` | `email` | inherits `InputText` |
+| `InputPassword` | `password` | |
+| `InputHidden` | `hidden` | |
+| `InputRadio` | `radio` | `addChecked`, `addCheckedElements(array)`, `getElementRadios()`, `getElementFieldChecked()` |
 | `FormButton` | `button` / `submit` | `asButton()`, `asSubmit()` |
 | `SelectOption` | select | `addOptions(array)`, `getElementFieldOptions($string)`, `hasOptions()` |
 | `SelectOptions` | option | `selected()`, `not_selected()`, `addSelected($bool)` |

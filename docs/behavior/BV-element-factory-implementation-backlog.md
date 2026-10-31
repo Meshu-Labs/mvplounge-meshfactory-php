@@ -23,7 +23,7 @@ This is the inventory of known gaps in the ElementFactory, written as Given-When
 | EF-008 | `access` renders the non-HTML attribute `enabled` | A. Rendering correctness | P2 | Open |
 | EF-009 | Fieldset string path echoes output | A. Rendering correctness | P2 | Open |
 | EF-020 | `textarea` has no class | B. Missing elements | P1 | Open |
-| EF-021 | `fieldset` class lives in `Abstract/` | B. Missing elements | P2 | Open |
+| EF-021 | `fieldset` class lives in `Abstract/` | B. Missing elements | P2 | Delivered |
 | EF-022 | `hgroup` and `slot` have no class | B. Missing elements | P2 | Open |
 | EF-023 | Input types cover 7 of 23 TypeScript types | B. Missing elements | P1 | Open |
 | EF-024 | Select lacks multiple, optgroup, and disabled options | B. Missing elements | P1 | Open |
@@ -40,6 +40,10 @@ This is the inventory of known gaps in the ElementFactory, written as Given-When
 | EF-043 | Output API contract is not uniform | D. Structure and hygiene | P1 | Open |
 | EF-044 | Small defects in field and class helpers | D. Structure and hygiene | P2 | Open |
 | EF-045 | README states PHP 8.1 but the package requires 8.2 | D. Structure and hygiene | P2 | Delivered |
+| EF-046 | Form-folder classes follow `{Group}{Variant}` names | D. Structure and hygiene | P2 | Delivered |
+| EF-047 | Fieldset is a concrete class with a label and rendered classes | D. Structure and hygiene | P2 | Delivered |
+| EF-048 | Form sections own a fieldset and render their fields | D. Structure and hygiene | P1 | Delivered |
+| EF-049 | One compile name, one prepare name | D. Structure and hygiene | P1 | Delivered |
 | EF-050 | 9 classes have no sandbox and 12 have only Generic coverage | E. Test depth | P1 | Open |
 | EF-051 | Sandbox assertions do not pin rendered output | E. Test depth | P1 | Open |
 | EF-052 | Sandbox runner portable and enforced in CI | E. Test depth | P1 | Delivered |
@@ -92,20 +96,20 @@ This is the inventory of known gaps in the ElementFactory, written as Given-When
 
 ### EF-004 Documented params are silently ignored (P1)
 
-**Evidence**: `new P(['data'=>['k'=>'v'], 'user'=>['b','c'], 'system'=>'sys'])` renders `<p>` with no data attribute, no user classes, no system class. `new TextInput(['label'=>'Email', 'fieldset'=>['id'=>'fs']])` renders no label and no fieldset id. `new PostForm(['name'=>'login'])` leaves `method` unchanged. Root cause: `FactoryAbstract::__process_params()` dispatches only keys present in the attribute map (global plus allowed enum attributes), so handlers such as `__process_data`, `__process_user`, `__process_system`, `__process_configuration`, `__process_ext`, `__process_label`, `__process_fieldset`, and `__process_act` are unreachable. Only `content` works because the constructor special-cases it. `SelectOption` passes `data`, `user`, and `system` to `SelectOptions` expecting them to work.
+**Evidence**: `new P(['data'=>['k'=>'v'], 'user'=>['b','c'], 'system'=>'sys'])` renders `<p>` with no data attribute, no user classes, no system class. `new InputText(['label'=>'Email', 'fieldset'=>['id'=>'fs']])` renders no label and no fieldset id. `new FormPost(['name'=>'login'])` leaves `method` unchanged. Root cause: `FactoryAbstract::__process_params()` dispatches only keys present in the attribute map (global plus allowed enum attributes), so handlers such as `__process_data`, `__process_user`, `__process_system`, `__process_configuration`, `__process_ext`, `__process_label`, `__process_fieldset`, and `__process_act` are unreachable. Only `content` works because the constructor special-cases it. `SelectOption` passes `data`, `user`, and `system` to `SelectOptions` expecting them to work.
 
 - **Given** a designer passes `data`, `user`, `system`, `configuration`, `ext`, `label`, `fieldset`, or `act` in the constructor array or `configureFactory()`, or passes `content` to `configureFactory()` (`new Anchor()->configureFactory(['content'=>'Home'])` renders an empty anchor because only the constructor handles `content`)
 - **When** the factory processes params
 - **Then** each key reaches its `__process_*` handler
 - **And** unknown keys are still ignored safely
 - **And** the Params sandbox asserts that each of those keys changes the rendered output or model
-- **And** `PostForm::__process_name()` stops assigning `name` to `method`.
+- **And** `FormPost::__process_name()` stops assigning `name` to `method`.
 
 ### EF-005 Composite elements lose children in `string()` and `build()` (P1)
 
-**Evidence**: `TableBody::string()` returns `<table class="generic-table"></table>` while `compileAsArray()` returns thead, tbody, and tfoot. `PostForm` has the same shape: no override of `compileAsHtmlString()`, so only `prepare()` and `compileAsJson()` carry fields. `TableBody::build()` echoes `<thead class="generic-thead">` twice and never closes it, producing malformed HTML.
+**Evidence**: `TableBody::string()` returns `<table class="generic-table"></table>` while `compileAsArray()` returns thead, tbody, and tfoot. `FormPost` has the same shape: no override of `compileAsHtmlString()`, so only `prepareFactoryModel()` and `compileAsJson()` carry fields. `TableBody::build()` echoes `<thead class="generic-thead">` twice and never closes it, producing malformed HTML.
 
-- **Given** a `TableBody`, `DataTableBody`, `TableHead`, `TableRowBody`, `TableRow`, or `PostForm` with children
+- **Given** a `TableBody`, `DataTableBody`, `TableHead`, `TableRowBody`, `TableRow`, or `FormPost` with children
 - **When** `string()` or `compileAsHtmlString()` runs
 - **Then** the full nested markup is returned
 - **And** `build()` echoes the same markup as `string()` byte for byte
@@ -124,7 +128,7 @@ This is the inventory of known gaps in the ElementFactory, written as Given-When
 
 ### EF-007 Reset button renders `type="button"` (P1)
 
-**Evidence**: `PostForm::getFormResetButton()->compileAsHtmlString()` returns `<input type="button" value="Reset">`. `FactoryElementFieldType` has `TEXT, EMAIL, PASSWORD, HIDDEN, RADIO, BUTTON, SUBMIT` and no `RESET`, so `addType('reset')` is dropped and the `FormButton` default applies.
+**Evidence**: `FormPost::getFormResetButton()->compileAsHtmlString()` returns `<input type="button" value="Reset">`. `FactoryElementFieldType` has `TEXT, EMAIL, PASSWORD, HIDDEN, RADIO, BUTTON, SUBMIT` and no `RESET`, so `addType('reset')` is dropped and the `FormButton` default applies.
 
 - **Given** a form with a reset button
 - **When** it renders
@@ -166,14 +170,14 @@ This is the inventory of known gaps in the ElementFactory, written as Given-When
 - **And** it renders the same DOM as TypeScript `UI_TextareaWrappedField`
 - **And** Generic, Factory, and Params sandboxes exist.
 
-### EF-021 `fieldset` class lives in `Abstract/` (P2)
+### EF-021 `fieldset` class lives in `Abstract/` (P2, Delivered)
 
-**Evidence**: `FactoryElementFieldsetAbstract` is concrete but sits in `Abstract/` and carries the `Abstract` suffix. Every field instantiates it directly.
+**Evidence**: `FactoryElementFieldsetAbstract` was concrete but sat in `Abstract/` and carried the `Abstract` suffix. Every field instantiated it directly. Delivered with `EF-047`: `Element\Form\Fieldset` is bound to `FactoryElement::FIELDSET` and the abstract is truly abstract.
 
 - **Given** a contributor looks for the fieldset element
 - **When** they browse `Element/Form/`
 - **Then** a `Fieldset` class is bound to `FactoryElement::FIELDSET`
-- **And** `FactoryElementFieldsetAbstract` is removed or becomes a true abstract
+- **And** `FactoryElementFieldsetAbstract` is a true abstract
 - **And** it supports `disabled`, `form`, `name`, and a legend.
 
 ### EF-022 `hgroup` and `slot` have no class (P2)
@@ -191,7 +195,7 @@ This is the inventory of known gaps in the ElementFactory, written as Given-When
 - **When** they instantiate the matching class
 - **Then** it renders `type="..."` with the type-specific attributes (`min`, `max`, `step`, `accept`, `multiple`, `pattern`, `size`)
 - **And** the enum values match the TypeScript enum names and values
-- **And** `RadioInput` supports `checked` for `RadioGroup` and `Checkbox` consistently.
+- **And** `InputRadio` supports `checked` for `RadioGroup` and `Checkbox` consistently.
 
 ### EF-024 Select lacks multiple, optgroup, and disabled options (P1)
 
@@ -277,7 +281,7 @@ Counts below come from the generator: 105 spec attributes not yet modeled and 11
 
 ### EF-040 Field classes live in `Form/` but use the `Field` namespace (P2)
 
-**Evidence**: `TextInput`, `EmailerInput`, `PasswordInput`, `HiddenInput`, `RadioInput`, `FormButton`, `SelectOption`, `SelectOptions` are in `Element/Form/` with namespace `...\Element\Field`. They resolve only through Composer's `classmap` (see `composer.json`). `AX-implementation-contracts.md` requires namespace and folder to match.
+**Evidence**: `InputText`, `InputEmailer`, `InputPassword`, `InputHidden`, `InputRadio`, `FormButton`, `SelectOption`, `SelectOptions` are in `Element/Form/` with namespace `...\Element\Field`. They resolve only through Composer's `classmap` (see `composer.json`). `AX-implementation-contracts.md` requires namespace and folder to match.
 
 - **Given** a consumer autoloads a field class
 - **When** Composer resolves it with PSR-4 alone
@@ -287,7 +291,7 @@ Counts below come from the generator: 105 spec attributes not yet modeled and 11
 
 ### EF-041 Two abstract classes are dead, one has broken requires (P2)
 
-**Evidence**: `FactoryElementHtml5Abstract` has no subclasses and requires `Element/Field/FormButton.php` and `Element/Field/HiddenInput.php`, which do not exist. `FactoryElementCopyAbstract` has no subclasses, although docs name it as the base for text elements (`P`, `H1`-`H6` extend `FactoryElementHtmlAbstract`). The `Element/Links/` folder exists with no classes (`Anchor` lives in `InlineTextSemantics`), while docs and VS Code tasks still mention a Links domain.
+**Evidence**: `FactoryElementHtml5Abstract` has no subclasses and requires `Element/Field/FormButton.php` and `Element/Form/InputHidden.php`. The first does not exist (the class is in `Element/Form/`); the second was repointed during `EF-046`. `FactoryElementCopyAbstract` has no subclasses, although docs name it as the base for text elements (`P`, `H1`-`H6` extend `FactoryElementHtmlAbstract`). The `Element/Links/` folder exists with no classes (`Anchor` lives in `InlineTextSemantics`), while docs and VS Code tasks still mention a Links domain.
 
 - **Given** a contributor reads the abstract layer
 - **When** they list `Abstract/`
@@ -306,11 +310,11 @@ Counts below come from the generator: 105 spec attributes not yet modeled and 11
 
 ### EF-043 Output API contract is not uniform (P1)
 
-**Evidence**: `compileAsJson()` exists only on `FactoryElementFormAbstract`; `AG-app-eelc-referential-instructions.md` lists it as part of the contract for every element. EELC facades call `string()`. `compile()` and `compileAsArray()` are aliases. `build()` echoes and returns `null`.
+**Evidence**: `compileAsJson()` exists only on `FactoryElementFormAbstract`; `AG-app-eelc-referential-instructions.md` lists it as part of the contract for every element. EELC facades call `string()`. `compileAsArray()` is the single structured-model method (the `compile()` alias was removed by `EF-049`). `build()` echoes and returns `null`.
 
 - **Given** a consumer calls any output method on any element
 - **When** the element renders
-- **Then** `compileAsHtmlString()`, `string()`, `compileAsArray()`, `compile()`, and `compileAsJson()` exist on `FactoryAbstract` with consistent semantics
+- **Then** `compileAsHtmlString()`, `string()`, `compileAsArray()`, and `compileAsJson()` exist on `FactoryAbstract` with consistent semantics
 - **And** `compileAsJson()` returns the JSON encoding of `compileAsArray()`
 - **And** `build()` is documented as legacy echo output.
 
@@ -318,13 +322,12 @@ Counts below come from the generator: 105 spec attributes not yet modeled and 11
 
 **Evidence**:
 - `FactoryElementFieldAbstract::getElementFieldLength()` returns `FactoryElementFieldLabel` and is typed `?string` instead of the length.
-- `TextInput::__process_rlaceholder()` is a typo of `placeholder`.
+- `InputText::__process_rlaceholder()` is a typo of `placeholder`.
 - `FactoryElementFieldAbstract::__process_length()` calls `addlength()` (case mismatch).
 - `FactoryElementAbstract::hasClass()` returns `NULL` instead of `FALSE`.
 - `FactoryElementAbstract::addClass()` has an unreachable `else` branch because `explode()` always returns an array.
 - `FactoryElementAbstract::__process_ext()` can never populate values because `FactoryElementExtendedAttributes` defaults to `NULL`.
 - `FactoryElementFormAbstract::buildFormResetButton()` returns the result of `build()` (which is `null`) concatenated with whitespace, and `buildFormHiddenPostVars()` / `buildFormSubmitButton()` echo it, so nothing meaningful is returned.
-- Code comments say "change file name to InputText..." on several field classes.
 
 - **Given** a contributor reviews the field and class helpers
 - **When** they run the audit in `TK-quality-check-playbook.md`
@@ -337,13 +340,81 @@ Counts below come from the generator: 105 spec attributes not yet modeled and 11
 - **When** they compare it with `composer.json` (`"php": ">=8.2"`)
 - **Then** both state PHP 8.2 or later.
 
+### EF-046 Form-folder classes follow `{Group}{Variant}` names (P2, Delivered)
+
+**Evidence**: source comments in nine `Element/Form` files asked for renames so related classes sort and read together by role. The classes were renamed (file name and class name, namespace unchanged) and every reference was updated in this repository and in `lab_center`:
+
+| Old | New |
+|---|---|
+| `PostForm` | `FormPost` |
+| `AjaxForm` | `FormAjax` |
+| `TextInput` | `InputText` |
+| `EmailerInput` | `InputEmailer` |
+| `PasswordInput` | `InputPassword` |
+| `HiddenInput` | `InputHidden` |
+| `RadioInput` | `InputRadio` |
+| `Button` | `InputButton` |
+| `Label` | `FieldsetLabel` |
+
+- **Given** a designer or contributor looks for a form class
+- **When** they list `Element/Form/`
+- **Then** forms start with `Form`, input fields start with `Input`, and the label is named for its fieldset role
+- **And** no source comment still asks for a rename
+- **And** `composer test` passes with 333 `PASS assertions` lines.
+
+**Compatibility**: no deprecation aliases were added, so the old class names no longer exist. `lab_center` was updated in the same change (`Trait/designer/TFormFactory.php`, `libraries/designer/fields/*`, `libraries/designer/module/*`, `libraries/resource/ui/vendor/EELCFactory/*`). Any other consumer pinned to `dev-main` must adopt the new names (see `EF-072`).
+
+### EF-047 Fieldset is a concrete class with a label and rendered classes (P2, Delivered)
+
+**Evidence**: `FactoryElementFieldsetAbstract` was instantiated directly by every field, rendered only its `id` (user and system classes such as `generic-fieldset` were dropped because it did not override `getFactoryAttributePropertyCollection()`), and had no label. Source comments in `FactoryElementFormAbstract` asked for a section fieldset with a label and classes.
+
+- **Given** a designer renders a field, a form button, or a form section inside a fieldset
+- **When** the fieldset has a non-null label
+- **Then** `Element\Form\Fieldset` (a concrete subclass of the now truly abstract `FactoryElementFieldsetAbstract`) stores a `FieldsetLabel` through `addLabel()` (an element, a string, or an array of label params) and exposes `getLabel()`, `getElementLabel()`, and `buildElementLabel()`
+- **And** the label renders after the opening tag and the legend, in `compileAsHtmlString()`, `build()`, and `compileAsArray()['label']`
+- **And** the fieldset renders its `id`, user classes (`user` param, `addClass()`), and the system class `generic-fieldset`
+- **And** `getElementFieldset()` and `addFieldset()` on every field return a `Fieldset`.
+
+**Compatibility**: `new FactoryElementFieldsetAbstract()` no longer works; use `Fieldset`. Every fieldset now renders `class="generic-fieldset"` in addition to its `id`, which changes the rendered HTML of fields and `FormButton`.
+
+### EF-048 Form sections own a fieldset and render their fields (P1, Delivered)
+
+**Evidence**: `FactoryElementFormAbstract::addFormSectionFields()` stored fields under `[section][namespace]` while `buildFormSectionFields()` and `compileFormFields*()` read `[section]['field']`, so `prepareFactoryModel()['fields']` and `buildFormSectionFields()` rendered nothing, and the Form Generic sandbox threw a `TypeError`. The earlier sandbox summary missed it because it counted only `PASS assertions` lines and not `ERROR_CLASS`.
+
+- **Given** a designer adds fields to a form section
+- **When** they call `addFormSectionFields($section, $namespace, $field, $fieldset = [])`
+- **Then** the field is stored under `[section]['field'][namespace]`, and the section gets a `Fieldset` (`id="fieldset_section_{section}"`, classes `col full`) that merges the optional `$fieldset` params
+- **And** `getFormSectionFieldset()`, `addFormSectionFieldsetLabel()`, and `addFormSectionFieldsetClass()` read and change it
+- **And** `getFormSectionFields()` returns all sections, or one section when a name is given (names are case-insensitive)
+- **And** `compileAsArray()`, `prepareFactoryModel()`, and `getFactoryModel()` include a `fieldsets` key (`open`, `legend`, `label`, `fields`, `close` per section)
+- **And** `buildFormSectionFields()` renders each section's fieldset, label, and fields.
+
+### EF-049 One compile name, one prepare name (P1, Delivered)
+
+**Evidence**: source comments asked to factor out `compile()` and rename `prepare()` and the form compile helpers.
+
+| Old | New |
+|---|---|
+| `compile()` | removed; use `compileAsArray()` |
+| `FormAbstract::prepare()` | `prepareFactoryModel(): array` |
+| `compileFormHiddenVars()` | `compileFormHiddenVarsAsArray()` |
+| `compileFormFields()` | `compileFormFieldsAsArray()` |
+| `compileFormResetButton()` | `compileFormResetButtonAsArray(): array` (returns the model instead of echoing it) |
+
+- **Given** a consumer needs the structured model of an element or form
+- **When** it calls `compileAsArray()` (any element) or `prepareFactoryModel()` (forms)
+- **Then** no `compile()` or `prepare()` alias exists
+- **And** `lab_center` calls the new names (`TenantPathInput.php`, the Portal registration and login views).
+
+**Compatibility**: shipped without aliases, like `EF-046`. This supersedes the `compile()` alias wording of `EF-043`.
+
 ---
 
 ## Epic E. Test Depth
 
 ### EF-050 9 classes have no sandbox and 12 have only Generic coverage (P1)
 
-**Evidence** (from the inventory `Tests` column): no script of any flavor for `P`, `H1`, `H2`, `H3`, `H4`, `H5`, `H6`, `Hl`, `Img`. Covered only by the Generic flavor of the Form or Table domain suite: `Label`, `Button`, `Datalist`, `Legend`, `Meter`, `Optgroup`, `Output`, `Progress`, `TableRow`, `TableHead`, `TableFooter`, `TableRowBody`. APP-EELC imports `P`, `H1`-`H6`, `Hl`, `Img`, and the table classes directly.
+**Evidence** (from the inventory `Tests` column): no script of any flavor for `P`, `H1`, `H2`, `H3`, `H4`, `H5`, `H6`, `Hl`, `Img`. Covered only by the Generic flavor of the Form or Table domain suite: `FieldsetLabel`, `InputButton`, `Datalist`, `Legend`, `Meter`, `Optgroup`, `Output`, `Progress`, `TableRow`, `TableHead`, `TableFooter`, `TableRowBody`. APP-EELC imports `P`, `H1`-`H6`, `Hl`, `Img`, and the table classes directly.
 
 - **Given** a class is imported by an EELC facade or has element-specific attributes
 - **When** the sandbox suite runs
@@ -352,7 +423,7 @@ Counts below come from the generator: 105 spec attributes not yet modeled and 11
 
 ### EF-051 Sandbox assertions do not pin rendered output (P1)
 
-**Evidence**: `mfAssertRenderableOutputs()` only requires that `compileAsArray()` and `compile()` return arrays and that some string contains `<`. The Params flavor passes generated sample values but asserts nothing about them. A broken attribute still passes.
+**Evidence**: `mfAssertRenderableOutputs()` only requires that `compileAsArray()` returns an array and that some string contains `<`. The Params flavor passes generated sample values but asserts nothing about them. A broken attribute still passes.
 
 - **Given** a sandbox script renders an element with known inputs
 - **When** it asserts
@@ -383,7 +454,7 @@ See [AX-element-factory-typescript-alignment.md](../architecture/AX-element-fact
 
 ### EF-060 Field parts do not match TypeScript DOM structure (P1)
 
-**Evidence**: TypeScript `UI_*WrappedField` renders `div.field-wrapper.{type} > label > div.field-inner-wrapper > .field_ui + div.clear`. PHP `TextInput::compileAsHtmlString()` renders `<label>text<input class="field_ui">` with no wrapper divs, and the `label` param is currently ignored (`EF-004`).
+**Evidence**: TypeScript `UI_*WrappedField` renders `div.field-wrapper.{type} > label > div.field-inner-wrapper > .field_ui + div.clear`. PHP `InputText::compileAsHtmlString()` renders `<label>text<input class="field_ui">` with no wrapper divs, and the `label` param is currently ignored (`EF-004`).
 
 - **Given** a designer renders a text, select, or textarea field
 - **When** they call the PHP composite (`FieldWrapper` or equivalent)
@@ -461,7 +532,7 @@ See [TK-package-and-xamppire-consumption.md](../tasks/TK-package-and-xamppire-co
 - **Given** the ElementFactory stabilizes
 - **When** a release is cut with the Publish workflow
 - **Then** EELC requires a semantic version constraint
-- **And** renamed or moved classes (`EF-040`, `EF-042`) ship in a major version with deprecation aliases.
+- **And** renamed or moved classes (`EF-040`, `EF-042`) ship in a major version with deprecation aliases. The `EF-046` renames already shipped without aliases and are tracked in `lab_center`.
 
 ### EF-073 EELC facades still assemble raw HTML (P1)
 
