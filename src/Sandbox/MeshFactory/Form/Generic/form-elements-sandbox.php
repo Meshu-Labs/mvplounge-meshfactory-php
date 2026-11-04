@@ -42,7 +42,7 @@ try {
 
     $form = new \MvpLounge\MeshFactory\Element\Form\FormPost();
     $form->addHiddenPostField(['name' => 'token', 'value' => 'sample']);
-    $form->addFormSectionFields('main', 'email', (new \MvpLounge\MeshFactory\Element\Field\InputText())->addName('email')->addLabel('Email'));
+    $form->addFormSectionField('main', 'email', (new \MvpLounge\MeshFactory\Element\Field\InputText())->addName('email')->addLabel('Email'));
     $form->addFormSubmitButton('Submit');
     $prepared = $form->prepareFactoryModel();
     $assert(str_contains(implode('', $prepared['hidden']), 'name="token"'), 'The form must render its hidden field.');
@@ -60,11 +60,15 @@ try {
     $assert($form->getFormResetButton() !== NULL && is_array($form->compileFormResetButtonAsArray()), 'compileFormResetButtonAsArray() must return the reset button model.');
 
     $form->addFormSectionFieldsetLabel('main', 'Account')->addFormSectionFieldsetClass('main', 'wide');
-    $form->addFormSectionFields('main', 'name', (new \MvpLounge\MeshFactory\Element\Field\InputText())->addName('name'), ['id' => 'fs_main']);
+    $form->addFormSectionField('main', 'name', (new \MvpLounge\MeshFactory\Element\Field\InputText())->addName('name'), ['id' => 'fs_main']);
     $sectionFieldset = $form->compileAsArray()['fieldsets']['main'];
     $assert($sectionFieldset['label'] === '<label>Account</label>', 'The section fieldset must store and render its label.');
-    $assert($sectionFieldset['open'] === '<fieldset id="fs_main" class="col full wide generic-fieldset">', 'Fieldset params passed to addFormSectionFields() must merge into the section fieldset.');
+    $assert($sectionFieldset['open'] === '<fieldset id="fs_main" class="col full wide generic-fieldset">', 'Fieldset params passed to addFormSectionField() must merge into the section fieldset.');
     $assert(array_keys($form->getFormFields()['main']) === ['email', 'name'], 'getFormFields() must list only fields, keyed by namespace.');
+    $form->addFormSectionFields('extra', ['a' => '<input name="a">', 'b' => (new \MvpLounge\MeshFactory\Element\Field\InputText())->addName('b'), 'skip' => FALSE, 'none' => NULL], ['id' => 'fs_extra']);
+    $assert(array_keys($form->getFormFields()['extra']) === ['a', 'b'], 'addFormSectionFields() must add an array of fields and skip NULL and FALSE.');
+    $assert($form->compileAsArray()['fieldsets']['extra']['open'] === '<fieldset id="fs_extra" class="col full generic-fieldset">', 'addFormSectionFields() must merge fieldset params.');
+    $assert($form->getFormFields()['extra']['a'] === '<input name="a">', 'View engine HTML strings must be stored as-is.');
     ob_start();
     $form->buildFormSectionFields('main');
     $builtSection = ob_get_clean();

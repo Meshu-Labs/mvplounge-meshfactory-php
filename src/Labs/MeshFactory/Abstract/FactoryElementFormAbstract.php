@@ -239,12 +239,28 @@ abstract class FactoryElementFormAbstract extends FactoryElementAbstract
 		return $_section;
 	}
 
-	public function addFormSectionFields($section = 'main', $namespace = NULL, $field = NULL, $fieldset = []): static
+	/**
+	 * Adds one field to a section. A field is a Factory element, an HTML string from a View engine
+	 * designer, or an array of either. NULL and FALSE (designer produced nothing) are skipped.
+	 */
+	public function addFormSectionField($section = 'main', $namespace = NULL, $field = NULL, $fieldset = []): static
 	{
 		$_section = $this->ensureFormSection($section, $fieldset);
 
-		if ($namespace !== NULL && $field !== NULL) {
+		if ($namespace !== NULL && $field !== NULL && $field !== FALSE) {
 			$this->FactoryElementFormSectionFields[$_section]['field'][(string) $namespace] = $field;
+		}
+
+		return $this;
+	}
+
+	/** Adds many fields to a section, keyed by namespace. Accepts the same field values as addFormSectionField(). */
+	public function addFormSectionFields($section = 'main', array $fields = [], $fieldset = []): static
+	{
+		$this->ensureFormSection($section, $fieldset);
+
+		foreach ($fields as $_namespace => $_field) {
+			$this->addFormSectionField($section, $_namespace, $_field);
 		}
 
 		return $this;
