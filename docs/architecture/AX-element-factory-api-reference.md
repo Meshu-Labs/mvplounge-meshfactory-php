@@ -97,7 +97,8 @@ Table composites:
 |---|---|
 | `addAction`, `addMethod` (`post`, `get`), `addEnc` / `addEnctype`, `addNoValidate`, `addTarget`, `addAutoComplete` (`on`/`off`, default `off`), `addActivity` | Form attributes. |
 | `addHiddenPostField(array $params)` | Adds an `InputHidden`. |
-| `addFormSectionFields($section, $namespace, $field, $fieldset = [])` | Registers a field under a section and creates the section `Fieldset`, merging `$fieldset` params (`EF-048`). |
+| `addFormSectionField($section, $namespace, $field, $fieldset = [])` | Adds one field to a section and creates the section `Fieldset`, merging `$fieldset` params (`EF-048`). A field is a Factory element or an HTML string; `NULL` and `FALSE` are skipped. |
+| `addFormSectionFields($section, array $fields, $fieldset = [])` | Adds an array of fields keyed by namespace to a section, with the same rules as `addFormSectionField()`. |
 | `addFormButton($value, $type, ...)`, `addFormSubmitButton(...)`, `addFormResetButton(...)` | Buttons (`EF-007` for reset). |
 | `getFormSectionFieldset($section)`, `addFormSectionFieldsetLabel($section, $label)`, `addFormSectionFieldsetClass($section, $class)` | Section fieldset access (`Element\Form\Fieldset`). Section names are case-insensitive; the default section is `main`. |
 | `getFormSubmitButton()`, `getFormResetButton()`, `getHiddenPostFields()`, `getFormSectionFields($section = '')`, `getFormButtons()`, `getFormFields()`, `getFormFieldsets()` | Accessors. `getFormSectionFields()` returns all sections when the name is empty. |

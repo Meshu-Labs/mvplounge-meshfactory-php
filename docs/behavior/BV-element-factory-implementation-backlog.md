@@ -383,8 +383,8 @@ Counts below come from the generator: 105 spec attributes not yet modeled and 11
 **Evidence**: `FactoryElementFormAbstract::addFormSectionFields()` stored fields under `[section][namespace]` while `buildFormSectionFields()` and `compileFormFields*()` read `[section]['field']`, so `prepareFactoryModel()['fields']` and `buildFormSectionFields()` rendered nothing, and the Form Generic sandbox threw a `TypeError`. The earlier sandbox summary missed it because it counted only `PASS assertions` lines and not `ERROR_CLASS`.
 
 - **Given** a designer adds fields to a form section
-- **When** they call `addFormSectionFields($section, $namespace, $field, $fieldset = [])`
-- **Then** the field is stored under `[section]['field'][namespace]`, and the section gets a `Fieldset` (`id="fieldset_section_{section}"`, classes `col full`) that merges the optional `$fieldset` params
+- **When** they call `addFormSectionField($section, $namespace, $field, $fieldset = [])` for one field, or `addFormSectionFields($section, array $fields, $fieldset = [])` for an array keyed by namespace
+- **Then** each field is stored under `[section]['field'][namespace]` (`NULL` and `FALSE` are skipped; HTML strings from View engine designers are kept as-is), and the section gets a `Fieldset` (`id="fieldset_section_{section}"`, classes `col full`) that merges the optional `$fieldset` params
 - **And** `getFormSectionFieldset()`, `addFormSectionFieldsetLabel()`, and `addFormSectionFieldsetClass()` read and change it
 - **And** `getFormSectionFields()` returns all sections, or one section when a name is given (names are case-insensitive)
 - **And** `compileAsArray()`, `prepareFactoryModel()`, and `getFactoryModel()` include a `fieldsets` key (`open`, `legend`, `label`, `fields`, `close` per section)
