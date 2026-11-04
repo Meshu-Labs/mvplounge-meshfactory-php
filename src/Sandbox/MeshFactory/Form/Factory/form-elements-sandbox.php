@@ -96,8 +96,8 @@ try {
                 ->addTarget(FactoryElementWindowTarget::SELF->value)
                 ->addAutoComplete('on')
                 ->addHiddenPostField(['name' => 'csrf_token', 'value' => 'login-token'])
-                ->addFormSectionFields('credentials', 'email', $makeTextField('email', 'Email address', 'name@example.com'))
-                ->addFormSectionFields('credentials', 'password', $makePasswordField('password', 'Password'))
+                ->addFormSectionField('credentials', 'email', $makeTextField('email', 'Email address', 'name@example.com'))
+                ->addFormSectionField('credentials', 'password', $makePasswordField('password', 'Password'))
                 ->addFormSubmitButton('Sign in');
 
             return [$factory, ['/account/login', 'email', 'password', 'Sign in', 'csrf_token']];
@@ -112,11 +112,11 @@ try {
                 ->addAutoComplete('on')
                 ->addHiddenPostField(['name' => 'csrf_token', 'value' => 'registration-token'])
                 ->addHiddenPostField(['name' => 'account_type', 'value' => 'basic'])
-                ->addFormSectionFields('identity', 'first_name', $makeTextField('first_name', 'First name', 'Ada'))
-                ->addFormSectionFields('identity', 'last_name', $makeTextField('last_name', 'Last name', 'Lovelace'))
-                ->addFormSectionFields('identity', 'email', $makeTextField('email', 'Email address', 'name@example.com'))
-                ->addFormSectionFields('security', 'password', $makePasswordField('password', 'Password'))
-                ->addFormSectionFields('security', 'confirm_password', $makePasswordField('confirm_password', 'Confirm password'))
+                ->addFormSectionField('identity', 'first_name', $makeTextField('first_name', 'First name', 'Ada'))
+                ->addFormSectionField('identity', 'last_name', $makeTextField('last_name', 'Last name', 'Lovelace'))
+                ->addFormSectionField('identity', 'email', $makeTextField('email', 'Email address', 'name@example.com'))
+                ->addFormSectionField('security', 'password', $makePasswordField('password', 'Password'))
+                ->addFormSectionField('security', 'confirm_password', $makePasswordField('confirm_password', 'Confirm password'))
                 ->addFormSubmitButton('Create account');
 
             return [$factory, ['/account/register', 'first_name', 'last_name', 'confirm_password', 'Create account', 'multipart/form-data']];
@@ -129,12 +129,12 @@ try {
                 ->addTarget(FactoryElementWindowTarget::SELF->value)
                 ->addAutoComplete('on')
                 ->addHiddenPostField(['name' => 'address_id', 'value' => 'primary'])
-                ->addFormSectionFields('address', 'street_1', $makeTextField('street_1', 'Street 1', '123 Main Street'))
-                ->addFormSectionFields('address', 'street_2', $makeTextField('street_2', 'Street 2', 'Apartment, suite, unit'))
-                ->addFormSectionFields('address', 'city', $makeTextField('city', 'City', 'Seattle'))
-                ->addFormSectionFields('address', 'region', $makeTextField('region', 'State / Region', 'WA'))
-                ->addFormSectionFields('address', 'postal_code', $makeTextField('postal_code', 'Postal code', '98101'))
-                ->addFormSectionFields('address', 'country', $makeTextField('country', 'Country', 'United States'))
+                ->addFormSectionField('address', 'street_1', $makeTextField('street_1', 'Street 1', '123 Main Street'))
+                ->addFormSectionField('address', 'street_2', $makeTextField('street_2', 'Street 2', 'Apartment, suite, unit'))
+                ->addFormSectionField('address', 'city', $makeTextField('city', 'City', 'Seattle'))
+                ->addFormSectionField('address', 'region', $makeTextField('region', 'State / Region', 'WA'))
+                ->addFormSectionField('address', 'postal_code', $makeTextField('postal_code', 'Postal code', '98101'))
+                ->addFormSectionField('address', 'country', $makeTextField('country', 'Country', 'United States'))
                 ->addFormSubmitButton('Save address');
 
             return [$factory, ['/account/address', 'street_1', 'postal_code', 'Save address', 'address_id']];
@@ -149,9 +149,9 @@ try {
                 ->addAutoComplete('on')
                 ->addHiddenPostField(['name' => 'csrf_token', 'value' => 'profile-token'])
                 ->addHiddenPostField(['name' => 'mode', 'value' => 'ajax'])
-                ->addFormSectionFields('profile', 'display_name', $makeTextField('display_name', 'Display name', 'Mvp Lounge'))
-                ->addFormSectionFields('profile', 'phone', $makeTextField('phone', 'Phone number', '+1 555 0100'))
-                ->addFormSectionFields('profile', 'avatar', $makeTextField('avatar', 'Avatar path', '/images/avatar.png'))
+                ->addFormSectionField('profile', 'display_name', $makeTextField('display_name', 'Display name', 'Mvp Lounge'))
+                ->addFormSectionField('profile', 'phone', $makeTextField('phone', 'Phone number', '+1 555 0100'))
+                ->addFormSectionField('profile', 'avatar', $makeTextField('avatar', 'Avatar path', '/images/avatar.png'))
                 ->addFormSubmitButton('Update profile');
 
             return [$factory, ['/api/account/profile', 'display_name', 'phone', 'avatar', 'Update profile', FactoryElementWindowTarget::BLANK->value]];

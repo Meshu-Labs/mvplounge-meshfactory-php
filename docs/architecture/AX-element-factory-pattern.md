@@ -229,7 +229,7 @@ $form = (new FormPost(['id' => 'login']))
     ->addAction('/login')
     ->addMethod('post')
     ->addHiddenPostField(['name' => 'csrf', 'value' => 'token'])
-    ->addFormSectionFields('main', 'email', new InputText(['name' => 'email', 'placeholder' => 'you@x.com']))
+    ->addFormSectionField('main', 'email', new InputText(['name' => 'email', 'placeholder' => 'you@x.com']))
     ->addFormSubmitButton('Sign in');
 
 $payload = $form->prepareFactoryModel();       // or compileAsJson()
