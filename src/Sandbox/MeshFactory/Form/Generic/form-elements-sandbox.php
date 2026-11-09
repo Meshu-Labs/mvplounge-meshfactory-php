@@ -35,6 +35,27 @@ try {
         $assert(is_string($html), $label . ' compileAsHtmlString() must return a string.');
     }
 
+    $ajaxButton = (new \MvpLounge\MeshFactory\Element\Form\FormAjax())->getFormSubmitButton();
+    $ajaxButtonHtml = $ajaxButton->compileAsHtmlString();
+    $assert(str_contains($ajaxButtonHtml, '<fieldset class="col full generic-fieldset">'), 'The Ajax button fieldset must retain its configured classes.');
+    $assert(str_contains($ajaxButtonHtml, '<input id="form_ajx_submit_btn" class="post ajx field_ui" type="button" value="Submit">'), 'The Ajax button must render its configured id and classes.');
+    $assert(!str_contains($ajaxButtonHtml, '<label'), 'The Ajax button must not have a wrapping label.');
+
+    $classParams = ['class' => 'explicit shared', 'user' => ['user shared'], 'system' => 'system shared'];
+    $classCases = [
+        [\MvpLounge\MeshFactory\Element\Field\InputText::class, 'input'],
+        [\MvpLounge\MeshFactory\Element\Table\TableBody::class, 'table'],
+        [\MvpLounge\MeshFactory\Element\TextContent\Div::class, 'div'],
+        [\MvpLounge\MeshFactory\Element\InlineTextSemantics\Anchor::class, 'a']
+    ];
+    foreach ($classCases as [$factoryClass, $tag]) {
+        foreach ([new $factoryClass($classParams), (new $factoryClass())->configureFactory($classParams)] as $factory) {
+            foreach ([$factory->getElementOpen(), $factory->getElementFactoryOpen($tag, $classParams)] as $openingTag) {
+                $assert(str_contains($openingTag, 'class="explicit shared user system"'), $factoryClass . ' must merge and deduplicate explicit, user, and system classes.');
+            }
+        }
+    }
+
     foreach (['_SELF' => '_self', '_BLANK' => '_blank', '_PARENT' => '_parent', '_TOP' => '_top'] as $target => $expected) {
         $form = (new \MvpLounge\MeshFactory\Element\Form\FormPost())->addTarget($target);
         $assert(str_contains($form->getElementOpen(), 'target="' . $expected . '"'), 'Form targets must render in lowercase: ' . $target);

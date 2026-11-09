@@ -77,9 +77,7 @@ class FormButton extends FactoryElementFieldInputAbstract
 	{
 		return $this->getElementFieldset()->getElementOpen()
 			. ($this->getElementFieldset()->getElementLabel() ?? '')
-			. $this->getElementFieldUnwrappedLabelOpen()
 			. $this->getElementFieldControl()
-			. $this->getElementFieldUnwrappedLabelClose()
 			. $this->getElementFieldset()->getElementClose();
 	}
 
@@ -105,9 +103,7 @@ class FormButton extends FactoryElementFieldInputAbstract
 	{
 		$this->getElementFieldset()->buildElementOpen();
 		$this->getElementFieldset()->buildElementLabel();
-		$this->buildElementFieldUnwrappedLabelOpen();
 		$this->buildElementFieldControl();
-		$this->buildElementFieldUnwrappedLabelClose();
 		$this->getElementFieldset()->buildElementClose();
 	}
 

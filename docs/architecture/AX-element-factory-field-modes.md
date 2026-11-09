@@ -94,7 +94,7 @@ The `label` and `tooltip` constructor params are now processed (they were ignore
 | `InputHidden` | none by default; `hidden` in a fieldset | Renders the bare input from `compileAsHtmlString()`, `string()` and `build()`. `compileAsHtmlStringWithFieldset()` and `buildWithFieldset()` render the wrapped structure (`UI_HiddenInputWrappedField`). Form hidden post variables stay bare. |
 | `SelectOption` | `select` | Overrides only the control hook (`select` + options). No enum value exists, so the token comes from the tag. |
 | `InputRadio` | `radio-group` (collection) | A group renders `div.field-wrapper.radio-group` with one `label[for] > div.field-inner-wrapper > input#id` plus a label block per radio, as `UI_RadioInputGroupField`. Each radio gets an id (its own, else `{groupId or name}_{index}`) so `for` and `id` pair up while the input stays nested. A single radio uses the base pipeline (`radio`) and gets `for` when it has an id. Raw radios render `div.radio-wrapper > label[for] > text + input#id`. |
-| `FormButton` | `submit` / `button` | Always inside its fieldset. `submit` renders no `<label>` (as `UI_InputSubmitWrappedField`); `button` renders the label tag. |
+| `FormButton` | `submit` / `button` | Always inside its fieldset. Neither type renders a wrapping `<label>`; fieldset labels remain separate. |
 | `SelectOptions` | none | The `<option>` stays a raw element. It is not a field part. |
 
 New field types follow one rule: set the type, override `getElementFieldControl()` and `buildElementFieldControl()` only if the control is not a single element, and add wrapper, raw, and fieldset assertions to the Field sandbox.
