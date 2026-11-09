@@ -76,8 +76,19 @@ try {
         $assert(str_contains($typedHtml, '<div class="field-inner-wrapper">'), $token . ' must render the inner wrapper.');
         $assert(!str_contains($typed->compileAsHtmlStringUnwrapped(), 'field-wrapper'), $token . ' raw output must not render the wrapper.');
     }
-    $assert(!str_contains((new \MvpLounge\MeshFactory\Element\Field\FormButton())->asSubmit()->compileAsHtmlString(), '<label>'), 'A submit button must not render a label tag.');
-    $assert(str_contains((new \MvpLounge\MeshFactory\Element\Field\FormButton())->asButton()->compileAsHtmlString(), '<label>'), 'A button must render a label tag.');
+    foreach (['submit', 'button'] as $type) {
+        $button = (new \MvpLounge\MeshFactory\Element\Field\FormButton())->addLabel('Action');
+        $type === 'submit' ? $button->asSubmit() : $button->asButton();
+        $buttonHtml = $button->compileAsHtmlString();
+        $assert(!str_contains($buttonHtml, '<label'), 'A ' . $type . ' input must not render a wrapping label.');
+        $assert(str_contains($buttonHtml, 'type="' . $type . '"'), 'The button must render the requested type.');
+        ob_start();
+        $button->build();
+        $builtButton = preg_replace('/\s*\n\t/', '', (string) ob_get_clean());
+        $assert($builtButton === $buttonHtml, 'The built ' . $type . ' button must match its compiled output.');
+        $button->addFieldset(['label' => 'Actions']);
+        $assert(substr_count($button->compileAsHtmlString(), '<label>Actions</label>') === 1, 'A ' . $type . ' button must preserve its separate fieldset label.');
+    }
 
     $selectHtml = (new \MvpLounge\MeshFactory\Element\Field\SelectOption())->addName('salutation')->addLabel('Salutation')->addOptions(['Mr' => 'Mr.', 'Ms' => 'Ms.'])->compileAsHtmlString();
     $assert(str_contains($selectHtml, '<div class="field-inner-wrapper"><select') && str_contains($selectHtml, '</select><div class="clear"></div></div></label>'), 'A select must render its options inside the inner wrapper.');
