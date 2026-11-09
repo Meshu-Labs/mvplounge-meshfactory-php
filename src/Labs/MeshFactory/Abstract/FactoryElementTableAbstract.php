@@ -7,7 +7,7 @@ namespace MvpLounge\MeshFactory\Abstract;
 require_once __DIR__ . '/../Constants.php';
 
 if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
-    throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
+	throw new \RuntimeException('MVPLOUNGE_MESHFACTORY_BASE_PATH is not defined.');
 }
 
 use MvpLounge\MeshFactory\Enum\FactoryElementAttribute;
@@ -216,7 +216,7 @@ class FactoryElementTableAbstract extends FactoryElementAbstract
 		$_model = $this->getElementFactoryDefaultPropertiesFromParams($params);
 
 		foreach ($this->FactoryElementAttributeMap as $_attribute) {
-			if (array_key_exists($_attribute, $params)) {
+			if ($_attribute !== 'class' && array_key_exists($_attribute, $params)) {
 				$_model[$_attribute] = $this->getElementFactoryProperty($_attribute, $params[$_attribute]);
 			}
 		}
@@ -249,7 +249,7 @@ class FactoryElementTableAbstract extends FactoryElementAbstract
 		$_allowed = $this->getAllowedFactoryElementAttributes();
 
 		return array_merge(
-		$this->getDefaultFactoryAttributePropertyCollection(),
+			$this->getDefaultFactoryAttributePropertyCollection(),
 			[
 				'colspan' => $this->getFactoryElementTableColspan($_allowed),
 				'rowspan' => $this->getFactoryElementTableRowspan($_allowed),

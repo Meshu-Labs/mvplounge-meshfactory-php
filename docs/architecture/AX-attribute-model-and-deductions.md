@@ -16,6 +16,7 @@ Attribute handling is the dynamic layer of MeshFactory.
 - addElementOpen() consumes getFactoryAttributePropertyCollection().
 - The property collection must represent only opening-tag attributes for the current element.
 - Model payloads belong in getFactoryModel() and related model methods.
+- Opening-tag class values combine explicit `class`, `user`, and `system` classes without duplicate tokens. Constructor and `configureFactory()` parameters use the same class processing.
 
 ## Control Checks
 

@@ -123,7 +123,7 @@ abstract class FactoryAbstract
 		return [
 			'id' => $this->FactoryId,
 			'name' => $this->FactoryName,
-			'class' => $this->FactoryClass,
+			'class' => $this->getFactoryClasses(),
 			'title' => $this->FactoryTitle,
 			'style' => $this->FactoryStyle,
 			'lang' => $this->FactoryLang,
