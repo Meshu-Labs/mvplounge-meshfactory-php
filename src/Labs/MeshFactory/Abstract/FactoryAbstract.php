@@ -29,6 +29,7 @@ abstract class FactoryAbstract
 		FactoryElementAttribute::TRANSLATE,
 		FactoryElementAttribute::ROLE,
 		FactoryElementAttribute::ARIA_LABEL,
+		FactoryElementAttribute::ARIA_CURRENT,
 		FactoryElementAttribute::ARIA_LABELLEDBY,
 		FactoryElementAttribute::ARIA_DESCRIBEDBY
 	];
@@ -55,6 +56,7 @@ abstract class FactoryAbstract
 	protected $FactoryTranslate;
 	protected ?string $FactoryRole = NULL;
 	protected ?string $FactoryAriaLabel = NULL;
+	protected ?string $FactoryAriaCurrent = NULL;
 	protected ?string $FactoryAriaLabelledby = NULL;
 	protected ?string $FactoryAriaDescribedby = NULL;
 
@@ -230,6 +232,12 @@ abstract class FactoryAbstract
 		$this->FactoryRole = $role;
 		return $this;
 	}
+	public function addAriaCurrent($current): static
+	{
+		$this->FactoryAriaCurrent = is_null($current) ? NULL : (string) $current;
+		return $this;
+	}
+
 	public function addAriaLabel($label): static
 	{
 		$this->FactoryAriaLabel = $label;
@@ -318,6 +326,7 @@ abstract class FactoryAbstract
 			'translate' => $this->FactoryTranslate,
 			'role' => $this->FactoryRole,
 			'aria-label' => $this->FactoryAriaLabel,
+			'aria-current' => $this->FactoryAriaCurrent,
 			'aria-labelledby' => $this->FactoryAriaLabelledby,
 			'aria-describedby' => $this->FactoryAriaDescribedby
 		];

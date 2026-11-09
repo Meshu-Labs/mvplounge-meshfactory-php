@@ -25,6 +25,7 @@ enum FactoryElementAttribute: string
 	case TRANSLATE = 'translate';
 	case ROLE = 'role';
 	case ARIA_LABEL = 'aria-label';
+	case ARIA_CURRENT = 'aria-current';
 	case ARIA_LABELLEDBY = 'aria-labelledby';
 	case ARIA_DESCRIBEDBY = 'aria-describedby';
 	case NAME = 'name';
