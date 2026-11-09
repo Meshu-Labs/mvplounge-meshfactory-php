@@ -50,11 +50,6 @@ class FormButton extends FactoryElementFieldInputAbstract
 		return $this;
 	}
 
-	protected function usesFieldLabelTag(): bool
-	{
-		return $this->FactoryElementFieldType !== FactoryElementFieldType::SUBMIT;
-	}
-
 	public function compileAsHtmlString(): ?string
 	{
 		return $this->compileAsHtmlStringWithFieldset();

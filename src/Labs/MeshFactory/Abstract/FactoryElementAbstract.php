@@ -88,6 +88,15 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 		return $this;
 	}
 
+	public function addText($text, $overwrite = FALSE): static
+	{
+		if (is_null($text) || is_array($text) || is_object($text)) {
+			return $this->addContent('', $overwrite);
+		}
+
+		return $this->addContent(htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8'), $overwrite);
+	}
+
 	protected function __process_data($params): void
 	{
 
@@ -283,7 +292,7 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 	{
 
 		$_e = $this->getElementFactory($element);
-		if (!$_e) {
+		if (!$_e || in_array($_e, ['img', 'br', 'hr', 'area', 'col', 'embed', 'source', 'track', 'wbr'], TRUE)) {
 			return '';
 		}
 
@@ -478,7 +487,10 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 			case 'access':
 				return is_bool($value) && $value ? 'enabled' : 'disabled';
 			default:
-				return sprintf('%s="%s"', $attribute, $_value);
+				if (is_bool($_value)) {
+					return $_value ? $attribute : '';
+				}
+				return sprintf('%s="%s"', $attribute, htmlspecialchars((string) $_value, ENT_QUOTES, 'UTF-8', FALSE));
 		}
 	}
 
@@ -494,7 +506,7 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 			if (!is_string($_data_key) || trim($_data_key) === '' || is_null($_data_value) || is_array($_data_value) || is_object($_data_value)) {
 				continue;
 			}
-			$_data_properties[] = sprintf('data-%s="%s"', strtolower(trim($_data_key)), $_data_value);
+			$_data_properties[] = sprintf('data-%s="%s"', strtolower(trim($_data_key)), htmlspecialchars((string) $_data_value, ENT_QUOTES, 'UTF-8', FALSE));
 		}
 
 		return implode(' ', $_data_properties);
