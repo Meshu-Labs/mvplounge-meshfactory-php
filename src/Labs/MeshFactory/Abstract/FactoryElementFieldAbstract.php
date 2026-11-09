@@ -76,6 +76,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 	{
 		parent::__process_params($params);
 		if (is_array($params)) {
+			$this->__process_fieldset($params);
 			$this->__process_label($params);
 			$this->__process_tooltip($params);
 		}
@@ -279,7 +280,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		$_model = $this->getElementFactoryDefaultPropertiesFromParams($params);
 
 		foreach ($this->FactoryElementAttributeMap as $_attribute => $_attribute_value) {
-			if (array_key_exists($_attribute_value, $params)) {
+			if ($_attribute_value !== 'class' && array_key_exists($_attribute_value, $params)) {
 				$_model[$_attribute_value] = $this->getElementFactoryProperty($_attribute_value, $params[$_attribute_value]);
 			}
 		}
@@ -407,10 +408,10 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 			) : '';
 	}
 
-	/** Wrapped fields render a `<label>` around the inner wrapper; submit-style controls opt out. */
+	/** Wrapped fields render a `<label>` around the inner wrapper; button and submit controls opt out. */
 	protected function usesFieldLabelTag(): bool
 	{
-		return TRUE;
+		return !in_array($this->FactoryElementFieldType, [FactoryElementFieldType::BUTTON, FactoryElementFieldType::SUBMIT], TRUE);
 	}
 
 	public function getElementFieldWrapperType(): string

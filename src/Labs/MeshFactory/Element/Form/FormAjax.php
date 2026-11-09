@@ -51,6 +51,7 @@ class FormAjax extends FormPost
 		) {
 			$this->FactoryElementFormButtons['submit'] = new FormButton(
 				[
+					'id' => 'form_ajx_submit_btn',
 					'type' => 'button',
 					'value' => 'Submit',
 					'user' => ['ajx'],

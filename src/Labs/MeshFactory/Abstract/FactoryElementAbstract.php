@@ -39,6 +39,15 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 		}
 	}
 
+	protected function __process_params($params): void
+	{
+		parent::__process_params($params);
+		if (is_array($params)) {
+			$this->__process_user($params);
+			$this->__process_system($params);
+		}
+	}
+
 	protected function registerAllowedFactoryElementAttributeMap(): void
 	{
 		foreach ($this->AllowedFactoryElementAttributes as $allowedAttribute) {
@@ -330,29 +339,15 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 
 	protected function getElementClassFromParams($params): string
 	{
-
-		$_user = $params['user'] ?? [];
-		if (is_string($_user)) {
-			$_user = explode(' ', $_user);
-		}
-
-		if (!is_array($_user)) {
-			$_user = [];
-		}
-
 		$_classes = [];
-		foreach ($_user as $_class) {
-			if (is_string($_class) && trim($_class) !== '') {
-				$_classes[] = trim($_class);
+		foreach ([$params['class'] ?? NULL, $params['user'] ?? NULL, $params['system'] ?? NULL, $params['ext']['class'] ?? NULL] as $_source) {
+			foreach (is_array($_source) ? $_source : [$_source] as $_class) {
+				if (is_string($_class) && trim($_class) !== '') {
+					$_classes = array_merge($_classes, preg_split('/\s+/', trim($_class)) ?: []);
+				}
 			}
 		}
-
-		$_system = $params['system'] ?? NULL;
-		if (is_string($_system) && trim($_system) !== '') {
-			$_classes[] = trim($_system);
-		}
-
-		return implode(' ', $_classes);
+		return implode(' ', array_values(array_unique($_classes)));
 	}
 
 	public function getElementFactoryOpen($element, $params = []): string
@@ -366,14 +361,14 @@ abstract class FactoryElementAbstract extends FactoryAbstract
 		$_model = $this->getElementFactoryDefaultPropertiesFromParams($params);
 
 		foreach ($this->getFactoryElementAttributeValues() as $_attribute) {
-			if (array_key_exists($_attribute, $params)) {
+			if ($_attribute !== 'class' && array_key_exists($_attribute, $params)) {
 				$_model[$_attribute] = $this->getElementFactoryProperty($_attribute, $params[$_attribute]);
 			}
 		}
 
 		if (isset($params['ext']) && is_array($params['ext'])) {
 			foreach ($params['ext'] as $_ext_attribute => $_ext_value) {
-				if (is_string($_ext_attribute)) {
+				if (is_string($_ext_attribute) && $_ext_attribute !== 'class') {
 					$_model[$_ext_attribute] = $this->getElementFactoryProperty($_ext_attribute, $_ext_value);
 				}
 			}
