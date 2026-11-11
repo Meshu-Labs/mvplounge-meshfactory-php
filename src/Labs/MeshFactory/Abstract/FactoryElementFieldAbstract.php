@@ -238,7 +238,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 	public function addValue($value): static
 	{
 		$_value_type = $this->FactoryElementFieldValueType?->value ?? FactoryElementPrimativeType::STRING->value;
-		$_field_prop = sprintf('FactoryElementField%sValue', ucfirst($_value_type));
+		$_field_prop = sprintf('FactoryElementField%sValue', $_value_type === 'bool' ? 'Boolean' : ucfirst($_value_type));
 
 		if (property_exists($this, $_field_prop)) {
 			$_value = NULL;
@@ -379,7 +379,7 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 	public function getElementFieldValue()
 	{
 		$_value_type = $this->FactoryElementFieldValueType?->value ?? FactoryElementPrimativeType::STRING->value;
-		$_field_prop = sprintf('FactoryElementField%sValue', ucfirst($_value_type));
+		$_field_prop = sprintf('FactoryElementField%sValue', $_value_type === 'bool' ? 'Boolean' : ucfirst($_value_type));
 
 		if (property_exists($this, $_field_prop)) {
 			return $this->{$_field_prop};
