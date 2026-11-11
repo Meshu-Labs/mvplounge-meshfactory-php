@@ -193,12 +193,19 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 
 	protected function __process_value($params): void
 	{
-
-		if (!empty($params['vtype'])) {
-			$this->addValueType($params['vtype']);
+		$_value_type = NULL;
+		foreach (array_keys($params) as $_key) {
+			if (strtolower((string) $_key) === 'vtype') {
+				$_value_type = $params[$_key];
+				break;
+			}
 		}
 
-		if (isset($params['value'])) {
+		if ($_value_type !== NULL && $_value_type !== '') {
+			$this->addValueType($_value_type);
+		}
+
+		if (array_key_exists('value', $params)) {
 			$this->addValue($params['value']);
 		}
 	}
@@ -211,7 +218,15 @@ abstract class FactoryElementFieldAbstract extends FactoryElementAbstract
 		}
 
 		if (is_string($valueType)) {
-			$_vtype = FactoryElementPrimativeType::tryFrom(strtolower($valueType));
+			$_normalized_value_type = strtolower(trim($valueType));
+			$_normalized_value_type = match ($_normalized_value_type) {
+				'integer' => 'int',
+				'bool', 'boolean' => 'bool',
+				'float', 'double' => 'float',
+				'string', 'str' => 'string',
+				default => $_normalized_value_type,
+			};
+			$_vtype = FactoryElementPrimativeType::tryFrom($_normalized_value_type);
 			if ($_vtype instanceof FactoryElementPrimativeType) {
 				$this->FactoryElementFieldValueType = $_vtype;
 			}
