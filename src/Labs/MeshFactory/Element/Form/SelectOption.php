@@ -2,7 +2,7 @@
 
 namespace MvpLounge\MeshFactory\Element\Field;
 
- 
+
 require_once __DIR__ . '/../../Constants.php';
 
 if (!defined('MVPLOUNGE_MESHFACTORY_BASE_PATH')) {
@@ -68,13 +68,7 @@ class SelectOption extends FactoryElementFieldAbstract
 
 	public function buildElementOptions()
 	{
-		if (count($this->FactoryElementSelectFieldOptions) > 0) {
-			foreach ($this->FactoryElementSelectFieldOptions as $_option_factory) {
-				if (($_option_factory instanceof SelectOptions)) {
-					$_option_factory->build();
-				}
-			}
-		}
+		echo $this->getElementFieldOptions(TRUE);
 	}
 
 	public function getFactoryModel(): array
