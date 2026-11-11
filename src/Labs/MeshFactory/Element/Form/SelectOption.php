@@ -93,11 +93,39 @@ class SelectOption extends FactoryElementFieldAbstract
 
 		$_options = [];
 		$_options_string = '';
+		$_current_value = $this->getElementFieldValue();
+		$_current_value_normalized = NULL;
+
+		if ($_current_value !== NULL && $_current_value !== '') {
+			$_current_value_normalized = is_numeric($_current_value) ? intval($_current_value) : strval($_current_value);
+		}
 
 		if ($this->hasOptions()) {
 			foreach ($this->FactoryElementSelectFieldOptions as $_option_factory_value => $_option_factory) {
 				if (($_option_factory instanceof SelectOptions)) {
-					if ($this->getElementFieldValue() === $_option_factory_value) {
+					$_option_key_normalized = is_numeric($_option_factory_value) ? intval($_option_factory_value) : strval($_option_factory_value);
+					$_option_value_normalized = NULL;
+
+					if ($_option_factory->getElementFieldValue() !== NULL && $_option_factory->getElementFieldValue() !== '') {
+						$_option_value_normalized = is_numeric($_option_factory->getElementFieldValue()) ? intval($_option_factory->getElementFieldValue()) : strval($_option_factory->getElementFieldValue());
+					}
+
+					$_matches_value = $_current_value_normalized !== NULL
+						&& (
+							$_current_value_normalized === $_option_key_normalized
+							|| $_current_value_normalized === $_option_value_normalized
+							|| strval($_current_value_normalized) === strval($_option_key_normalized)
+							|| strval($_current_value_normalized) === strval($_option_value_normalized)
+						);
+
+					$_is_default_placeholder = $_current_value_normalized === NULL
+						|| $_current_value_normalized === ''
+						|| $_current_value_normalized === -1
+						|| strval($_current_value_normalized) === '-1';
+
+					if ($_is_default_placeholder && ($_option_key_normalized === -1 || strval($_option_key_normalized) === '-1')) {
+						$_option_factory->selected();
+					} elseif ($_matches_value) {
 						$_option_factory->selected();
 					} else {
 						$_option_factory->not_selected();
@@ -138,6 +166,7 @@ class SelectOption extends FactoryElementFieldAbstract
 
 					if (is_string($_option)) {
 						$this->FactoryElementSelectFieldOptions[$_option_index] = new SelectOptions([
+							'vType' => 'int',
 							'value' => $_option_index,
 							'content' => $_option
 						]);
@@ -146,7 +175,7 @@ class SelectOption extends FactoryElementFieldAbstract
 					if (is_countable($_option) && is_array($_option)) {
 
 						$this->FactoryElementSelectFieldOptions[$_option_index] = new SelectOptions([
-							'vType' => $_option['vType'] ?? NULL,
+							'vType' => $_option['vType'] ?? 'int',
 							'value' => $_option['value'] ?? $_option_index,
 							'content' => $_option['label'] ?? NULL,
 							'id' => $_option['id'] ?? NULL,
